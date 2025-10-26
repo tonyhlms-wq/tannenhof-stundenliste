@@ -1,334 +1,333 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b5d3b" />
   <title>Tannenhofs tidtabell</title>
-  <meta name="theme-color" content="#2e7d32" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    :root{
-      --bg:#f4f8f4;
-      --card:#ffffff;
-      --text:#1f3b1f;
-      --muted:#4a6b4a;
-      --brand:#2e7d32;
-      --brand-2:#205c24;
-      --danger:#b00020;
-      --ring: rgba(46,125,50,.25);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
+    :root{--green:#0b5d3b;--green-2:#0e7248;--bg:#f4f8f4;--txt:#1f2b22;--muted:#6a7a6f;--card:#ffffff;--line:#e3eee5}
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--text);
-      font-family:var(--sans);line-height:1.4;
-    }
-    header{
-      background:linear-gradient(0deg,var(--brand),var(--brand-2));
-      color:#fff;padding:18px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-      position:sticky;top:0;z-index:10;
-    }
-    header .logo{font-size:28px;line-height:1}
-    header h1{margin:0;font-size:20px;font-weight:650;letter-spacing:.3px}
-    header .right{margin-left:auto;display:flex;align-items:center;gap:8px}
-    select, input[type="number"], input[type="time"], input[type="text"], button{
-      font:inherit;border:1px solid #d2e3d2;border-radius:10px;padding:10px 12px;background:#fff;color:var(--text);
-    }
-    select:focus, input:focus, button:focus{outline:3px solid var(--ring)}
-    main{max-width:980px;margin:18px auto;padding:0 12px}
-    .card{background:var(--card);border:1px solid #e5f0e5;border-radius:14px;box-shadow:0 1px 6px rgba(0,0,0,.04)}
-    .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-    .controls{padding:12px}
-    .controls .row > *{margin-right:6px}
-    .company{
-      display:flex;align-items:center;gap:10px;color:#fff;background:#2e7d32;padding:10px 12px;border-radius:10px
-    }
-    .company .name{font-weight:700}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    thead th{position:sticky;top:0;background:#eef7ee;border-bottom:1px solid #dbeadb;padding:10px 6px;text-align:left}
-    tbody td{border-bottom:1px solid #eef2ee;padding:8px 6px}
-    tbody tr:hover{background:#f7fbf7}
-    td.num{font-family:var(--mono);text-align:center;width:52px}
-    td.week{color:var(--muted);width:84px}
-    td.total{font-family:var(--mono);font-weight:600}
-    tfoot td{padding:12px 8px}
-    .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-    .badge{background:#eef7ee;border:1px solid #d7ead7;padding:10px;border-radius:12px;text-align:center}
-    .danger{color:#b00020}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .btn.secondary{background:#e7f2e7;color:var(--brand-2);border:1px solid #cfe4cf}
-    .btn.ghost{background:transparent;border:1px dashed #cfe4cf;color:var(--brand-2)}
-    .note{width:100%}
-    @media (max-width:760px){
-      thead .opt-col{display:none}
-      tbody .opt-col{display:none}
-      td.week{width:auto}
-    }
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    header{background:var(--green);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    #logoPreview{width:36px;height:36px;border-radius:8px;background:#ffffff22;display:grid;place-items:center;font-size:22px;overflow:hidden}
+    #logoPreview img{width:100%;height:100%;object-fit:cover}
+    header h1{font-size:20px;margin:0;font-weight:600}
+    .wrap{max-width:950px;margin:22px auto;padding:0 14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>*{flex:1 1 220px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input,select,button,textarea{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--txt)}
+    button.primary{background:var(--green);color:#fff;border-color:var(--green);cursor:pointer}
+    button.primary:hover{background:var(--green-2)}
+    button.ghost{background:#fff}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff;border-radius:12px;overflow:hidden}
+    thead th{background:#eef6ef;color:#2a3b31;font-weight:600;padding:10px;border-bottom:1px solid var(--line);text-align:left}
+    tbody td{padding:8px;border-bottom:1px solid var(--line)}
+    tbody tr:last-child td{border-bottom:none}
+    tfoot td{padding:10px;background:#f7fbf8;font-weight:600}
+    .right{text-align:right}.center{text-align:center}
+    .hint{font-size:12px;color:var(--muted)}
+    .lang{gap:8px;display:flex;align-items:center}
+    .badge{background:#0b5d3b12;color:var(--green);padding:3px 8px;border-radius:999px;font-size:12px}
+    dialog{border:none;border-radius:12px;max-width:420px;width:95%}
+    dialog::backdrop{background:#0006}
+    .qr-box{display:grid;place-items:center;padding:12px;border:1px dashed var(--line);border-radius:12px}
+    .sticky-footer{position:sticky;bottom:0;background:#ffffffcc;backdrop-filter:blur(6px);padding:10px;border:1px solid var(--line);border-radius:12px;margin-top:12px}
+    @media print{header,.controls,.toolbar,.sticky-footer,.no-print{display:none!important}body{background:#fff}table{border:1px solid #ccc}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">🌲</div>
-    <h1 id="t-title">Tannenhofs tidtabell</h1>
-    <div class="right">
-      <label for="lang" id="t-lang">Språk:</label>
-      <select id="lang">
-        <option value="sv">Svenska</option>
-        <option value="de">Deutsch</option>
-      </select>
-    </div>
-    <div class="right company" title="Företagsläge är låst">
-      <div>🏢</div>
-      <div class="name">THÜRINGER TANNENHOF</div>
-    </div>
+  <header class="no-print">
+    <div id="logoPreview" aria-label="Logga">🌲</div>
+    <h1 id="titleTxt">Tannenhofs tidtabell</h1>
+    <span class="badge" id="monthBadge"></span>
   </header>
 
-  <main>
-    <section class="card controls">
+  <div class="wrap">
+    <div class="card controls">
       <div class="row">
-        <label id="t-month" for="month">Månad</label>
-        <select id="month"></select>
-
-        <label id="t-year" for="year">År</label>
-        <input id="year" type="number" min="2000" max="2100" style="width:110px"/>
-
-        <label id="t-target" for="target">Arbetstid/dag</label>
-        <input id="target" type="number" step="0.25" min="0" value="8" style="width:110px"/>
-
-        <div class="actions" style="margin-left:auto">
-          <button class="btn secondary" id="btn-clear">Rensa månad</button>
-          <button class="btn" id="btn-print">Skriv ut / PDF</button>
+        <div>
+          <label data-i="company">Företag</label>
+          <input id="company" placeholder="THÜRINGER TANNENHOF" />
+        </div>
+        <div>
+          <label data-i="logo">Logga (bildfil eller emoji)</label>
+          <div class="row">
+            <input id="logoEmoji" placeholder="t.ex. 🌲 eller 🦌" />
+            <input id="logoFile" type="file" accept="image/*" />
+          </div>
+          <div class="hint" data-i="logo_hint">Sparas lokalt på den här enheten.</div>
+        </div>
+        <div>
+          <label data-i="language">Språk</label>
+          <div class="lang">
+            <select id="lang">
+              <option value="sv">Svenska</option>
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+            <span class="hint">/</span>
+            <button class="ghost" id="shareBtn" data-i="share">Dela / Skicka</button>
+            <button class="ghost" id="printBtn" data-i="print">Skriv ut / PDF</button>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="card">
+      <div class="row" style="margin-top:10px">
+        <div>
+          <label data-i="month">Månad</label>
+          <select id="month"></select>
+        </div>
+        <div>
+          <label data-i="year">År</label>
+          <select id="year"></select>
+        </div>
+        <div style="align-self:end">
+          <button class="primary" id="regenBtn" data-i="regen">Skapa dagar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <table id="sheet">
         <thead>
           <tr>
-            <th class="num">#</th>
-            <th id="t-weekday">Dag</th>
-            <th id="t-start">Från</th>
-            <th id="t-end">Till</th>
-            <th id="t-break">Rast (min)</th>
-            <th id="t-total">Totalt</th>
-            <th class="opt-col" id="t-note">Anteckning</th>
+            <th class="center" style="width:56px" data-i="day">Dag</th>
+            <th data-i="from">Från</th>
+            <th data-i="to">Till</th>
+            <th data-i="break">Paus (h:mm)</th>
+            <th data-i="total">Totalt (h)</th>
+            <th data-i="note">Anteckning</th>
           </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody></tbody>
         <tfoot>
           <tr>
-            <td colspan="7">
-              <div class="summary">
-                <div class="badge">
-                  <div id="t-sum-label">Summa timmar</div>
-                  <div id="sum-hours" style="font-family:var(--mono);font-weight:700;font-size:18px">00:00</div>
-                </div>
-                <div class="badge">
-                  <div id="t-longest-label">Längsta dag</div>
-                  <div id="longest" style="font-family:var(--mono);font-weight:700">00:00</div>
-                </div>
-                <div class="badge">
-                  <div id="t-avg-label">Medel / dag</div>
-                  <div id="avg" style="font-family:var(--mono);font-weight:700">00:00</div>
-                </div>
+            <td colspan="6">
+              <div class="row">
+                <div><span data-i="sum">Summa timmar</span>: <strong id="sumH">0.00</strong></div>
+                <div><span data-i="longest">Längsta dag</span>: <strong id="longH">0.00</strong></div>
+                <div><span data-i="avg">Medel</span>: <strong id="avgH">0.00</strong></div>
               </div>
             </td>
           </tr>
         </tfoot>
       </table>
-    </section>
-    <p style="text-align:center;color:#6d8a6d;margin:22px 0">© 2025 Tony Holmström</p>
-  </main>
+      <div class="sticky-footer hint">
+        <span data-i="autosave">Autosparar lokalt. Byt enhet ⇒ exportera/skriv ut först.</span>
+      </div>
+    </div>
+  </div>
 
-  <script>
-    // ---- i18n ----
-    const I18N = {
-      sv: {
-        title:"Tannenhofs tidtabell",
-        lang:"Språk:",
-        month:"Månad", year:"År", target:"Arbetstid/dag",
-        weekday:"Dag", start:"Från", end:"Till", break:"Rast (min)", total:"Totalt", note:"Anteckning",
-        sum:"Summa timmar", longest:"Längsta dag", avg:"Medel / dag",
-        clear:"Rensa månad", print:"Skriv ut / PDF",
-        days:["Sön","Mån","Tis","Ons","Tors","Fre","Lör"],
-        months:["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Aug","Sep","Okt","Nov","Dec"]
-      },
-      de: {
-        title:"Tannenhof Stundentabelle",
-        lang:"Sprache:",
-        month:"Monat", year:"Jahr", target:"Arbeitszeit/Tag",
-        weekday:"Wochentag", start:"Von", end:"Bis", break:"Pause (Min)", total:"Summe", note:"Notiz",
-        sum:"Stunden gesamt", longest:"Längster Tag", avg:"Schnitt / Tag",
-        clear:"Monat leeren", print:"Drucken / PDF",
-        days:["So","Mo","Di","Mi","Do","Fr","Sa"],
-        months:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
-      }
-    };
+  <dialog id="shareDlg">
+    <form method="dialog">
+      <h3 style="margin:0 0 6px" data-i="share">Dela / Skicka</h3>
+      <div class="row">
+        <input id="pageUrl" readonly>
+        <button class="ghost" id="copyBtn" type="button" data-i="copy">Kopiera länk</button>
+      </div>
+      <div class="qr-box" style="margin:10px 0">
+        <div id="qrcode"></div>
+      </div>
+      <div class="toolbar">
+        <a id="waBtn" class="primary" target="_blank" rel="noopener">WhatsApp</a>
+        <a id="mailBtn" class="ghost" target="_blank" rel="noopener" data-i="email">E-post</a>
+        <button type="submit" class="ghost" data-i="close">Stäng</button>
+      </div>
+    </form>
+  </dialog>
 
-    const qs = sel => document.querySelector(sel);
-    const tbody = qs('#tbody');
-    const monthSel = qs('#month');
-    const yearInp = qs('#year');
-    const targetInp = qs('#target');
-    const langSel = qs('#lang');
+<script>
+/* ---------- i18n ---------- */
+const I = {
+  sv:{ company:"Företag",logo:"Logga (bildfil eller emoji)",logo_hint:"Sparas lokalt på den här enheten.",
+      language:"Språk",share:"Dela / Skicka",print:"Skriv ut / PDF",
+      month:"Månad",year:"År",regen:"Skapa dagar",
+      day:"Dag",from:"Från",to:"Till",break:"Paus (h:mm)",total:"Totalt (h)",note:"Anteckning",
+      sum:"Summa timmar",longest:"Längsta dag",avg:"Medel",autosave:"Autosparar lokalt. Byt enhet ⇒ exportera/skriv ut först.",
+      copy:"Kopiera länk",email:"E-post",close:"Stäng",
+      title:"Tannenhofs tidtabell"
+  },
+  de:{ company:"Arbeitgeber",logo:"Logo (Datei oder Emoji)",logo_hint:"Lokal auf diesem Gerät gespeichert.",
+      language:"Sprache",share:"Teilen / Senden",print:"Drucken / PDF",
+      month:"Monat",year:"Jahr",regen:"Tage erstellen",
+      day:"Tag",from:"Von",to:"Bis",break:"Pause (Std:Min)",total:"Gesamt (Std)",note:"Notiz",
+      sum:"Summe Stunden",longest:"Längster Tag",avg:"Durchschnitt",autosave:"Autospeicherung lokal. Vor Gerätewechsel exportieren/drucken.",
+      copy:"Link kopieren",email:"E-Mail",close:"Schließen",
+      title:"Tannenhof Stundenliste"
+  },
+  en:{ company:"Company",logo:"Logo (image or emoji)",logo_hint:"Stored locally on this device.",
+      language:"Language",share:"Share / Send",print:"Print / PDF",
+      month:"Month",year:"Year",regen:"Generate days",
+      day:"Day",from:"From",to:"To",break:"Break (h:mm)",total:"Total (h)",note:"Note",
+      sum:"Total hours",longest:"Longest day",avg:"Average",autosave:"Autosaves locally. If you switch device, export/print first.",
+      copy:"Copy link",email:"Email",close:"Close",
+      title:"Tannenhof Timesheet"
+  }
+};
+const monthNames = {
+  sv:["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Aug","Sep","Okt","Nov","Dec"],
+  de:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],
+  en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+};
+function t(){
+  const dict=I[lang.value];
+  document.querySelectorAll("[data-i]").forEach(el=>el.textContent=dict[el.dataset.i]);
+  document.title=dict.title; titleTxt.textContent=dict.title;
+  setMonthLabels(); updateMonthBadge();
+}
 
-    const t = (k)=>I18N[langSel.value][k];
+/* ---------- helpers ---------- */
+const $ = s=>document.querySelector(s);
+function pad2(n){return String(n).padStart(2,"0")}
+function parseHM(str){ if(!str) return [0,0]; const m=str.match(/^(\d{1,2}):([0-5]\d)$/); return m?[+m[1],+m[2]]:[0,0]; }
 
-    // Fill month selector
-    function fillMonths(){
-      monthSel.innerHTML = "";
-      I18N[langSel.value].months.forEach((m,i)=>{
-        const opt = document.createElement('option');
-        opt.value = i+1; opt.textContent = m;
-        monthSel.appendChild(opt);
-      });
+/* ---------- DOM ---------- */
+const company=$("#company"), logoEmoji=$("#logoEmoji"), logoFile=$("#logoFile"), logoPreview=$("#logoPreview");
+const titleTxt=$("#titleTxt"), monthSel=$("#month"), yearSel=$("#year");
+const regenBtn=$("#regenBtn"), tbody=document.querySelector("#sheet tbody");
+const sumH=$("#sumH"), longH=$("#longH"), avgH=$("#avgH"), monthBadge=$("#monthBadge");
+const shareBtn=$("#shareBtn"), shareDlg=$("#shareDlg"), pageUrl=$("#pageUrl"), copyBtn=$("#copyBtn");
+const waBtn=$("#waBtn"), mailBtn=$("#mailBtn"), printBtn=$("#printBtn"), lang=$("#lang");
+
+/* ---------- storage ---------- */
+function keyBase(){ return `th_${yearSel.value}_${monthSel.value}`; }
+
+/* ---------- init month/year ---------- */
+(function initYM(){
+  for(let m=1;m<=12;m++){
+    const o=document.createElement("option"); o.value=m; monthSel.appendChild(o);
+  }
+  const now=new Date(), yNow=now.getFullYear();
+  for(let y=yNow-1;y<=yNow+2;y++){ const o=document.createElement("option"); o.value=y; o.textContent=y; yearSel.appendChild(o); }
+  monthSel.value = (now.getMonth()+1); yearSel.value = yNow;
+  setMonthLabels(); updateMonthBadge();
+})();
+function setMonthLabels(){
+  const names=monthNames[lang.value];
+  [...monthSel.options].forEach((o,i)=>{ o.textContent = names[i]; });
+}
+function updateMonthBadge(){
+  const names=monthNames[lang.value]; monthBadge.textContent = `${names[monthSel.value-1]} ${yearSel.value}`;
+}
+
+/* ---------- language ---------- */
+(function initLang(){
+  const saved=localStorage.getItem("th_lang")||"sv"; lang.value=saved; t();
+  lang.addEventListener("change", ()=>{ localStorage.setItem("th_lang",lang.value); t(); });
+})();
+
+/* ---------- company & logo ---------- */
+(function initBrand(){
+  const data = JSON.parse(localStorage.getItem("th_brand")||"{}");
+  if(data.company) company.value=data.company;
+  if(data.emoji){ logoEmoji.value=data.emoji; logoPreview.textContent=data.emoji; }
+  if(data.img){ setLogoImg(data.img); }
+  company.addEventListener("input", saveBrand);
+  logoEmoji.addEventListener("input", ()=>{ logoPreview.innerHTML=""; logoPreview.textContent=logoEmoji.value||"🌲"; saveBrand(); });
+  logoFile.addEventListener("change", e=>{
+    const f=e.target.files?.[0]; if(!f) return;
+    const r=new FileReader(); r.onload=()=>{ setLogoImg(r.result); saveBrand(); }; r.readAsDataURL(f);
+  });
+  function setLogoImg(src){ logoPreview.innerHTML=`<img alt="logo">`; logoPreview.querySelector("img").src=src; }
+  function saveBrand(){
+    const obj={company:company.value, emoji:logoEmoji.value, img:(logoPreview.querySelector("img")?.src||null)};
+    localStorage.setItem("th_brand", JSON.stringify(obj));
+  }
+})();
+
+/* ---------- build table ---------- */
+function daysInMonth(y,m){ return new Date(y,m,0).getDate(); }
+function buildTable(){
+  const y=+yearSel.value, m=+monthSel.value, days=daysInMonth(y,m);
+  updateMonthBadge();
+  tbody.innerHTML="";
+  for(let d=1; d<=days; d++){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td class="center">${d}</td>
+      <td><input placeholder="07:00" data-k="from"></td>
+      <td><input placeholder="16:00" data-k="to"></td>
+      <td><input placeholder="0:30" data-k="break"></td>
+      <td class="right"><span data-k="tot">0.00</span></td>
+      <td><input placeholder="-"></td>`;
+    tbody.appendChild(tr);
+  }
+  loadMonthData();
+  tbody.querySelectorAll("input").forEach(i=>i.addEventListener("input", onEdit));
+  calcTotals();
+}
+regenBtn.addEventListener("click", buildTable);
+
+/* ---------- calc & save ---------- */
+function onEdit(){ calcTotals(); saveMonthData(); }
+function calcTotals(){
+  let sum=0,long=0,worked=0;
+  tbody.querySelectorAll("tr").forEach(tr=>{
+    const f=tr.querySelector('input[data-k="from"]').value.trim();
+    const t=tr.querySelector('input[data-k="to"]').value.trim();
+    const b=tr.querySelector('input[data-k="break"]').value.trim();
+    let tot=0;
+    if(f&&t){
+      const [fh,fm]=parseHM(f), [th,tm]=parseHM(t), [bh,bm]=parseHM(b||"0:00");
+      let h=(th+tm/60)-(fh+fm/60)-(bh+bm/60);
+      if(!isNaN(h)&&h>0){ tot=h; sum+=h; long=Math.max(long,h); worked++; }
     }
+    tr.querySelector('[data-k="tot"]').textContent=tot.toFixed(2);
+  });
+  sumH.textContent=sum.toFixed(2);
+  longH.textContent=long.toFixed(2);
+  avgH.textContent=worked?(sum/worked).toFixed(2):"0.00";
+}
+function saveMonthData(){
+  const rows=[...tbody.querySelectorAll("tr")].map(tr=>({
+    from:tr.querySelector('input[data-k="from"]').value,
+    to:tr.querySelector('input[data-k="to"]').value,
+    brk:tr.querySelector('input[data-k="break"]').value,
+    note:tr.querySelectorAll('input')[3].value
+  }));
+  localStorage.setItem(keyBase(), JSON.stringify(rows));
+}
+function loadMonthData(){
+  const raw=localStorage.getItem(keyBase()); if(!raw) return;
+  const rows=JSON.parse(raw);
+  [...tbody.querySelectorAll("tr")].forEach((tr,i)=>{
+    const r=rows[i]; if(!r) return;
+    tr.querySelector('input[data-k="from"]').value=r.from||"";
+    tr.querySelector('input[data-k="to"]').value=r.to||"";
+    tr.querySelector('input[data-k="break"]').value=r.brk||"";
+    tr.querySelectorAll('input')[3].value=r.note||"";
+  });
+}
 
-    function daysInMonth(y,m){return new Date(y,m,0).getDate();}
+/* ---------- month/year change ---------- */
+[monthSel,yearSel].forEach(s=>s.addEventListener("change", buildTable));
 
-    function timeToMin(v){
-      if(!v) return 0;
-      const [h,mm] = v.split(':').map(n=>parseInt(n||0,10));
-      return h*60 + mm;
-    }
-    function minToHHMM(mins){
-      const m = Math.max(0, Math.round(mins));
-      const h = Math.floor(m/60);
-      const mm = (m%60).toString().padStart(2,'0');
-      return `${h.toString().padStart(2,'0')}:${mm}`;
-    }
+/* ---------- share & QR ---------- */
+shareBtn.addEventListener("click", ()=>{
+  shareDlg.showModal();
+  pageUrl.value=location.href;
+  $("#qrcode").innerHTML="";
+  new QRCode(document.getElementById("qrcode"),{text:location.href,width:164,height:164});
+  const enc=encodeURIComponent(location.href);
+  waBtn.href=`https://wa.me/?text=${enc}`;
+  mailBtn.href=`mailto:?subject=Tannenhof%20Timesheet&body=${enc}`;
+});
+copyBtn.addEventListener("click", async ()=>{
+  await navigator.clipboard.writeText(pageUrl.value);
+  copyBtn.textContent = (lang.value==="de")?"Kopiert!":(lang.value==="en")?"Copied!":"Kopierat!";
+  setTimeout(()=>copyBtn.textContent=I[lang.value].copy,1200);
+});
 
-    function key(){ return `tannenhof:${yearInp.value}-${monthSel.value}`; }
+/* ---------- print ---------- */
+printBtn.addEventListener("click", ()=>window.print());
 
-    function save(){
-      const rows = [...tbody.querySelectorAll('tr')].map(tr=>{
-        return {
-          start: tr.querySelector('input[data-k="start"]').value,
-          end: tr.querySelector('input[data-k="end"]').value,
-          brk: tr.querySelector('input[data-k="brk"]').value,
-          note: tr.querySelector('input[data-k="note"]').value
-        };
-      });
-      localStorage.setItem(key(), JSON.stringify({rows, target: targetInp.value}));
-    }
-    function load(){
-      const raw = localStorage.getItem(key());
-      if(!raw) return;
-      try{
-        const obj = JSON.parse(raw);
-        targetInp.value = obj.target ?? targetInp.value;
-        const trs = [...tbody.querySelectorAll('tr')];
-        obj.rows?.forEach((r,idx)=>{
-          const tr = trs[idx]; if(!tr) return;
-          tr.querySelector('input[data-k="start"]').value = r.start||"";
-          tr.querySelector('input[data-k="end"]').value   = r.end||"";
-          tr.querySelector('input[data-k="brk"]').value   = r.brk||"";
-          tr.querySelector('input[data-k="note"]').value  = r.note||"";
-        });
-      }catch{}
-    }
-
-    function compute(){
-      let sum=0, max=0;
-      const trs = [...tbody.querySelectorAll('tr')];
-      trs.forEach(tr=>{
-        const s = timeToMin(tr.querySelector('input[data-k="start"]').value);
-        const e = timeToMin(tr.querySelector('input[data-k="end"]').value);
-        const b = parseInt(tr.querySelector('input[data-k="brk"]').value||0,10);
-        let d = Math.max(0, e - s - (isNaN(b)?0:b));
-        tr.querySelector('.total').textContent = minToHHMM(d);
-        sum += d; if(d>max) max=d;
-      });
-      qs('#sum-hours').textContent = minToHHMM(sum);
-      qs('#longest').textContent = minToHHMM(max);
-      qs('#avg').textContent = trs.length? minToHHMM(sum/trs.length):"00:00";
-      save();
-    }
-
-    function gen(){
-      tbody.innerHTML = "";
-      const y = parseInt(yearInp.value,10);
-      const m = parseInt(monthSel.value,10);
-      const n = daysInMonth(y,m);
-      for(let d=1; d<=n; d++){
-        const date = new Date(y, m-1, d);
-        const tr = document.createElement('tr');
-
-        const tdNum = document.createElement('td'); tdNum.className="num"; tdNum.textContent=d;
-        const tdWeek = document.createElement('td'); tdWeek.className="week";
-        tdWeek.textContent = I18N[langSel.value].days[date.getDay()];
-
-        const mkInput = (k,type="time",extra={})=>{
-          const inp = document.createElement('input');
-          inp.type = type; inp.setAttribute('data-k',k);
-          if(type==="number"){ inp.min=0; inp.step=5; inp.style.width='90px'; }
-          if(type==="text"){ inp.className='note'; }
-          inp.addEventListener('input', compute);
-          return inp;
-        };
-
-        const tdStart = document.createElement('td'); tdStart.appendChild(mkInput("start"));
-        const tdEnd   = document.createElement('td'); tdEnd.appendChild(mkInput("end"));
-        const tdBrk   = document.createElement('td'); tdBrk.appendChild(mkInput("brk","number"));
-        const tdTot   = document.createElement('td'); tdTot.className="total"; tdTot.textContent="00:00";
-        const tdNote  = document.createElement('td'); tdNote.className="opt-col"; tdNote.appendChild(mkInput("note","text"));
-
-        tr.append(tdNum, tdWeek, tdStart, tdEnd, tdBrk, tdTot, tdNote);
-        tbody.appendChild(tr);
-      }
-      load();
-      compute();
-    }
-
-    function applyTexts(){
-      qs('#t-title').textContent = t('title');
-      qs('#t-lang').textContent = t('lang');
-      qs('#t-month').textContent = t('month');
-      qs('#t-year').textContent = t('year');
-      qs('#t-target').textContent = t('target');
-      qs('#t-weekday').textContent = t('weekday');
-      qs('#t-start').textContent = t('start');
-      qs('#t-end').textContent = t('end');
-      qs('#t-break').textContent = t('break');
-      qs('#t-total').textContent = t('total');
-      qs('#t-note').textContent = t('note');
-      qs('#t-sum-label').textContent = t('sum');
-      qs('#t-longest-label').textContent = t('longest');
-      qs('#t-avg-label').textContent = t('avg');
-      qs('#btn-clear').textContent = t('clear');
-      qs('#btn-print').textContent = t('print');
-    }
-
-    // Events
-    monthSel.addEventListener('change', ()=>{gen()});
-    yearInp.addEventListener('change', ()=>{gen()});
-    targetInp.addEventListener('input', save);
-    qs('#btn-clear').addEventListener('click', ()=>{
-      if(confirm(langSel.value==='de' ? 'Monat leeren?' : 'Rensa denna månad?')){
-        localStorage.removeItem(key());
-        gen();
-      }
-    });
-    qs('#btn-print').addEventListener('click', ()=>window.print());
-    langSel.addEventListener('change', ()=>{
-      fillMonths(); applyTexts(); gen();
-      monthSel.value = new Date().getMonth()+1; // håll samma månadstalsindex
-    });
-
-    // Init
-    (function init(){
-      // fyll månader
-      fillMonths();
-      // default: nuvarande månad/år
-      const now = new Date();
-      monthSel.value = now.getMonth()+1;
-      yearInp.value = now.getFullYear();
-      applyTexts();
-      gen();
-    })();
-  </script>
+/* ---------- start ---------- */
+buildTable();
+</script>
 </body>
 </html>
