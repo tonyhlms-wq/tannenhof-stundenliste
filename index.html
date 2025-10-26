@@ -3,341 +3,331 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title data-i18n="title">Tannenhofs tidtabell</title>
-  <meta name="theme-color" content="#2f6b3a" />
+  <title>Tannenhofs tidtabell</title>
+  <meta name="theme-color" content="#2e7d32" />
   <style>
-    :root{--brand:#2f6b3a;--brand-700:#255631;--bg:#f5f7f5;--text:#233127;--muted:#6b7c70;--card:#e7f1e9;--danger:#b02a37}
+    :root{
+      --bg:#f4f8f4;
+      --card:#ffffff;
+      --text:#1f3b1f;
+      --muted:#4a6b4a;
+      --brand:#2e7d32;
+      --brand-2:#205c24;
+      --danger:#b00020;
+      --ring: rgba(46,125,50,.25);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    header{background:var(--brand);color:#fff;padding:16px}
-    header .wrap{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px;justify-content:space-between}
-    h1{margin:0;font-size:22px;font-weight:700}
-    .lang{display:flex;gap:6px}
-    .lang button{border:0;background:#fff;color:var(--brand);padding:6px 10px;border-radius:999px;font-weight:700;cursor:pointer}
-    .lang button.active{background:#163e24;color:#fff}
-    main{max-width:980px;margin:18px auto;padding:0 14px}
-    .card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px}
-    .company{background:var(--card)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:720px){.row{grid-template-columns:1fr}}
-    label{font-size:.9rem;color:var(--muted);display:block;margin:8px 0 6px}
-    input[type="text"],input[type="number"],select{width:100%;padding:10px 12px;border:1px solid #d7e0d9;border-radius:10px;background:#fff;font-size:1rem}
-    input[disabled]{background:#f0f0f0}
-    .btn{display:inline-flex;gap:8px;align-items:center;background:var(--brand);color:#fff;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.secondary{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
-    .btn.ghost{background:transparent;color:var(--danger);border:1.5px solid var(--danger)}
-    .stack{display:flex;flex-wrap:wrap;gap:10px}
-    .company-grid{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
-    .logo-preview{width:72px;height:72px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid #d7e0d9;padding:6px}
-    .hint{font-size:.88rem;color:var(--muted)}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    thead th{position:sticky;top:0;background:#fbfbfb}
-    th,td{border:1px solid #e6eee8;padding:8px;text-align:center}
-    tfoot td{font-weight:800}
-    .footer-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .sum{font-weight:800}
-    .badge-lock{font-size:.9rem;color:var(--muted)}
-    .sr-only{position:absolute;left:-9999px}
-    @media print{header,.footer-actions,.lang,.hint,.btn.ghost{display:none} body{background:#fff} .card{box-shadow:none;border:1px solid #ddd}}
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:var(--sans);line-height:1.4;
+    }
+    header{
+      background:linear-gradient(0deg,var(--brand),var(--brand-2));
+      color:#fff;padding:18px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+      position:sticky;top:0;z-index:10;
+    }
+    header .logo{font-size:28px;line-height:1}
+    header h1{margin:0;font-size:20px;font-weight:650;letter-spacing:.3px}
+    header .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+    select, input[type="number"], input[type="time"], input[type="text"], button{
+      font:inherit;border:1px solid #d2e3d2;border-radius:10px;padding:10px 12px;background:#fff;color:var(--text);
+    }
+    select:focus, input:focus, button:focus{outline:3px solid var(--ring)}
+    main{max-width:980px;margin:18px auto;padding:0 12px}
+    .card{background:var(--card);border:1px solid #e5f0e5;border-radius:14px;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+    .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .controls{padding:12px}
+    .controls .row > *{margin-right:6px}
+    .company{
+      display:flex;align-items:center;gap:10px;color:#fff;background:#2e7d32;padding:10px 12px;border-radius:10px
+    }
+    .company .name{font-weight:700}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    thead th{position:sticky;top:0;background:#eef7ee;border-bottom:1px solid #dbeadb;padding:10px 6px;text-align:left}
+    tbody td{border-bottom:1px solid #eef2ee;padding:8px 6px}
+    tbody tr:hover{background:#f7fbf7}
+    td.num{font-family:var(--mono);text-align:center;width:52px}
+    td.week{color:var(--muted);width:84px}
+    td.total{font-family:var(--mono);font-weight:600}
+    tfoot td{padding:12px 8px}
+    .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .badge{background:#eef7ee;border:1px solid #d7ead7;padding:10px;border-radius:12px;text-align:center}
+    .danger{color:#b00020}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .btn.secondary{background:#e7f2e7;color:var(--brand-2);border:1px solid #cfe4cf}
+    .btn.ghost{background:transparent;border:1px dashed #cfe4cf;color:var(--brand-2)}
+    .note{width:100%}
+    @media (max-width:760px){
+      thead .opt-col{display:none}
+      tbody .opt-col{display:none}
+      td.week{width:auto}
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="wrap">
-      <h1 data-i18n="header">Tannenhofs tidtabell</h1>
-      <div class="lang" role="group" aria-label="Language">
-        <button type="button" data-lang="de">DE</button>
-        <button type="button" data-lang="sv" class="active">SV</button>
-        <button type="button" data-lang="en">EN</button>
-      </div>
+    <div class="logo">🌲</div>
+    <h1 id="t-title">Tannenhofs tidtabell</h1>
+    <div class="right">
+      <label for="lang" id="t-lang">Språk:</label>
+      <select id="lang">
+        <option value="sv">Svenska</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </div>
+    <div class="right company" title="Företagsläge är låst">
+      <div>🏢</div>
+      <div class="name">THÜRINGER TANNENHOF</div>
     </div>
   </header>
 
   <main>
-    <section class="card company" aria-labelledby="companyTitle">
-      <h2 id="companyTitle" data-i18n="companyTitle">Arbetsgivare</h2>
-      <p class="hint" data-i18n="homescreenTip">Tips: Lägg till på startskärmen via webbläsarmenyn så fungerar den som en app.</p>
+    <section class="card controls">
+      <div class="row">
+        <label id="t-month" for="month">Månad</label>
+        <select id="month"></select>
 
-      <div class="company-grid">
-        <img id="logoPreview" class="logo-preview" alt="logo" />
-        <div class="stack">
-          <div style="min-width:220px">
-            <label for="companyName" data-i18n="company">Arbetsgivare</label>
-            <input id="companyName" type="text" autocomplete="organization" placeholder="TANNENHOF" />
-          </div>
+        <label id="t-year" for="year">År</label>
+        <input id="year" type="number" min="2000" max="2100" style="width:110px"/>
 
-          <div class="stack">
-            <label class="sr-only" for="logoFile">Logo</label>
-            <input id="logoFile" type="file" accept="image/*" class="sr-only" />
-            <button class="btn secondary" id="btnLogo"><span>🖼️</span><span data-i18n="uploadLogo">Ladda upp logga</span></button>
-            <button class="btn" id="btnSaveCompany"><span>📲</span><span data-i18n="saveAsCompanyApp">Spara som företags-app</span></button>
-            <button class="btn ghost" id="btnReset" style="display:none"><span>♻️</span><span data-i18n="resetCompany">Återställ företagsläge</span></button>
-          </div>
-          <div class="badge-lock" id="lockInfo" style="display:none" data-i18n="companyLocked">(Företagsläge – låst)</div>
+        <label id="t-target" for="target">Arbetstid/dag</label>
+        <input id="target" type="number" step="0.25" min="0" value="8" style="width:110px"/>
+
+        <div class="actions" style="margin-left:auto">
+          <button class="btn secondary" id="btn-clear">Rensa månad</button>
+          <button class="btn" id="btn-print">Skriv ut / PDF</button>
         </div>
       </div>
     </section>
 
-    <section class="card" style="margin-top:14px">
-      <div class="row">
-        <div>
-          <label for="empName" data-i18n="name">Namn</label>
-          <input id="empName" type="text" autocomplete="name" />
-        </div>
-        <div>
-          <label for="workplace" data-i18n="workplace">Arbetsplats</label>
-          <input id="workplace" type="text" />
-        </div>
-
-        <div>
-          <label for="month" data-i18n="month">Månad</label>
-          <input id="month" type="number" min="1" max="12" />
-        </div>
-        <div>
-          <label for="year" data-i18n="year">År</label>
-          <input id="year" type="number" min="2000" max="2100" />
-        </div>
-
-        <div>
-          <label for="targetPerDay" data-i18n="targetPerDay">Arbetstid per dag (h)</label>
-          <input id="targetPerDay" type="number" min="0" step="0.25" />
-        </div>
-        <div>
-          <label for="restrict" data-i18n="restrict">Begränsa till idag+igår</label>
-          <select id="restrict">
-            <option value="off" data-i18n="off">Av</option>
-            <option value="on" data-i18n="on">På</option>
-          </select>
-        </div>
-      </div>
-
+    <section class="card">
       <table id="sheet">
         <thead>
           <tr>
-            <th data-i18n="date">Datum</th>
-            <th data-i18n="from">från</th>
-            <th data-i18n="to">till</th>
-            <th data-i18n="break">Paus (min)</th>
-            <th data-i18n="total">Totalt antal timmar</th>
-            <th data-i18n="place">Plats</th>
-            <th data-i18n="note">Anteckningar (valfritt)</th>
+            <th class="num">#</th>
+            <th id="t-weekday">Dag</th>
+            <th id="t-start">Från</th>
+            <th id="t-end">Till</th>
+            <th id="t-break">Rast (min)</th>
+            <th id="t-total">Totalt</th>
+            <th class="opt-col" id="t-note">Anteckning</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="tbody"></tbody>
         <tfoot>
           <tr>
-            <td colspan="4" style="text-align:right" data-i18n="sum">Summa</td>
-            <td id="sumHours" class="sum">0.00</td>
-            <td colspan="2"></td>
+            <td colspan="7">
+              <div class="summary">
+                <div class="badge">
+                  <div id="t-sum-label">Summa timmar</div>
+                  <div id="sum-hours" style="font-family:var(--mono);font-weight:700;font-size:18px">00:00</div>
+                </div>
+                <div class="badge">
+                  <div id="t-longest-label">Längsta dag</div>
+                  <div id="longest" style="font-family:var(--mono);font-weight:700">00:00</div>
+                </div>
+                <div class="badge">
+                  <div id="t-avg-label">Medel / dag</div>
+                  <div id="avg" style="font-family:var(--mono);font-weight:700">00:00</div>
+                </div>
+              </div>
+            </td>
           </tr>
         </tfoot>
       </table>
-
-      <div class="footer-actions">
-        <div class="hint" data-i18n="footerHint">Sidan sparar allt lokalt i din webbläsare. Vid behov kan du skriva ut eller exportera som PDF via webbläsaren.</div>
-        <div class="stack">
-          <button class="btn secondary" onclick="window.print()"><span>🖨️</span><span data-i18n="print">Skriv ut</span></button>
-          <button class="btn" id="btnClear"><span>🧹</span><span data-i18n="clear">Töm alla fält</span></button>
-        </div>
-      </div>
     </section>
-
-    <p class="hint" style="text-align:center;margin:18px 0">© 2025 Tony Holmström</p>
+    <p style="text-align:center;color:#6d8a6d;margin:22px 0">© 2025 Tony Holmström</p>
   </main>
 
   <script>
-    /* --------- inbyggd standardlogga (gran, SVG) --------- */
-    const DEFAULT_LOGO =
-      'data:image/svg+xml;utf8,' +
-      encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-        <rect width="96" height="96" rx="14" fill="#ffffff"/>
-        <g transform="translate(8,6)">
-          <polygon points="40,0 68,28 56,28 80,52 58,52 80,74 0,74 22,52 0,52 24,28 12,28" fill="#2f6b3a"/>
-          <rect x="36" y="74" width="16" height="14" rx="2" fill="#8b5e3c"/>
-        </g>
-      </svg>`);
-
-    /* ---------- i18n ---------- */
-    const t = {
-      sv:{title:"Tannenhofs tidtabell",header:"Tannenhofs tidtabell",
-        homescreenTip:"Tips: Lägg till på startskärmen via webbläsarmenyn så fungerar den som en app.",
-        companyTitle:"Arbetsgivare",company:"Arbetsgivare",
-        uploadLogo:"Ladda upp logga",saveAsCompanyApp:"Spara som företags-app",
-        resetCompany:"Återställ företagsläge",companyLocked:"(Företagsläge – låst)",
-        name:"Namn",workplace:"Arbetsplats",month:"Månad",year:"År",
-        targetPerDay:"Arbetstid per dag (h)",restrict:"Begränsa till idag+igår",
-        off:"Av",on:"På",date:"Datum",from:"från",to:"till",break:"Paus (min)",
-        total:"Totalt antal timmar",place:"Plats",note:"Anteckningar (valfritt)",
-        sum:"Summa",print:"Skriv ut",clear:"Töm alla fält",
-        footerHint:"Sidan sparar allt lokalt i din webbläsare. Vid behov kan du skriva ut eller exportera som PDF via webbläsaren."},
-      de:{title:"Tannenhof – Stundenliste",header:"Tannenhof – Stundenliste",
-        homescreenTip:"Tipp: Über das Browser-Menü zum Startbildschirm hinzufügen, dann funktioniert es wie eine App.",
-        companyTitle:"Firma",company:"Firma",
-        uploadLogo:"Logo hochladen",saveAsCompanyApp:"Als Firmen-App speichern",
-        resetCompany:"Firmenmodus zurücksetzen",companyLocked:"(Firmenmodus – gesperrt)",
-        name:"Name",workplace:"Arbeitsplatz",month:"Monat",year:"Jahr",
-        targetPerDay:"Sollzeit pro Tag (h)",restrict:"Auf heute+gestern beschränken",
-        off:"Aus",on:"Ein",date:"Datum",from:"von Uhr",to:"bis Uhr",break:"Pause (Min)",
-        total:"Stunden gesamt",place:"Einsatzort",note:"Notizen (optional)",
-        sum:"Summe",print:"Drucken",clear:"Alles löschen",
-        footerHint:"Die Seite speichert alles lokal im Browser. Bei Bedarf über den Browser drucken oder als PDF exportieren."},
-      en:{title:"Tannenhof Timesheet",header:"Tannenhof Timesheet",
-        homescreenTip:"Tip: Add to Home Screen from your browser menu so it works like an app.",
-        companyTitle:"Company",company:"Company",
-        uploadLogo:"Upload logo",saveAsCompanyApp:"Save as company app",
-        resetCompany:"Reset company mode",companyLocked:"(Company mode – locked)",
-        name:"Name",workplace:"Workplace",month:"Month",year:"Year",
-        targetPerDay:"Target hours per day (h)",restrict:"Restrict to today + yesterday",
-        off:"Off",on:"On",date:"Date",from:"from",to:"to",break:"Break (min)",
-        total:"Total hours",place:"Location",note:"Notes (optional)",
-        sum:"Total",print:"Print",clear:"Clear all",
-        footerHint:"This page stores everything locally in your browser. Use your browser to print or export to PDF."}
+    // ---- i18n ----
+    const I18N = {
+      sv: {
+        title:"Tannenhofs tidtabell",
+        lang:"Språk:",
+        month:"Månad", year:"År", target:"Arbetstid/dag",
+        weekday:"Dag", start:"Från", end:"Till", break:"Rast (min)", total:"Totalt", note:"Anteckning",
+        sum:"Summa timmar", longest:"Längsta dag", avg:"Medel / dag",
+        clear:"Rensa månad", print:"Skriv ut / PDF",
+        days:["Sön","Mån","Tis","Ons","Tors","Fre","Lör"],
+        months:["Jan","Feb","Mar","Apr","Maj","Jun","Jul","Aug","Sep","Okt","Nov","Dec"]
+      },
+      de: {
+        title:"Tannenhof Stundentabelle",
+        lang:"Sprache:",
+        month:"Monat", year:"Jahr", target:"Arbeitszeit/Tag",
+        weekday:"Wochentag", start:"Von", end:"Bis", break:"Pause (Min)", total:"Summe", note:"Notiz",
+        sum:"Stunden gesamt", longest:"Längster Tag", avg:"Schnitt / Tag",
+        clear:"Monat leeren", print:"Drucken / PDF",
+        days:["So","Mo","Di","Mi","Do","Fr","Sa"],
+        months:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+      }
     };
 
-    const $=(s,c=document)=>c.querySelector(s);
-    const $$=(s,c=document)=>Array.from(c.querySelectorAll(s));
-    const ls={set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
-              get:(k,d=null)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(_){return d}},
-              del:(k)=>localStorage.removeItem(k)};
+    const qs = sel => document.querySelector(sel);
+    const tbody = qs('#tbody');
+    const monthSel = qs('#month');
+    const yearInp = qs('#year');
+    const targetInp = qs('#target');
+    const langSel = qs('#lang');
 
-    let lang=ls.get("lang","sv");
-    function applyI18n(){
-      const dict=t[lang]||t.sv;
-      $$("[data-i18n]").forEach(el=>{
-        const key=el.getAttribute("data-i18n");
-        if(dict[key]!==undefined) el.textContent=dict[key];
+    const t = (k)=>I18N[langSel.value][k];
+
+    // Fill month selector
+    function fillMonths(){
+      monthSel.innerHTML = "";
+      I18N[langSel.value].months.forEach((m,i)=>{
+        const opt = document.createElement('option');
+        opt.value = i+1; opt.textContent = m;
+        monthSel.appendChild(opt);
       });
-      document.title=dict.title;
-      $$(".lang button").forEach(b=>b.classList.toggle("active",b.dataset.lang===lang));
-      $("#companyName").placeholder=(lang==="de"?"THÜRINGER TANNENHOF":"TANNENHOF");
     }
-    $$(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;ls.set("lang",lang);applyI18n();}));
 
-    /* ---------- company state ---------- */
-    const company=ls.get("company",{name:"",logo:"",locked:false});
-    function setLogo(src){const el=$("#logoPreview"); if(src){el.src=src}else{el.removeAttribute("src")}}
-    function ensureDefaultLogo(){
-      if(!company.logo){ company.logo=DEFAULT_LOGO; ls.set("company",company); }
-      setLogo(company.logo);
-    }
-    function syncCompanyUI(){
-      $("#companyName").value=company.name||"";
-      ensureDefaultLogo();
-      const locked=!!company.locked;
-      $("#companyName").disabled=locked;
-      $("#btnLogo").disabled=locked;
-      $("#btnSaveCompany").style.display=locked?"none":"inline-flex";
-      $("#btnReset").style.display=locked?"inline-flex":"none";
-      $("#lockInfo").style.display=locked?"block":"none";
-    }
-    $("#btnLogo").addEventListener("click",()=>$("#logoFile").click());
-    $("#logoFile").addEventListener("change",e=>{
-      const f=e.target.files?.[0]; if(!f) return;
-      const r=new FileReader();
-      r.onload=()=>{ company.logo=r.result; ls.set("company",company); setLogo(company.logo); };
-      r.readAsDataURL(f);
-    });
-    $("#btnSaveCompany").addEventListener("click",()=>{
-      company.name=$("#companyName").value.trim(); company.locked=true; ls.set("company",company); syncCompanyUI();
-      alert({sv:"Företagsläget är sparat och låst.",de:"Firmenmodus wurde gespeichert und gesperrt.",en:"Company mode saved and locked."}[lang]);
-    });
-    $("#btnReset").addEventListener("click",()=>{
-      if(!confirm({sv:"Återställa företagsläget?",de:"Firmenmodus zurücksetzen?",en:"Reset company mode?"}[lang])) return;
-      ls.del("company"); Object.assign(company,{name:"",logo:DEFAULT_LOGO,locked:false}); syncCompanyUI();
-    });
-    $("#companyName").addEventListener("input",e=>{company.name=e.target.value; ls.set("company",company);});
+    function daysInMonth(y,m){return new Date(y,m,0).getDate();}
 
-    /* ---------- Sheet + månad/år ---------- */
-    const inputsKeyFor=(y,m)=>`sheetInputs:${y}-${String(m).padStart(2,"0")}`;
-    function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); } // m = 1..12
-    function currentYM(){
-      const now=new Date();
-      return {y:parseInt($("#year").value||now.getFullYear(),10),
-              m:parseInt($("#month").value||now.getMonth()+1,10)};
+    function timeToMin(v){
+      if(!v) return 0;
+      const [h,mm] = v.split(':').map(n=>parseInt(n||0,10));
+      return h*60 + mm;
     }
-    function buildRows(){
-      const {y,m}=currentYM();
-      const tbody=$("#sheet tbody");
-      const existing=Array.from(tbody.querySelectorAll("tr")).length;
-      const need=daysInMonth(y,m);
-      // rebuild to exact number
-      tbody.innerHTML="";
-      for(let d=1; d<=need; d++){
-        const tr=document.createElement("tr");
-        tr.innerHTML=`
-          <td>${d}</td>
-          <td><input type="time" /></td>
-          <td><input type="time" /></td>
-          <td><input type="number" min="0" step="1" style="width:92px"/></td>
-          <td class="dayTotal">0.00</td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>`;
+    function minToHHMM(mins){
+      const m = Math.max(0, Math.round(mins));
+      const h = Math.floor(m/60);
+      const mm = (m%60).toString().padStart(2,'0');
+      return `${h.toString().padStart(2,'0')}:${mm}`;
+    }
+
+    function key(){ return `tannenhof:${yearInp.value}-${monthSel.value}`; }
+
+    function save(){
+      const rows = [...tbody.querySelectorAll('tr')].map(tr=>{
+        return {
+          start: tr.querySelector('input[data-k="start"]').value,
+          end: tr.querySelector('input[data-k="end"]').value,
+          brk: tr.querySelector('input[data-k="brk"]').value,
+          note: tr.querySelector('input[data-k="note"]').value
+        };
+      });
+      localStorage.setItem(key(), JSON.stringify({rows, target: targetInp.value}));
+    }
+    function load(){
+      const raw = localStorage.getItem(key());
+      if(!raw) return;
+      try{
+        const obj = JSON.parse(raw);
+        targetInp.value = obj.target ?? targetInp.value;
+        const trs = [...tbody.querySelectorAll('tr')];
+        obj.rows?.forEach((r,idx)=>{
+          const tr = trs[idx]; if(!tr) return;
+          tr.querySelector('input[data-k="start"]').value = r.start||"";
+          tr.querySelector('input[data-k="end"]').value   = r.end||"";
+          tr.querySelector('input[data-k="brk"]').value   = r.brk||"";
+          tr.querySelector('input[data-k="note"]').value  = r.note||"";
+        });
+      }catch{}
+    }
+
+    function compute(){
+      let sum=0, max=0;
+      const trs = [...tbody.querySelectorAll('tr')];
+      trs.forEach(tr=>{
+        const s = timeToMin(tr.querySelector('input[data-k="start"]').value);
+        const e = timeToMin(tr.querySelector('input[data-k="end"]').value);
+        const b = parseInt(tr.querySelector('input[data-k="brk"]').value||0,10);
+        let d = Math.max(0, e - s - (isNaN(b)?0:b));
+        tr.querySelector('.total').textContent = minToHHMM(d);
+        sum += d; if(d>max) max=d;
+      });
+      qs('#sum-hours').textContent = minToHHMM(sum);
+      qs('#longest').textContent = minToHHMM(max);
+      qs('#avg').textContent = trs.length? minToHHMM(sum/trs.length):"00:00";
+      save();
+    }
+
+    function gen(){
+      tbody.innerHTML = "";
+      const y = parseInt(yearInp.value,10);
+      const m = parseInt(monthSel.value,10);
+      const n = daysInMonth(y,m);
+      for(let d=1; d<=n; d++){
+        const date = new Date(y, m-1, d);
+        const tr = document.createElement('tr');
+
+        const tdNum = document.createElement('td'); tdNum.className="num"; tdNum.textContent=d;
+        const tdWeek = document.createElement('td'); tdWeek.className="week";
+        tdWeek.textContent = I18N[langSel.value].days[date.getDay()];
+
+        const mkInput = (k,type="time",extra={})=>{
+          const inp = document.createElement('input');
+          inp.type = type; inp.setAttribute('data-k',k);
+          if(type==="number"){ inp.min=0; inp.step=5; inp.style.width='90px'; }
+          if(type==="text"){ inp.className='note'; }
+          inp.addEventListener('input', compute);
+          return inp;
+        };
+
+        const tdStart = document.createElement('td'); tdStart.appendChild(mkInput("start"));
+        const tdEnd   = document.createElement('td'); tdEnd.appendChild(mkInput("end"));
+        const tdBrk   = document.createElement('td'); tdBrk.appendChild(mkInput("brk","number"));
+        const tdTot   = document.createElement('td'); tdTot.className="total"; tdTot.textContent="00:00";
+        const tdNote  = document.createElement('td'); tdNote.className="opt-col"; tdNote.appendChild(mkInput("note","text"));
+
+        tr.append(tdNum, tdWeek, tdStart, tdEnd, tdBrk, tdTot, tdNote);
         tbody.appendChild(tr);
       }
-    }
-    function recalc(){
-      let sum=0;
-      $$("#sheet tbody tr").forEach(tr=>{
-        const [from,to,brk]=$$("input",tr);
-        let mins=0;
-        if(from.value&&to.value){
-          const [fh,fm]=from.value.split(":").map(Number);
-          const [th,tm]=to.value.split(":").map(Number);
-          mins=(th*60+tm)-(fh*60+fm)-(parseInt(brk.value||"0",10));
-          if(mins<0) mins=0;
-        }
-        const hrs=mins/60; sum+=hrs; $(".dayTotal",tr).textContent=hrs.toFixed(2);
-      });
-      $("#sumHours").textContent=sum.toFixed(2);
-      saveInputs();
-    }
-    function saveInputs(){
-      const {y,m}=currentYM(); const key=inputsKeyFor(y,m);
-      const rows=$$("#sheet tbody tr").map(tr=>$$("input",tr).map(i=>i.value));
-      ls.set(key,rows);
-    }
-    function loadInputs(){
-      const {y,m}=currentYM(); const key=inputsKeyFor(y,m);
-      const rows=ls.get(key,[]);
-      rows.forEach((vals,i)=>{
-        const tr=$$("#sheet tbody tr")[i]; if(!tr) return;
-        $$("input",tr).forEach((inp,idx)=>{inp.value=vals[idx]||"";});
-      });
-      recalc();
+      load();
+      compute();
     }
 
-    $("#sheet").addEventListener("input",e=>{ if(e.target.tagName==="INPUT") recalc(); });
-    $("#btnClear").addEventListener("click",()=>{
-      if(!confirm({sv:"Töm alla fält?",de:"Alle Felder leeren?",en:"Clear all fields?"}[lang])) return;
-      $$("#sheet input").forEach(i=>i.value=""); recalc();
+    function applyTexts(){
+      qs('#t-title').textContent = t('title');
+      qs('#t-lang').textContent = t('lang');
+      qs('#t-month').textContent = t('month');
+      qs('#t-year').textContent = t('year');
+      qs('#t-target').textContent = t('target');
+      qs('#t-weekday').textContent = t('weekday');
+      qs('#t-start').textContent = t('start');
+      qs('#t-end').textContent = t('end');
+      qs('#t-break').textContent = t('break');
+      qs('#t-total').textContent = t('total');
+      qs('#t-note').textContent = t('note');
+      qs('#t-sum-label').textContent = t('sum');
+      qs('#t-longest-label').textContent = t('longest');
+      qs('#t-avg-label').textContent = t('avg');
+      qs('#btn-clear').textContent = t('clear');
+      qs('#btn-print').textContent = t('print');
+    }
+
+    // Events
+    monthSel.addEventListener('change', ()=>{gen()});
+    yearInp.addEventListener('change', ()=>{gen()});
+    targetInp.addEventListener('input', save);
+    qs('#btn-clear').addEventListener('click', ()=>{
+      if(confirm(langSel.value==='de' ? 'Monat leeren?' : 'Rensa denna månad?')){
+        localStorage.removeItem(key());
+        gen();
+      }
+    });
+    qs('#btn-print').addEventListener('click', ()=>window.print());
+    langSel.addEventListener('change', ()=>{
+      fillMonths(); applyTexts(); gen();
+      monthSel.value = new Date().getMonth()+1; // håll samma månadstalsindex
     });
 
-    // spara toppfält
-    ["empName","workplace","targetPerDay","restrict"].forEach(id=>{
-      const key="top:"+id; const el=$("#"+id); el.value=ls.get(key,""); el.addEventListener("input",()=>ls.set(key,el.value));
-    });
-
-    // Månad/år – default till nu, bygg om tabellen när det ändras
-    (function initMonthYear(){
-      const now=new Date();
-      $("#month").value=ls.get("top:month", String(now.getMonth()+1));
-      $("#year").value=ls.get("top:year", String(now.getFullYear()));
-      ["month","year"].forEach(id=>{
-        const el=$("#"+id);
-        el.addEventListener("input",()=>{
-          ls.set("top:"+id,el.value);
-          buildRows(); loadInputs();
-        });
-      });
-    })();
-
-    /* ---------- init ---------- */
+    // Init
     (function init(){
-      applyI18n();
-      syncCompanyUI();
-      // tabell för aktuell månad
-      buildRows();
-      loadInputs();
+      // fyll månader
+      fillMonths();
+      // default: nuvarande månad/år
+      const now = new Date();
+      monthSel.value = now.getMonth()+1;
+      yearInp.value = now.getFullYear();
+      applyTexts();
+      gen();
     })();
   </script>
 </body>
