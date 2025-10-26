@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de" class="notranslate">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="google" content="notranslate" />
+  <title>Thüringer Tannenhof – Stundenliste</title>
+  <meta name="theme-color" content="#0b5d3b" />
+
+  <!-- App-ikon (favicon + iOS webclip), inbakat -->
+  <link rel="icon" type="image/svg+xml"
+    href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="white"/><g fill="%230b5d3b"><path d="M128 28l33 44h-22l25 33h-19l22 29h-18l16 22H91l16-22H89l22-29H92l25-33H95l33-44z"/></g></svg>' />
+  <link rel="apple-touch-icon"
+    href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="white"/><g fill="%230b5d3b"><path d="M256 56l72 96h-48l55 72h-41l44 58h-40l38 50H176l38-50h-40l44-58h-41l55-72h-48l72-96z"/></g></svg>' />
+
+  <style>
+    :root{
+      --brand:#0b5d3b;        /* Tannenhof-grön */
+      --bg:#ecf4ef;           /* ljus grönton (lite mörkare än tidigare för laptop) */
+      --card:#fff;
+      --ink:#0c1320;
+      --muted:#6b7280;
+      --ring:#e5e7eb;
+      --ok:#059669;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    .card{
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 2px 14px rgba(0,0,0,.06);
+      overflow:hidden;
+      border:1px solid #e8ece8;
+    }
+    .header{
+      padding:20px 20px 14px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+    }
+    .title{margin:0;font-size:28px;line-height:1.1}
+    .tip{margin:6px 0 0;color:var(--muted);font-size:14px}
+    .lang{
+      display:flex;gap:8px;align-items:center;justify-content:flex-end
+    }
+    .pill{
+      border:1px solid var(--ring);
+      padding:8px 12px;border-radius:10px;cursor:pointer;
+      background:#fff;min-width:44px;text-align:center;
+    }
+    .pill.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .brandRow{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start;padding:0 20px 16px}
+    .brandLogo{
+      width:120px;height:80px;object-fit:contain;border-radius:10px;border:1px dashed #cfd8cf;background:#fff;
+    }
+    .controls{display:flex;flex-wrap:wrap;gap:10px}
+    button,.btn{
+      appearance:none;border:1px solid var(--ring);background:#fff;color:var(--ink);
+      padding:10px 14px;border-radius:10px;cursor:pointer
+    }
+    .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 20px 16px}
+    @media (max-width:700px){.row{grid-template-columns:1fr}.brandRow{grid-template-columns:1fr}}
+    label{display:block;font-size:13px;color:var(--muted);margin:8px 0 6px}
+    input[type="text"],input[type="number"]{
+      width:100%;padding:12px 12px;border:1px solid var(--ring);border-radius:10px;background:#fff;font-size:16px
+    }
+    input:disabled{background:#f6f7f6;color:#94a3b8}
+    .switch{display:flex;align-items:center;gap:10px}
+    .switch input{width:44px;height:24px}
+    .tableWrap{overflow:auto;border-top:1px solid #eef2ee}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    th,td{padding:12px;border-bottom:1px solid #eef2ee;background:#fff}
+    thead th{position:sticky;top:0;background:#f8fbf8;font-weight:700;z-index:1}
+    td input{width:100%;padding:10px 10px;border:1px solid #e7ebe7;border-radius:10px;background:#fff;font-size:16px}
+    td .readonly{background:#f6f8f6}
+    .sumBar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid #eef2ee;background:#fafdfb}
+    .sumStat{display:flex;gap:16px;color:#374151;font-size:14px}
+    .sumStat span{display:inline-flex;gap:6px;align-items:center}
+    .footer{
+      color:#335a3f;border-top:1px solid #e1ebe3;background:#f3f8f5;
+      padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px
+    }
+    .footer small{opacity:.9}
+    .footLogo{height:18px;vertical-align:-3px;margin-right:6px}
+    @media (min-width:900px){
+      .footer{position:sticky;bottom:0}
+    }
+    .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .notice{font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+
+      <div class="header">
+        <div>
+          <h1 class="title" id="pageTitle">Stundenliste</h1>
+          <p class="tip" id="tipText">Tipp: Über das Browser-Menü „Zum Startbildschirm hinzufügen“, dann funktioniert es wie eine App.</p>
+        </div>
+        <div class="lang" role="group" aria-label="Sprache">
+          <button class="pill active" data-lang="de">DE</button>
+          <button class="pill" data-lang="sv">SV</button>
+          <button class="pill" data-lang="en">EN</button>
+        </div>
+      </div>
+
+      <div class="brandRow">
+        <img id="brandLogo" class="brandLogo" alt="logo"
+          src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="white"/><g fill="%230b5d3b"><path d="M128 28l33 44h-22l25 33h-19l22 29h-18l16 22H91l16-22H89l22-29H92l25-33H95l33-44z"/></g></svg>' />
+        <div class="controls">
+          <div style="min-width:260px">
+            <label id="companyLbl">Firma</label>
+            <input id="company" type="text" value="THÜRINGER TANNENHOF" />
+          </div>
+          <div class="bar">
+            <input id="logoPicker" type="file" accept="image/*" hidden />
+            <button id="btnLogo" class="btn" type="button">Logo hochladen</button>
+            <button id="btnSaveBrand" class="btn" type="button">Als Firmen-App speichern</button>
+            <label class="switch"><input id="lockMode" type="checkbox" /><span id="lockLbl">Firmenmodus (gesperrt)</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label id="nameLbl">Name</label>
+          <input id="empName" type="text" placeholder="" />
+        </div>
+        <div>
+          <label id="placeLbl">Arbeitsplatz</label>
+          <input id="workplace" type="text" placeholder="" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label id="monthLbl">Monat</label>
+          <input id="month" type="number" inputmode="numeric" min="1" max="12" placeholder="" />
+        </div>
+        <div>
+          <label id="yearLbl">Jahr</label>
+          <input id="year" type="number" inputmode="numeric" min="1900" max="2100" placeholder="" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label id="targetLbl">Sollzeit pro Tag (h)</label>
+          <input id="targetHours" type="number" step="0.5" min="0" max="24" value="8" />
+        </div>
+        <div class="switch" style="margin-top:30px">
+          <input id="restrictToggle" type="checkbox" />
+          <span id="restrictLbl">Auf heute+gestern beschränken</span>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th id="thDate">Datum</th>
+              <th id="thFrom">von<br/>Uhr</th>
+              <th id="thTo">bis<br/>Uhr</th>
+              <th id="thBreak">Pause<br/>(Min)</th>
+              <th id="thTotal">Stunden<br/>gesamt</th>
+              <th id="thLoc">Einsatzort</th>
+              <th id="thNote">Notizen<br/>(optional)</th>
+            </tr>
+          </thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+
+      <div class="sumBar">
+        <div class="sumStat">
+          <span id="sumTotal">0:00 total</span>
+          <span id="sumDays">0 Tage</span>
+          <span id="sumAvg">Ø 0:00 / Tag</span>
+          <span id="sumLongest">⏱ 0:00 längster Tag</span>
+          <span id="sumOver">⏳ 0:00 Überstunden</span>
+        </div>
+        <div class="bar">
+          <select id="shareLang" class="btn">
+            <option value="de">DE</option>
+            <option value="sv">SV</option>
+            <option value="en">EN</option>
+          </select>
+          <button id="btnPdf" class="btn">PDF</button>
+          <button id="btnCsv" class="btn">CSV</button>
+          <button id="btnClear" class="btn" title="Löschen">Rensa</button>
+          <button id="btnNewMonth" class="btn-primary">Ny månad</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <small>
+          <img class="footLogo" alt="" src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><g fill="%230b5d3b"><path d="M128 28l33 44h-22l25 33h-19l22 29h-18l16 22H91l16-22H89l22-29H92l25-33H95l33-44z"/></g></svg>' />
+          Thüringer Tannenhof © 2025
+        </small>
+        <small class="notice" id="footNote">Version 4.7 – GitHub Pages</small>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+/* ======= i18n ======= */
+const T = {
+  de:{
+    title:"Stundenliste",
+    tip:"Tipp: Über das Browser-Menü „Zum Startbildschirm hinzufügen“, dann funktioniert es wie eine App.",
+    companyLbl:"Firma",
+    btnLogo:"Logo hochladen",
+    btnSave:"Als Firmen-App speichern",
+    lock:"Firmenmodus (gesperrt)",
+    name:"Name", place:"Arbeitsplatz",
+    month:"Monat", year:"Jahr",
+    target:"Sollzeit pro Tag (h)",
+    restrict:"Auf heute+gestern beschränken",
+    thDate:"Datum", thFrom:"von\nUhr", thTo:"bis\nUhr", thBreak:"Pause\n(Min)", thTotal:"Stunden\ngesamt", thLoc:"Einsatzort", thNote:"Notizen\n(optional)",
+    sumTotal:(t)=>`${t} total`, days:(d)=>`${d} Tage`, avg:(a)=>`Ø ${a} / Tag`, longest:(t)=>`⏱ ${t} längster Tag`, over:(t)=>`⏳ ${t} Überstunden`,
+    pdf:"PDF", csv:"CSV", clear:"Leeren", newMonth:"Neuer Monat",
+    toastMonth:"Monat/Jahr geändert – Tabelle aktualisiert."
+  },
+  sv:{
+    title:"Tidsrapport",
+    tip:"Tips: Lägg till på startskärmen via webbläsarmenyn så fungerar den som en app.",
+    companyLbl:"Arbetsgivare",
+    btnLogo:"Byt logga",
+    btnSave:"Spara som företags-app",
+    lock:"Företagsläge (låst)",
+    name:"Namn", place:"Arbetsplats",
+    month:"Månad", year:"År",
+    target:"Arbetstid per dag (h)",
+    restrict:"Begränsa till idag+igår",
+    thDate:"Datum", thFrom:"från\n", thTo:"till\n", thBreak:"Paus\n(min)", thTotal:"Totalt\nantal timmar", thLoc:"Plats", thNote:"Anteckningar\n(valfritt)",
+    sumTotal:(t)=>`${t} totalt`, days:(d)=>`${d} dagar`, avg:(a)=>`Ø ${a} / dag`, longest:(t)=>`⏱ ${t} längsta dag`, over:(t)=>`⏳ ${t} övertid`,
+    pdf:"PDF", csv:"CSV", clear:"Rensa", newMonth:"Ny månad",
+    toastMonth:"Månad/år ändrat – tabellen uppdaterades."
+  },
+  en:{
+    title:"Timesheet",
+    tip:"Tip: Add to Home Screen from your browser menu to use it like an app.",
+    companyLbl:"Company",
+    btnLogo:"Change logo",
+    btnSave:"Save as company app",
+    lock:"Company mode (locked)",
+    name:"Name", place:"Workplace",
+    month:"Month", year:"Year",
+    target:"Target hours per day (h)",
+    restrict:"Restrict to today + yesterday",
+    thDate:"Date", thFrom:"from", thTo:"to", thBreak:"Break\n(min)", thTotal:"Total\nhours", thLoc:"Location", thNote:"Notes\n(optional)",
+    sumTotal:(t)=>`${t} total`, days:(d)=>`${d} days`, avg:(a)=>`Ø ${a} / day`, longest:(t)=>`⏱ ${t} longest day`, over:(t)=>`⏳ ${t} overtime`,
+    pdf:"PDF", csv:"CSV", clear:"Clear", newMonth:"New month",
+    toastMonth:"Month/year changed – table updated."
+  }
+};
+let lang = localStorage.getItem("tt_lang") || "de";
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+
+/* ======= helpers ======= */
+const pad=n=>String(n).padStart(2,"0");
+const hm = (mins)=>`${pad(Math.floor(mins/60))}:${pad(mins%60)}`;
+function parseHM(v){ if(!v || !/^\d{1,2}:\d{2}$/.test(v)) return null;
+  const [h,m]=v.split(":").map(n=>+n); if(h>23||m>59) return null; return h*60+m;
+}
+function workMinutes(f,t,b){
+  const from=parseHM(f), to=parseHM(t); const br=+b||0;
+  if(from==null || to==null) return 0;
+  let d = to-from; if(d<0) d+=24*60; d = Math.max(0,d-br);
+  return d;
+}
+
+/* ======= build table ======= */
+function daysInMonth(m,y){ return new Date(y, m, 0).getDate(); }
+function buildRows(){
+  const m = +($("#month").value||0), y=+($("#year").value||0);
+  const body = $("#body"); body.innerHTML="";
+  if(m<1||m>12||y<1900) return;
+  for(let d=1; d<=daysInMonth(m,y); d++){
+    const tr=document.createElement("tr");
+    tr.innerHTML = `
+      <td class="readonly">${d}</td>
+      <td><input data-k="from"></td>
+      <td><input data-k="to"></td>
+      <td><input inputmode="numeric" pattern="\\d*" data-k="break" placeholder=""></td>
+      <td><input class="readonly" disabled data-k="total"></td>
+      <td><input data-k="loc"></td>
+      <td><input data-k="note"></td>`;
+    body.appendChild(tr);
+  }
+  restoreMonthData();
+  recalc();
+}
+
+/* ======= calc/sum ======= */
+function recalc(){
+  let sum=0, days=0, longest=0;
+  $("#body").querySelectorAll("tr").forEach(tr=>{
+    const f=tr.querySelector('input[data-k="from"]').value.trim();
+    const t=tr.querySelector('input[data-k="to"]').value.trim();
+    const b=tr.querySelector('input[data-k="break"]').value.trim();
+    const mins = workMinutes(f,t,b);
+    tr.querySelector('input[data-k="total"]').value = mins? hm(mins):"";
+    if(mins){ sum+=mins; days++; if(mins>longest) longest=mins; }
+  });
+  const targetH = (+$("#targetHours").value||0)*60;
+  const over = Math.max(0, sum - days*targetH);
+  $("#sumTotal").textContent = T[lang].sumTotal(hm(sum));
+  $("#sumDays").textContent  = T[lang].days(days);
+  $("#sumAvg").textContent   = T[lang].avg(days?hm(Math.round(sum/days)):hm(0));
+  $("#sumLongest").textContent = T[lang].longest(hm(longest));
+  $("#sumOver").textContent = T[lang].over(hm(over));
+  saveMonthData();
+}
+
+/* ======= persistence ======= */
+function keyBase(){
+  const c = ($("#company").value||"").trim();
+  return `tt_${c.replace(/\s+/g,'_').toUpperCase()}`;
+}
+function monKey(){ const m=$("#month").value, y=$("#year").value; return `${keyBase()}_${y}-${pad(m)}`; }
+function saveMonthData(){
+  const rows=[]; $("#body tr").forEach((tr,i)=>{
+    const g = (k)=>tr.querySelector(`input[data-k="${k}"]`).value||"";
+    rows.push({from:g("from"),to:g("to"),break:g("break"),loc:g("loc"),note:g("note")});
+  });
+  localStorage.setItem(monKey(), JSON.stringify({
+    m:+$("#month").value, y:+$("#year").value, rows
+  }));
+}
+function restoreMonthData(){
+  const raw = localStorage.getItem(monKey()); if(!raw) return;
+  try{
+    const {rows}=JSON.parse(raw);
+    if(rows && rows.length){
+      $("#body tr").forEach((tr,i)=>{
+        const r=rows[i]||{};
+        ["from","to","break","loc","note"].forEach(k=>{
+          tr.querySelector(`input[data-k="${k}"]`).value = r[k]||"";
+        });
+      });
+    }
+  }catch(e){}
+}
+
+/* ======= language ======= */
+function applyLang(){
+  const L = T[lang];
+  $("#pageTitle").textContent=L.title;
+  $("#tipText").textContent=L.tip;
+  $("#companyLbl").textContent=L.companyLbl;
+  $("#btnLogo").textContent=L.btnLogo;
+  $("#btnSaveBrand").textContent=L.btnSave;
+  $("#lockLbl").textContent=L.lock;
+  $("#nameLbl").textContent=L.name;
+  $("#placeLbl").textContent=L.place;
+  $("#monthLbl").textContent=L.month;
+  $("#yearLbl").textContent=L.year;
+  $("#targetLbl").textContent=L.target;
+  $("#restrictLbl").textContent=L.restrict;
+  $("#thDate").textContent=L.thDate;
+  $("#thFrom").innerHTML=L.thFrom.replace("\n","<br/>");
+  $("#thTo").innerHTML=L.thTo.replace("\n","<br/>");
+  $("#thBreak").innerHTML=L.thBreak.replace("\n","<br/>");
+  $("#thTotal").innerHTML=L.thTotal.replace("\n","<br/>");
+  $("#thLoc").textContent=L.thLoc;
+  $("#thNote").innerHTML=L.thNote.replace("\n","<br/>");
+  $("#btnPdf").textContent=L.pdf;
+  $("#btnCsv").textContent=L.csv;
+  $("#btnClear").textContent=L.clear;
+  $("#btnNewMonth").textContent=L.newMonth;
+  $("#shareLang").value=lang;
+  document.title = `Thüringer Tannenhof – ${L.title}`;
+  recalc();
+}
+$$(".pill").forEach(p=>p.onclick=()=>{
+  $$(".pill").forEach(x=>x.classList.remove("active"));
+  p.classList.add("active");
+  lang = p.dataset.lang; localStorage.setItem("tt_lang", lang);
+  applyLang();
+});
+
+/* ======= month/year handling (no spam popups) ======= */
+let changeTimer=null;
+function scheduleRebuild(){
+  clearTimeout(changeTimer);
+  changeTimer=setTimeout(()=>{
+    buildRows();
+    flash(T[lang].toastMonth);
+  }, 250);
+}
+$("#month").addEventListener("change",scheduleRebuild);
+$("#year").addEventListener("change",scheduleRebuild);
+$("#btnNewMonth").onclick=()=>{ buildRows(); flash(T[lang].toastMonth); };
+
+/* ======= restrict today+yesterday ======= */
+function applyRestrict(){
+  const on = $("#restrictToggle").checked;
+  const now = new Date(); const yy=+$("#year").value, mm=+$("#month").value-1;
+  $("#body tr").forEach((tr,i)=>{
+    const day=i+1; const d=new Date(yy,mm,day);
+    const diff=(now - d)/(1000*60*60*24);
+    const dis = on && !(diff>=0 && diff<2);
+    tr.querySelectorAll("input").forEach(inp=>{
+      if(inp.dataset.k==="total") return;
+      inp.disabled=dis; if(dis) inp.value=inp.value; // keep
+    });
+  });
+}
+$("#restrictToggle").onchange=applyRestrict;
+
+/* ======= logo upload + brand save/lock ======= */
+$("#btnLogo").onclick=()=>$("#logoPicker").click();
+$("#logoPicker").onchange=(e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ $("#brandLogo").src=r.result; localStorage.setItem(`${keyBase()}_logo`, r.result); };
+  r.readAsDataURL(f);
+};
+$("#btnSaveBrand").onclick=()=>{
+  localStorage.setItem(`${keyBase()}_company`, $("#company").value.trim());
+  localStorage.setItem(`${keyBase()}_logo`, $("#brandLogo").src);
+  flash("✔ Sparat – använd \"Företagsläge\" för att låsa.");
+};
+$("#lockMode").onchange=()=>{
+  const lock=$("#lockMode").checked;
+  $("#company").disabled=lock;
+  $("#btnLogo").disabled=lock;
+  $("#btnSaveBrand").disabled=lock;
+};
+
+/* ======= CSV & PDF (print) ======= */
+$("#btnCsv").onclick=()=>{
+  const rows=[["Date","From","To","Break(min)","Total","Location","Notes"]];
+  $("#body tr").forEach((tr,i)=>{
+    const c=(k)=>tr.querySelector(`input[data-k="${k}"]`).value||"";
+    rows.push([i+1,c("from"),c("to"),c("break"),c("total"),c("loc"),c("note")]);
+  });
+  const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const a=document.createElement("a");
+  const m=pad(+$("#month").value||0), y=$("#year").value||"";
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download=`Thüringer_Tannenhof_Stundenliste_${m}_${y}.csv`;
+  a.click();
+};
+$("#btnPdf").onclick=()=>{
+  const m=pad(+$("#month").value||0), y=$("#year").value||"";
+  document.title = `Thüringer_Tannenhof_Stundenliste_${m}_${y}.pdf`;
+  window.print();
+  setTimeout(()=>document.title=`Thüringer Tannenhof – ${T[lang].title}`,500);
+};
+
+/* ======= inline editing events ======= */
+$("#body").addEventListener("input", (e)=>{
+  const inp = e.target;
+  if(!(inp instanceof HTMLInputElement)) return;
+  if(["from","to"].includes(inp.dataset.k)){
+    // accept HH:MM only, don't auto-fill cursor traps
+    inp.value = inp.value.replace(/[^\d:]/g,"").slice(0,5);
+  }
+  if(inp.dataset.k==="break"){
+    inp.value = inp.value.replace(/[^\d]/g,"").slice(0,3);
+  }
+  recalc();
+});
+
+/* ======= flash helper ======= */
+function flash(msg){
+  const d=document.createElement("div");
+  d.textContent=msg;
+  d.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#053d27;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:9999;font-size:14px";
+  document.body.appendChild(d); setTimeout(()=>d.remove(),1800);
+}
+
+/* ======= init ======= */
+(function init(){
+  // lang
+  $$(".pill").forEach(p=>p.classList.toggle("active", p.dataset.lang===lang));
+  applyLang();
+
+  // defaults: current month/year
+  const now=new Date();
+  $("#month").value = now.getMonth()+1;
+  $("#year").value = now.getFullYear();
+  buildRows();
+
+  // restore brand
+  const savedName = localStorage.getItem(`${keyBase()}_company`); if(savedName) $("#company").value=savedName;
+  const savedLogo = localStorage.getItem(`${keyBase()}_logo`); if(savedLogo) $("#brandLogo").src=savedLogo;
+
+  applyRestrict();
+})();
+  </script>
+</body>
+</html>
