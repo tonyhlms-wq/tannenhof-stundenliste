@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Tannenhofs tidtabell</title>
 <meta name="theme-color" content="#2f6b3a"/>
 <link rel="manifest" href="manifest.webmanifest">
@@ -27,12 +27,32 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(0deg,var(--br
 .btn.dark{background:#143d23;color:#fff}
 .wrap{max-width:1000px;margin:auto;padding:12px}
 .banner{background:#fff;border-radius:var(--radius);padding:12px;margin:10px 0;box-shadow:var(--shadow);font-weight:800;display:flex;justify-content:space-between}
-.table-wrap{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto}
-.grid{min-width:900px}
-.headRow,.row{display:grid;grid-template-columns:72px 160px 160px 140px 120px 140px 110px;gap:10px;align-items:center;padding:10px 12px}
+
+/* ===== Tabell: responsiv utan sidscroll ===== */
+.table-wrap{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.grid{width:100%}
+.headRow,.row{
+  display:grid;
+  grid-template-columns:
+    64px
+    minmax(120px,1fr)   /* Från */
+    minmax(120px,1fr)   /* Till */
+    minmax(110px,1fr)   /* Paus */
+    minmax(88px,.7fr)   /* Totalt */
+    minmax(160px,1.2fr) /* Projekt */
+    minmax(110px,.8fr); /* Åtgärd */
+  gap:10px; align-items:center; padding:10px 12px;
+}
+@media (max-width:420px){
+  /* lite tightare på smalaste mobilerna */
+  .headRow,.row{ gap:8px;
+    grid-template-columns:
+      56px minmax(100px,1fr) minmax(100px,1fr) minmax(92px,1fr) minmax(76px,.7fr) minmax(140px,1.1fr) 96px;
+  }
+}
 .headRow{background:#edf6ef;border-bottom:1px solid var(--soft);z-index:5;font-weight:800}
-/* Sticky header bara på bred skärm */
-@media (min-width: 700px){ .headRow{position:sticky;top:64px} }
+@media (min-width:700px){ .headRow{position:sticky;top:64px} }
+
 /* Rader */
 .row{background:var(--row);border-bottom:1px solid var(--soft);position:relative;overflow:clip}
 .row:nth-child(even){background:var(--rowAlt)}
@@ -50,9 +70,9 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(0deg,var(--br
 .iconBtn.secondary{background:#2b7a48}
 .iconBtn.gray{background:#6a7d72}
 .fab{position:fixed;left:16px;bottom:16px;z-index:30;width:60px;height:60px;border-radius:18px;border:0;background:var(--brand2);color:#fff;font-size:24px;display:grid;place-items:center;box-shadow:0 10px 28px rgba(0,0,0,.18)}
-.table-wrap{padding-right:8px}
 .wm{position:fixed;right:16px;bottom:16px;opacity:.16;pointer-events:none;z-index:1}
 .wm img{width:180px;height:auto}
+
 /* Dialoger */
 .modal{position:fixed;inset:0;display:none;z-index:50}
 .modal.show{display:block}
@@ -68,6 +88,7 @@ textarea{height:220px}
 .switch{display:flex;align-items:center;gap:10px}
 .bar{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
 .small{color:var(--muted);font-size:12px}
+
 /* Print */
 @media print{
   .fab,.wm,header,.iconBtn,.btn{display:none!important}
@@ -76,8 +97,9 @@ textarea{height:220px}
   .row,.headRow{break-inside:avoid}
   .photoThumb{page-break-inside:avoid}
 }
+
 /* thumbnails */
-.thumbRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.thumbRow{display:flex;flex-wrap:wrap;gap:8px;margin:6px 12px 0}
 .photoThumb{width:110px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #dfe8e2}
 .badgeNum{position:absolute;top:-6px;right:-6px;background:#ef5350;color:#fff;font-size:12px;padding:2px 6px;border-radius:10px;box-shadow:var(--shadow)}
 .iconWrap{position:relative;display:inline-grid}
