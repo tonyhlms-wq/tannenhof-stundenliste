@@ -6,689 +6,226 @@
 <title>Thüringer Tannenhof – Tidsrapport</title>
 <meta name="theme-color" content="#1e6b3a">
 <style>
-  :root{
-    --bg:#f6fbf7; --ink:#103b22; --ink2:#2a5a42;
-    --brand:#1e6b3a; --brandD:#0f4026; --ring:#cfe3d6;
-    --chip:#f0f6f2; --row:#ffffff; --head:#e8f2ea;
-    --radius:14px; --headerH:64px;
-  }
-  /* Kamouflage-läge */
-  body[data-theme="camo"]{
-    --bg:#eef3ef; --ink:#0f2318; --ink2:#1b3a28;
-    --brand:#385038; --brandD:#263823; --head:#dde7df; --chip:#eaf1ea;
-    background:
-      radial-gradient( circle at 20% 25%, #6f8b6a 0 19%, transparent 20%),
-      radial-gradient( circle at 75% 20%, #3f5a41 0 16%, transparent 17%),
-      radial-gradient( circle at 70% 75%, #556b52 0 22%, transparent 23%),
-      radial-gradient( circle at 25% 80%, #879a7e 0 18%, transparent 19%),
-      #eef3ef;
-    background-attachment: fixed;
-  }
+/* === BASFÄRGER === */
+:root{
+  --bg:#f6fbf7; --ink:#103b22; --ink2:#2a5a42;
+  --brand:#1e6b3a; --brandD:#0f4026; --ring:#cfe3d6;
+  --chip:#f0f6f2; --row:#ffffff; --head:#e8f2ea;
+  --radius:14px; --headerH:64px;
+}
 
-  /* Rund app-font (tänds med .rounded-font på body) */
-  @font-face{
-    font-family:"InterVar";
-    src: local("Inter"), local("Inter Variable");
-    font-weight:100 900; font-style:normal; font-display:swap;
-  }
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,InterVar,"Helvetica Neue",Arial}
-  body.rounded-font{font-family:"InterVar", system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  *{box-sizing:border-box}
+/* === KAMOUFLAGE-TEMA === */
+body[data-theme="camo"]{
+  --bg:#eef3ef; --ink:#0f2318; --ink2:#1b3a28;
+  --brand:#385038; --brandD:#263823; --head:#dde7df; --chip:#eaf1ea;
+  background:
+    radial-gradient(circle at 20% 25%, #6f8b6a 0 19%, transparent 20%),
+    radial-gradient(circle at 75% 20%, #3f5a41 0 16%, transparent 17%),
+    radial-gradient(circle at 70% 75%, #556b52 0 22%, transparent 23%),
+    radial-gradient(circle at 25% 80%, #879a7e 0 18%, transparent 19%),
+    #eef3ef;
+  background-attachment:fixed;
+}
 
-  header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--brand),var(--brandD));color:#fff}
-  .bar{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;max-width:1000px;margin:0 auto}
-  .brand{display:flex;align-items:center;gap:.6rem;min-width:0}
-  .brand img{width:32px;height:32px;border-radius:8px;object-fit:cover;background:#fff}
-  .brand h1{margin:0;font-size:1.05rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .spacer{flex:1}
-  .btn{border:0;border-radius:16px;padding:.55rem .85rem;background:#fff;color:#132;font-weight:800;display:flex;gap:.5rem;align-items:center}
-  .btn.dark{background:#0e1913;color:#fff}
+/* === GRUND === */
+html,body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helvetica Neue",Arial;}
+*{box-sizing:border-box}
 
-  main{max-width:1000px;margin:10px auto;padding:0 10px}
-  .summary{background:#eef6ef;border-radius:18px;padding:12px 14px;margin:10px 0 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-  .summary b{font-size:1.02rem}
+/* === HEADER === */
+header{position:sticky;top:0;z-index:10;
+background:linear-gradient(180deg,var(--brand),var(--brandD));color:#fff}
+.bar{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;
+max-width:1000px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:.6rem;min-width:0}
+.brand img{width:32px;height:32px;border-radius:8px;object-fit:cover;background:#fff}
+.brand h1{margin:0;font-size:1.05rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.btn{border:0;border-radius:16px;padding:.55rem .85rem;background:#fff;color:#132;
+font-weight:800;display:flex;gap:.5rem;align-items:center}
+.btn.dark{background:#0e1913;color:#fff}
 
-  /* Tabell + scroll */
-  .tableWrap{overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action: pan-x pan-y;}
-  .table{position:relative;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.07);min-width:860px}
-  .thead,.row{display:grid;grid-template-columns:64px 1fr 1fr 120px 120px 1.2fr 126px;gap:10px;align-items:center}
-  .thead{background:var(--head);color:var(--ink2);font-weight:800;padding:10px 12px;position:sticky;top:var(--headerH);z-index:2}
-  .row{padding:10px 12px;border-top:1px solid #eef2ee;background:#fff}
-  .num{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--chip);font-weight:800;border:1px solid var(--ring)}
-  .pill{height:48px;display:flex;align-items:center;justify-content:center;gap:.5rem;background:var(--chip);border:1px solid var(--ring);border-radius:14px;cursor:pointer;font-weight:800}
-  .value{font-variant-numeric:tabular-nums}
-  .tot{font-weight:900;text-align:center}
-  .chip{display:flex;align-items:center;gap:.45rem;background:var(--chip);border-radius:12px;border:1px solid var(--ring);padding:.5rem .6rem}
-  .project{width:100%;border:0;background:transparent;font-weight:700;outline:none}
-  .actions{display:flex;gap:.45rem;justify-content:flex-end}
-  .act{width:48px;height:48px;border-radius:12px;background:var(--brand);color:#fff;display:grid;place-items:center;border:0;font-size:1.1rem;cursor:pointer}
+/* === HUVUDTABELL === */
+main{max-width:1000px;margin:10px auto;padding:0 10px}
+.summary{background:#eef6ef;border-radius:18px;padding:12px 14px;margin:10px 0 16px;
+display:flex;justify-content:space-between;align-items:center;
+box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.tableWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.table{position:relative;background:#fff;border-radius:18px;overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.07);min-width:860px}
 
-  /* Idag-markering */
-  tr.row.today, .row.today{outline:3px solid var(--brand);outline-offset:0;background:linear-gradient(90deg,#edf6f0,transparent 40%)}
-  .row .leftBar{width:6px;background:var(--brand);height:100%;border-radius:6px 0 0 6px}
+/* === KOLUMLABELS === */
+.thead,.row{display:grid;grid-template-columns:64px 1fr 1fr 120px 120px 1.2fr 126px;gap:10px;align-items:center}
+.thead{background:var(--head);color:var(--ink2);font-weight:800;padding:10px 12px;
+position:sticky;top:calc(var(--headerH) + 6px);z-index:3}
+/* Patch: stäng av sticky på mobil */
+@media (max-width:600px){.thead{position:static;top:auto;z-index:1}}
 
-  /* Watermark: bakom, inga konstiga gröna fält */
-  .wm{position:absolute;right:8px;bottom:8px;width:38vw;max-width:220px;aspect-ratio:1;pointer-events:none;z-index:0;opacity:.7}
-  .wm img{width:100%;height:100%;object-fit:contain;opacity:.9}
+.row{padding:10px 12px;border-top:1px solid #eef2ee;background:#fff}
+.num{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--chip);font-weight:800;border:1px solid var(--ring)}
+.pill{height:48px;display:flex;align-items:center;justify-content:center;gap:.5rem;background:var(--chip);border:1px solid var(--ring);border-radius:14px;cursor:pointer;font-weight:800}
+.value{font-variant-numeric:tabular-nums}
+.tot{font-weight:900;text-align:center}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--chip);border-radius:12px;border:1px solid var(--ring);padding:.5rem .6rem}
+.project{width:100%;border:0;background:transparent;font-weight:700;outline:none}
+.actions{display:flex;gap:.45rem;justify-content:flex-end}
+.act{width:48px;height:48px;border-radius:12px;background:var(--brand);color:#fff;display:grid;place-items:center;border:0;font-size:1.1rem;cursor:pointer}
 
-  .bottomSpacer{height:120px}
+/* === DAGMARKERING === */
+.row.today{outline:3px solid var(--brand);background:linear-gradient(90deg,#edf6f0,transparent 40%)}
 
-  /* Settings FAB */
-  .fab{position:fixed;left:max(16px, env(safe-area-inset-left));bottom:max(16px, env(safe-area-inset-bottom));width:70px;height:70px;border-radius:22px;background:var(--brand);color:#cfe8d8;border:0;display:grid;place-items:center;box-shadow:0 12px 28px rgba(0,0,0,.28);z-index:6;font-size:1.4rem}
+/* === WATERMARK === */
+.wm{pointer-events:none;position:absolute;right:8px;bottom:8px;width:min(38vw,220px);max-width:220px;aspect-ratio:1/1;z-index:0}
+.wm img{width:100%;height:100%;object-fit:contain;opacity:.9}
 
-  /* Modal bas */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:10px}
-  .sheet{width:min(600px,92vw);background:#fff;border-radius:20px;padding:18px;border:1px solid #dfeae3;box-shadow:0 20px 60px rgba(0,0,0,.28)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .field label{font-size:.9rem;color:#335846;display:block;margin-bottom:6px;font-weight:800}
-  .field input[type="text"], .field select{width:100%;border:1px solid #d7e6dc;border-radius:12px;padding:.6rem .7rem;font-size:1rem;background:#f7fbf7}
-  .range{display:flex;align-items:center;gap:.7rem}
-  .note{font-size:.82rem;color:#557a64}
-  .close{float:right;border:0;background:#0f1a14;color:#fff;border-radius:12px;padding:.4rem .7rem;cursor:pointer}
+.bottomSpacer{height:120px}
 
-  /* Kamera-sheet */
-  .sheet-cam-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:40}
-  .sheet-cam{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:18px 18px 0 0;padding:14px 14px 18px;box-shadow:0 -18px 40px rgba(0,0,0,.25)}
-  .sheet-cam h3{margin:4px 0 10px;font-size:1rem;color:#204e35;text-align:center}
-  .sheet-cam .btns{display:grid;gap:10px}
-  .sheet-cam .btn{border:0;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1rem}
-  .sheet-cam .p1{background:var(--brand);color:#fff}
-  .sheet-cam .p2{background:#eaf3ec;color:#1b3f2a;border:1px solid #d3e6db}
-  .sheet-cam .p3{background:#f6faf7;color:#2f5e48;border:1px dashed #cfe0d6}
-  .sheet-cam .cancel{margin-top:8px;background:#0f1a14;color:#fff}
+/* === INSTÄLLNINGAR-KNAPP === */
+.fab{position:fixed;left:16px;bottom:16px;width:70px;height:70px;border-radius:22px;background:var(--brand);color:#cfe8d8;border:0;display:grid;place-items:center;box-shadow:0 12px 28px rgba(0,0,0,.28);z-index:6;font-size:1.4rem}
 
-  /* Egen rund klocka (custom) – ljus camo */
-  #timePicker{display:none}
-  #timePicker .sheet{width:min(380px,92vw);background:
-      radial-gradient(circle at 20% 15%, #e9efe9 0 30%, transparent 31%),
-      radial-gradient(circle at 80% 20%, #d6e2d6 0 33%, transparent 34%),
-      radial-gradient(circle at 25% 85%, #c0d1c3 0 35%, transparent 36%),
-      #f4faf4}
-  .tpHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .seg{display:flex;border-radius:12px;overflow:hidden;border:1px solid #c9dacd}
-  .seg button{border:0;background:#eff6f0;padding:8px 10px;font-weight:800;cursor:pointer}
-  .seg button.active{background:var(--brand);color:#fff}
-  .clock{width:260px;height:260px;border-radius:50%;background:#fff;border:10px solid #b4c7b7;position:relative;margin:8px auto;box-shadow:inset 0 0 0 3px #e6efe6}
-  .hand{position:absolute;left:50%;top:50%;width:2px;height:95px;background:#1a4d2e;border-radius:2px;transform-origin:bottom center}
-  .hand.min{height:120px;background:#0c6a36}
-  .nub{position:absolute;left:50%;top:50%;width:12px;height:12px;background:#123d24;border-radius:50%;transform:translate(-50%,-50%)}
-  .tpBtns{display:flex;gap:8px}
-  .tpBtns .btn{flex:1}
+/* === MODALER === */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:10px}
+.sheet{width:min(600px,92vw);background:#fff;border-radius:20px;padding:18px;border:1px solid #dfeae3;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.close{float:right;border:0;background:#0f1a14;color:#fff;border-radius:12px;padding:.4rem .7rem;cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{font-size:.9rem;color:#335846;display:block;margin-bottom:6px;font-weight:800}
+.field input,.field select{width:100%;border:1px solid #d7e6dc;border-radius:12px;padding:.6rem .7rem;font-size:1rem;background:#f7fbf7}
+.range{display:flex;align-items:center;gap:.7rem}
+
+/* === KAMERA-SHEET === */
+.sheet-cam-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:40}
+.sheet-cam{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:18px 18px 0 0;padding:14px 14px 18px;box-shadow:0 -18px 40px rgba(0,0,0,.25)}
+.sheet-cam h3{text-align:center;margin:4px 0 10px}
+.sheet-cam .btns{display:grid;gap:10px}
+.sheet-cam .btn{border:0;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1rem}
+.sheet-cam .p1{background:var(--brand);color:#fff}
+.sheet-cam .p2{background:#eaf3ec;color:#1b3f2a;border:1px solid #d3e6db}
+.sheet-cam .p3{background:#f6faf7;color:#2f5e48;border:1px dashed #cfe0d6}
+.sheet-cam .cancel{margin-top:8px;background:#0f1a14;color:#fff}
 </style>
 </head>
 <body>
-  <header id="hdr">
-    <div class="bar">
-      <div class="brand"><img id="logo" alt="logo" src=""><h1 id="title">🌲 Thüringer Tannenhof – Tidsrapport</h1></div>
-      <div class="spacer"></div>
-      <button class="btn" id="shareBtn">📤 Dela / Skicka</button>
-      <button class="btn dark" id="pdfBtn">🖨️ PDF</button>
-    </div>
-  </header>
+<header id="hdr">
+  <div class="bar">
+    <div class="brand"><img id="logo" alt=""><h1 id="title">🌲 Thüringer Tannenhof – Tidsrapport</h1></div>
+    <div class="spacer"></div>
+    <button class="btn" id="shareBtn">📤 Dela / Skicka</button>
+    <button class="btn dark" id="pdfBtn">🖨️ PDF</button>
+  </div>
+</header>
 
-  <main>
-    <div class="summary">
-      <b>⏳ <span id="totalTitle">Totalt – <span id="monthLabel"></span></span></b>
-      <div id="grandTotal">0.00</div>
-    </div>
-
-    <div class="tableWrap">
-      <div class="table" id="table">
-        <div class="thead">
-          <div>📅 <span id="thDay">Dag</span></div>
-          <div>⏰ <span id="thFrom">Från</span></div>
-          <div>⏰ <span id="thTo">Till</span></div>
-          <div>☕ <span id="thBreak">Paus</span></div>
-          <div>🧮 <span id="thTot">Totalt</span></div>
-          <div>📍 <span id="thProj">Projekt/plats</span></div>
-          <div>💬 <span id="thAct">Åtgärd</span></div>
-        </div>
-        <div id="rows"></div>
-
-        <div class="bottomSpacer" aria-hidden="true"></div>
-        <div class="wm" id="wm"><img id="wmImg" alt=""></div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Settings FAB -->
-  <button class="fab" id="fab">⚙️</button>
-
-  <!-- Settings Modal -->
-  <div class="modal" id="modal">
-    <div class="sheet">
-      <button class="close" id="closeModal">Stäng</button>
-      <h2 style="margin:.3rem 0 1rem">⚙️ Inställningar</h2>
-      <div class="grid2">
-        <div class="field">
-          <label id="lblCompany">Företagsnamn</label>
-          <input id="company" type="text" placeholder="THÜRINGER TANNENHOF">
-        </div>
-        <div class="field">
-          <label id="lblLang">Språk</label>
-          <select id="lang">
-            <option value="sv">Svenska</option>
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label id="lblPickerMode">Tidsväljare</label>
-          <select id="timePickerMode">
-            <option value="system">Samsung/System</option>
-            <option value="custom">Appens egna</option>
-          </select>
-          <div class="note" id="notePicker">Välj om tiden ställs med telefonens klocka eller appens.</div>
-        </div>
-        <div class="field">
-          <label id="lblStep">Minutsteg</label>
-          <div class="range">
-            <input id="stepRange" type="range" min="1" max="60" value="15">
-            <input id="stepNum" type="number" min="1" max="60" value="15" style="width:70px">
-            <span>min</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label id="lblWm">Vattenstämpel</label>
-          <div class="range">
-            <input id="wmRange" type="range" min="0" max="100" value="70">
-            <span id="wmVal">70%</span>
-          </div>
-          <div class="note" id="wmNote">0% = av, 100% = fullt</div>
-        </div>
-        <div class="field">
-          <label id="lblLogo">Byt logga</label>
-          <input id="logoFile" type="file" accept="image/*">
-          <div class="note" id="logoNote">Visas i header + som vattenstämpel</div>
-        </div>
-
-        <div class="field">
-          <label id="lblTheme">Tema</label>
-          <select id="theme">
-            <option value="green">Grönt (standard)</option>
-            <option value="camo">Militär kamouflage</option>
-          </select>
-        </div>
-        <div class="field">
-          <label id="lblFont">Rundad app-font</label>
-          <div><input type="checkbox" id="fontToggle"> <span id="fontNote">På / Av</span></div>
-        </div>
-      </div>
+<main>
+  <div class="summary"><b>⏳ Totalt – <span id="monthLabel"></span></b><div id="grandTotal">0.00</div></div>
+  <div class="tableWrap">
+    <div class="table" id="table">
+      <div class="thead"><div>📅 Dag</div><div>⏰ Från</div><div>⏰ Till</div><div>☕ Paus</div><div>🧮 Totalt</div><div>📍 Projekt/plats</div><div>💬 Åtgärd</div></div>
+      <div id="rows"></div>
+      <div class="bottomSpacer"></div>
+      <div class="wm"><img id="wmImg" alt=""></div>
     </div>
   </div>
+</main>
 
-  <!-- Kamera/Galleri Sheet -->
-  <div id="camSheetOv" class="sheet-cam-overlay">
-    <div class="sheet-cam">
-      <h3 id="camSheetTitle">Lägg till foto</h3>
-      <div class="btns">
-        <button class="btn p1" id="btnCamTake">📷 Kamera</button>
-        <button class="btn p2" id="btnCamPick">🖼️ Galleri</button>
-        <button class="btn p3" id="btnCamView">👀 Visa senaste foto</button>
-        <button class="btn cancel" id="btnCamClose">Stäng</button>
-      </div>
+<button class="fab" id="fab">⚙️</button>
+
+<!-- Inställningsfönster -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <button class="close" id="closeModal">Stäng</button>
+    <h2>⚙️ Inställningar</h2>
+    <div class="grid2">
+      <div class="field"><label>Företagsnamn</label><input id="company" type="text" placeholder="THÜRINGER TANNENHOF"></div>
+      <div class="field"><label>Språk</label><select id="lang"><option value="sv">Svenska</option><option value="de">Deutsch</option><option value="en">English</option></select></div>
+      <div class="field"><label>Tidsväljare</label><select id="timePickerMode"><option value="system">Samsung/System</option><option value="custom">Appens egna</option></select></div>
+      <div class="field"><label>Minutsteg</label><div class="range"><input id="stepRange" type="range" min="1" max="60" value="15"><input id="stepNum" type="number" min="1" max="60" value="15" style="width:70px"><span>min</span></div></div>
+      <div class="field"><label>Vattenstämpel</label><div class="range"><input id="wmRange" type="range" min="0" max="100" value="70"><span id="wmVal">70%</span></div></div>
+      <div class="field"><label>Byt logga</label><input id="logoFile" type="file" accept="image/*"></div>
+      <div class="field"><label>Tema</label><select id="theme"><option value="green">Grönt (standard)</option><option value="camo">Militär kamouflage</option></select></div>
     </div>
   </div>
-  <input id="pickCamera" type="file" accept="image/*" capture="environment" hidden>
-  <input id="pickGallery" type="file" accept="image/*" hidden>
+</div>
 
-  <!-- Egen rund klocka -->
-  <div class="modal" id="timePicker">
-    <div class="sheet">
-      <div class="tpHead">
-        <div id="tpLabel">Välj tid</div>
-        <div class="seg">
-          <button id="segHour" class="active">Tim</button>
-          <button id="segMin">Min</button>
-        </div>
-      </div>
-      <div class="clock" id="clock">
-        <div class="hand" id="hHand"></div>
-        <div class="hand min" id="mHand"></div>
-        <div class="nub"></div>
-      </div>
-      <div class="tpBtns">
-        <button class="btn" id="tpClear">Rensa</button>
-        <button class="btn" id="tpCancel">Avbryt</button>
-        <button class="btn dark" id="tpOk">Ange</button>
-      </div>
+<!-- Kamera/Galleri -->
+<div id="camSheetOv" class="sheet-cam-overlay">
+  <div class="sheet-cam">
+    <h3>Lägg till foto</h3>
+    <div class="btns">
+      <button class="btn p1" id="btnCamTake">📷 Kamera</button>
+      <button class="btn p2" id="btnCamPick">🖼️ Galleri</button>
+      <button class="btn p3" id="btnCamView">👀 Visa senaste foto</button>
+      <button class="btn cancel" id="btnCamClose">Stäng</button>
     </div>
   </div>
+</div>
+<input id="pickCamera" type="file" accept="image/*" capture="environment" hidden>
+<input id="pickGallery" type="file" accept="image/*" hidden>
 
 <script>
-/* ---------- I18N ---------- */
-const i18n = {
-  sv:{title:"🌲 Thüringer Tannenhof – Tidsrapport", share:"Dela / Skicka", pdf:"PDF",
-      total:"Totalt", th:{day:"Dag",from:"Från",to:"Till",break:"Paus",tot:"Totalt",proj:"Projekt/plats",act:"Åtgärd"},
-      ph:{project:"Projekt/plats"},
-      set:{company:"Företagsnamn",lang:"Språk",pickerMode:"Tidsväljare",pickerNote:"Välj om tiden ställs med telefonens klocka eller appens.",
-           step:"Minutsteg",wm:"Vattenstämpel",wmNote:"0% = av, 100% = fullt",logo:"Byt logga",logoNote:"Visas i header + som vattenstämpel",
-           theme:"Tema",font:"Rundad app-font",fontNote:"På / Av"},
-      cam:{title:"Lägg till foto",cam:"Kamera",gal:"Galleri",view:"Visa senaste foto",close:"Stäng"},
-      tp:{title:"Välj tid",cancel:"Avbryt",ok:"Ange",h:"Tim",m:"Min"},
-      alert:{nophoto:"Ingen bild sparad"}
-  },
-  de:{title:"🌲 Thüringer Tannenhof – Zeiterfassung", share:"Teilen / Senden", pdf:"PDF",
-      total:"Gesamt", th:{day:"Tag",from:"Von",to:"Bis",break:"Pause",tot:"Gesamt",proj:"Projekt/Ort",act:"Aktion"},
-      ph:{project:"Projekt/Ort"},
-      set:{company:"Firmenname",lang:"Sprache",pickerMode:"Zeitauswahl",pickerNote:"System-Uhr (Samsung) oder App-eigene Uhr wählen.",
-           step:"Minutenschritt",wm:"Wasserzeichen",wmNote:"0% = aus, 100% = voll",logo:"Logo wechseln",logoNote:"Oben & als Wasserzeichen",
-           theme:"Thema",font:"Abgerundete App-Schrift",fontNote:"An / Aus"},
-      cam:{title:"Foto hinzufügen",cam:"Kamera",gal:"Galerie",view:"Letztes Foto ansehen",close:"Schließen"},
-      tp:{title:"Zeit wählen",cancel:"Abbrechen",ok:"Übernehmen",h:"Std",m:"Min"},
-      alert:{nophoto:"Kein Foto gespeichert"}
-  },
-  en:{title:"🌲 Thuringian Tannenhof – Timesheet", share:"Share / Send", pdf:"PDF",
-      total:"Total", th:{day:"Day",from:"From",to:"To",break:"Break",tot:"Total",proj:"Project/site",act:"Action"},
-      ph:{project:"Project/site"},
-      set:{company:"Company",lang:"Language",pickerMode:"Time picker",pickerNote:"Use phone's clock (Samsung/System) or the app's clock.",
-           step:"Minute step",wm:"Watermark",wmNote:"0% = off, 100% = full",logo:"Change logo",logoNote:"Shown in header + as watermark",
-           theme:"Theme",font:"Rounded app font",fontNote:"On / Off"},
-      cam:{title:"Add photo",cam:"Camera",gal:"Gallery",view:"View last photo",close:"Close"},
-      tp:{title:"Pick time",cancel:"Cancel",ok:"Set",h:"Hour",m:"Min"},
-      alert:{nophoto:"No photo saved"}
-  }
-};
-
-/* ---------- STATE ---------- */
-const state = {
-  year:(new Date()).getFullYear(),
-  month:(new Date()).getMonth(),
-  lang: localStorage.getItem("tnh_lang") || "sv",
-  company: localStorage.getItem("tnh_company") || "THÜRINGER TANNENHOF",
-  wm: Number(localStorage.getItem("tnh_wm") ?? 70),
-  logo: localStorage.getItem("tnh_logo") || "",
-  theme: localStorage.getItem("tnh_theme") || "green",
-  rounded: localStorage.getItem("tnh_font_round") === "1",
-  tpMode: localStorage.getItem("tnh_tp_mode") || "system", // system | custom
-  tpStep: Number(localStorage.getItem("tnh_tp_step") || "15"),
-  entries: JSON.parse(localStorage.getItem("tnh_entries")||"{}") // { 'YYYY-MM': { d:{from:'HH:MM',to:'HH:MM',break:'HH:MM',project:'',photos:[],note:''} } }
-};
-
-const tbody = document.getElementById('rows');
-const monthLabel = document.getElementById('monthLabel');
-const grandTotal = document.getElementById('grandTotal');
-
-/* ---------- UTIL ---------- */
-function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
-function monthKey(){return `${state.year}-${String(state.month+1).padStart(2,'0')}`;}
-function fmt(n){return n.toFixed(2);}
-function parseHM(s){ if(!s) return 0; const [h,m]=s.split(":").map(Number); return h*60+m; }
-function toHM(min){ const h=String(Math.floor(min/60)).padStart(2,"0"); const m=String(min%60).padStart(2,"0"); return `${h}:${m}`; }
-function isWorkday(y,m,d){ const w=new Date(y,m,d).getDay(); return w>=1 && w<=5; }
-function firstWorkdayOfMonth(y,m){ const max=daysInMonth(y,m); for(let d=1; d<=max; d++) if(isWorkday(y,m,d)) return d; return 1; }
-function saveAll(){ localStorage.setItem("tnh_entries", JSON.stringify(state.entries)); }
-function setHeaderOffset(){ const h = document.getElementById('hdr')?.offsetHeight || 64; document.documentElement.style.setProperty('--headerH', h+'px');}
-
-/* ---------- TEXTER ---------- */
-function updateTexts(){
-  const L=i18n[state.lang];
-  document.getElementById('title').textContent=L.title;
-  document.getElementById('shareBtn').textContent="📤 "+L.share;
-  document.getElementById('pdfBtn').textContent="🖨️ "+L.pdf;
-  document.getElementById('totalTitle').innerHTML=`${L.total} – <span id="monthLabel"></span>`;
-  document.getElementById('monthLabel').textContent =
-    new Date(state.year,state.month,1).toLocaleDateString(
-      state.lang==="de"?"de-DE":(state.lang==="en"?"en-GB":"sv-SE"), {month:'long', year:'numeric'}
-    );
-  document.getElementById('thDay').textContent=L.th.day;
-  document.getElementById('thFrom').textContent=L.th.from;
-  document.getElementById('thTo').textContent=L.th.to;
-  document.getElementById('thBreak').textContent=L.th.break;
-  document.getElementById('thTot').textContent=L.th.tot;
-  document.getElementById('thProj').textContent=L.th.proj;
-  document.getElementById('thAct').textContent=L.th.act;
-
-  document.getElementById('lblCompany').textContent=L.set.company;
-  document.getElementById('lblLang').textContent=L.set.lang;
-  document.getElementById('lblPickerMode').textContent=L.set.pickerMode;
-  document.getElementById('notePicker').textContent=L.set.pickerNote;
-  document.getElementById('lblStep').textContent=L.set.step;
-  document.getElementById('lblWm').textContent=L.set.wm;
-  document.getElementById('wmNote').textContent=L.set.wmNote;
-  document.getElementById('lblLogo').textContent=L.set.logo;
-  document.getElementById('logoNote').textContent=L.set.logoNote;
-  document.getElementById('lblTheme').textContent=L.set.theme;
-  document.getElementById('lblFont').textContent=L.set.font;
-  document.getElementById('fontNote').textContent=L.set.fontNote;
-
-  document.getElementById('company').value=state.company;
-  document.getElementById('lang').value=state.lang;
-  document.getElementById('timePickerMode').value=state.tpMode;
-  document.getElementById('stepRange').value=state.tpStep;
-  document.getElementById('stepNum').value=state.tpStep;
-  document.getElementById('theme').value=state.theme;
-  document.getElementById('wmRange').value=state.wm;
-  document.getElementById('wmVal').textContent=state.wm+"%";
-}
-
-/* ---------- BYGG TABELL ---------- */
+/* --- Bygg tabell (kortare version) --- */
+const tbody=document.getElementById("rows");
+const daysInMonth=(y,m)=>new Date(y,m+1,0).getDate();
+const fmt=n=>n.toFixed(2);
 function buildRows(){
+  const now=new Date();const y=now.getFullYear(),m=now.getMonth();const dMax=daysInMonth(y,m);
   tbody.innerHTML="";
-  const key=monthKey();
-  if(!state.entries[key]) state.entries[key]={};
-  const L=i18n[state.lang];
-  const days=daysInMonth(state.year,state.month);
-
-  for(let d=1; d<=days; d++){
-    const row=document.createElement("div"); row.className="row"; row.dataset.day=d;
-
-    // Dag
-    const tdDay=document.createElement("div");
-    tdDay.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><div class="leftBar"></div><div class="num">${d}</div></div>`;
-    row.appendChild(tdDay);
-
-    // Från/Till/Paus – knappar
-    const tdFrom=document.createElement("div"); tdFrom.innerHTML=`<div class="pill" data-timebtn="from"><span>⏰</span><span class="value">--:--</span></div>`;
-    const tdTo  =document.createElement("div"); tdTo.innerHTML  =`<div class="pill" data-timebtn="to"><span>⏰</span><span class="value">--:--</span></div>`;
-    const tdBr  =document.createElement("div"); tdBr.innerHTML  =`<div class="pill" data-timebtn="break"><span>☕</span><span class="value">00:00</span></div>`;
-    row.append(tdFrom,tdTo,tdBr);
-
-    // Totalt
-    const tdTot=document.createElement("div"); tdTot.className="tot"; tdTot.textContent="0.00"; row.appendChild(tdTot);
-
-    // Projekt
-    const tdProj=document.createElement("div");
-    tdProj.innerHTML=`<div class="chip">📍 <input class="project" type="text" placeholder="${L.ph.project}"></div>`;
-    row.appendChild(tdProj);
-
-    // Åtgärder
-    const tdAct=document.createElement("div"); tdAct.className="actions";
-    tdAct.innerHTML=`
-      <button class="act noteBtn" title="Anteckning">📝</button>
-      <button class="act camBtn"  title="Foto">📷</button>
-    `;
-    row.appendChild(tdAct);
-
+  for(let d=1;d<=dMax;d++){
+    const row=document.createElement("div");row.className="row";row.dataset.day=d;
+    row.innerHTML=`
+    <div class="num">${d}</div>
+    <div class="pill" data-time="from"><span>⏰</span><span class="value">--:--</span></div>
+    <div class="pill" data-time="to"><span>⏰</span><span class="value">--:--</span></div>
+    <div class="pill" data-time="break"><span>☕</span><span class="value">00:00</span></div>
+    <div class="tot">0.00</div>
+    <div class="chip">📍 <input class="project" type="text" placeholder="Projekt/plats"></div>
+    <div class="actions"><button class="act noteBtn">📝</button><button class="act camBtn">📷</button></div>`;
     tbody.appendChild(row);
   }
-
-  restoreMonthState();
-  attachRowHandlers();
-  highlightToday();
-  updateGrandTotal();
 }
+buildRows();
 
-function restoreMonthState(){
-  const key=monthKey();
-  const map=state.entries[key]||{};
-  tbody.querySelectorAll(".row").forEach(row=>{
-    const d=Number(row.dataset.day);
-    const e=map[d]||{};
-    const btnF=row.querySelector('[data-timebtn="from"] .value');
-    const btnT=row.querySelector('[data-timebtn="to"] .value');
-    const btnB=row.querySelector('[data-timebtn="break"] .value');
-    btnF.textContent=e.from || "--:--";
-    btnT.textContent=e.to   || "--:--";
-    btnB.textContent=e.break|| "00:00";
-    row.querySelector('.project').value = e.project||"";
-    // Recalc total
-    const tot=calcRowTotal(e.from,e.to,e.break);
-    row.querySelector('.tot').textContent=fmt(tot);
-  });
-}
-
-function calcRowTotal(from,to,br){
-  if(!from||!to) return 0;
-  const mins = parseHM(to)-parseHM(from)-(parseHM(br||"00:00"));
-  return Math.max(0, mins)/60;
-}
-
-function updateGrandTotal(){
-  let sum=0;
-  tbody.querySelectorAll(".tot").forEach(td=> sum+=Number(td.textContent));
-  grandTotal.textContent=fmt(sum);
-}
-
-function highlightToday(){
-  tbody.querySelectorAll(".row").forEach(x=>x.classList.remove("today"));
-  const now=new Date();
-  const same=(state.year===now.getFullYear() && state.month===now.getMonth());
-  const dTo = same ? now.getDate() : firstWorkdayOfMonth(state.year,state.month);
-  const row=tbody.querySelector(`.row[data-day="${dTo}"]`);
-  if(row) row.classList.add("today");
-}
-
-/* ---------- KAMERA ---------- */
-let camDay=null;
-const camOv=document.getElementById('camSheetOv');
-function showCamSheet(day){ camDay=day; camOv.style.display='block'; }
-function hideCamSheet(){ camOv.style.display='none'; camDay=null; }
-document.getElementById('btnCamClose').onclick=hideCamSheet;
-document.getElementById('btnCamTake').onclick=()=>document.getElementById('pickCamera').click();
-document.getElementById('btnCamPick').onclick=()=>document.getElementById('pickGallery').click();
-document.getElementById('btnCamView').onclick=()=>{
-  if(camDay==null) return;
-  const key=monthKey(); const arr=(state.entries[key]?.[camDay]?.photos)||[];
-  if(!arr.length){ alert(i18n[state.lang].alert.nophoto); return; }
-  const w=window.open(); w.document.write(`<img style="max-width:100%" src="${arr[arr.length-1]}">`);
-};
-document.getElementById('pickCamera').addEventListener('change', e=> handlePicked(e));
-document.getElementById('pickGallery').addEventListener('change', e=> handlePicked(e));
-async function handlePicked(e){
-  const f=e.target.files?.[0]; e.target.value="";
-  if(!f || camDay==null) return;
-  const dataURL=await fileToDataURL(f);
-  const key=monthKey(); if(!state.entries[key][camDay]) state.entries[key][camDay]={photos:[]};
-  state.entries[key][camDay].photos.push(dataURL);
-  saveAll(); hideCamSheet();
-  alert(state.lang==="de"?"Foto gespeichert":(state.lang==="en"?"Photo saved":"Bild sparad"));
-}
-function fileToDataURL(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
-
-/* ---------- EGEN RUND KLOCKA ---------- */
-const tpEl=document.getElementById('timePicker');
-const hHand=document.getElementById('hHand');
-const mHand=document.getElementById('mHand');
-let tp={row:-1,kind:'from',mode:'h',h:8,m:0};
-function drawHands(){
-  hHand.style.transform=`translate(-50%,-100%) rotate(${(tp.h%12)*30 + tp.m/2}deg)`;
-  mHand.style.transform=`translate(-50%,-100%) rotate(${tp.m*6}deg)`;
-}
-function openCustomPicker(i,kind,initial){
-  const L=i18n[state.lang];
-  document.getElementById('tpLabel').textContent=L.tp.title;
-  document.getElementById('segHour').textContent=L.tp.h;
-  document.getElementById('segMin').textContent=L.tp.m;
-  document.getElementById('tpCancel').textContent=L.tp.cancel;
-  document.getElementById('tpOk').textContent=L.tp.ok;
-  document.getElementById('tpClear').textContent=state.lang==="de"?"Löschen":(state.lang==="en"?"Clear":"Rensa");
-
-  let h=8,m=0;
-  if(/^\d{2}:\d{2}$/.test(initial)){ const [H,M]=initial.split(':').map(Number); h=H; m=M; }
-  tp={row:i,kind,mode:'h',h:h,m:m};
-  drawHands(); tpEl.style.display='flex';
-}
-function closeCustomPicker(){ tpEl.style.display='none'; }
-
-function toXY(e,el){
-  const r=el.getBoundingClientRect();
-  return {x:e.clientX - (r.left+r.width/2), y:e.clientY - (r.top+r.height/2)};
-}
-const clock=document.getElementById('clock');
-let dragging=false;
-clock.addEventListener('pointerdown',e=>{dragging=true;clock.setPointerCapture(e.pointerId); setFromPoint(e)});
-clock.addEventListener('pointermove',e=>{if(dragging)setFromPoint(e)});
-clock.addEventListener('pointerup',()=>{dragging=false});
-function setFromPoint(e){
-  const {x,y}=toXY(e,clock);
-  const ang=(Math.atan2(y,x)*180/Math.PI+450)%360;
-  const step=state.tpStep||5;
-  if(tp.mode==='h'){
-    let h=Math.round(ang/30); if(h===12) h=0; tp.h=h;
-  }else{
-    let m=Math.round(ang/6);
-    // snappa till valt minutsteg
-    m = Math.round(m/step)*step; if(m>59) m=59-(59%step);
-    tp.m=m;
-  }
-  drawHands();
-}
-document.getElementById('segHour').onclick=()=>{tp.mode='h';segHour.classList.add('active');segMin.classList.remove('active')};
-document.getElementById('segMin').onclick=()=>{tp.mode='m';segMin.classList.add('active');segHour.classList.remove('active')};
-document.getElementById('tpCancel').onclick=closeCustomPicker;
-document.getElementById('tpClear').onclick=()=>{
-  applyPickedTime(tp.row, tp.kind, null);
-  closeCustomPicker();
-};
-document.getElementById('tpOk').onclick=()=>{
-  const val=`${String(tp.h).padStart(2,'0')}:${String(tp.m).padStart(2,'0')}`;
-  applyPickedTime(tp.row, tp.kind, val);
-  closeCustomPicker();
-};
-
-/* ---------- SAMSUNG / SYSTEMKLOCKA via <input type=time> ---------- */
-function pickTimeSystem(initial=''){
+/* --- Samsung/systemtid via <input type=time> --- */
+async function pickTimeSystem(){
   return new Promise(resolve=>{
-    const input=document.createElement('input');
-    input.type='time';
-    input.step=String((state.tpStep||15)*60);
-    input.value = /^\d{2}:\d{2}$/.test(initial)?initial:'';
-    Object.assign(input.style,{position:'fixed',left:'-9999px',top:'0',opacity:'0'});
+    const input=document.createElement("input");
+    input.type="time";input.style.position="fixed";input.style.left="-9999px";
     document.body.appendChild(input);
-    const cleanup=()=>input.remove();
-    input.addEventListener('change',()=>{const v=input.value; cleanup(); resolve(v||null);},{once:true});
-    input.addEventListener('blur',()=>setTimeout(cleanup,300),{once:true});
-    input.focus({preventScroll:true});
-    setTimeout(()=>{ try{ input.click(); }catch(e){} },0);
+    input.onchange=()=>{resolve(input.value);input.remove()};
+    input.click();
   });
 }
 
-/* ---------- ENAD TIDVÄLJARE ---------- */
-async function unifiedPick(i, kind){
-  const row=document.querySelector(`.row[data-day="${i+1}"]`);
-  const btn=row.querySelector(`[data-timebtn="${kind}"] .value`);
-  const current = btn.textContent.match(/^\d{2}:\d{2}$/)?btn.textContent:'';
-  if(state.tpMode==='system'){
-    const val=await pickTimeSystem(current);
-    applyPickedTime(i, kind, val);
-  }else{
-    openCustomPicker(i, kind, current);
-  }
-}
-function applyPickedTime(index, kind, value){
-  const key=monthKey();
-  const day=index+1;
-  if(!state.entries[key][day]) state.entries[key][day]={photos:[]};
-  const e=state.entries[key][day];
-  if(kind==='from') e.from=value||null;
-  else if(kind==='to') e.to=value||null;
-  else e.break=value||"00:00";
-
-  // UI
-  const row=document.querySelector(`.row[data-day="${day}"]`);
-  const valEl=row.querySelector(`[data-timebtn="${kind}"] .value`);
-  if(kind==='break'){ valEl.textContent=value||"00:00"; }
-  else{ valEl.textContent=value||"--:--"; }
-
-  const tot=calcRowTotal(e.from,e.to,e.break);
-  row.querySelector('.tot').textContent=fmt(tot);
-  updateGrandTotal(); saveAll();
-}
-
-/* ---------- RADHANTERARE ---------- */
-function attachRowHandlers(){
-  tbody.querySelectorAll(".row").forEach(row=>{
-    const d=Number(row.dataset.day)-1;
-    row.querySelectorAll('[data-timebtn]').forEach(btn=>{
-      btn.addEventListener('click', ()=> unifiedPick(d, btn.getAttribute('data-timebtn')) );
-    });
-    row.querySelector('.project').addEventListener('input', (ev)=>{
-      const key=monthKey(); const day=d+1;
-      if(!state.entries[key][day]) state.entries[key][day]={photos:[]};
-      state.entries[key][day].project=ev.target.value; saveAll();
-    });
-    row.querySelector('.noteBtn').addEventListener('click', ()=>{
-      const key=monthKey(); const day=d+1; const cur=(state.entries[key][day]?.note)||"";
-      const txt=prompt( state.lang==="de"?"Notiz:":(state.lang==="en"?"Note:":"Anteckning:"), cur );
-      if(txt!==null){ if(!state.entries[key][day]) state.entries[key][day]={photos:[]}; state.entries[key][day].note=txt; saveAll(); }
-    });
-    row.querySelector('.camBtn').addEventListener('click', ()=> showCamSheet(d+1) );
-  });
-}
-
-/* ---------- INSTÄLLNINGAR ---------- */
-const modal=document.getElementById('modal');
-document.getElementById('fab').onclick=()=>{
-  modal.style.display='flex';
-  updateTexts(); // sync labels
-};
-document.getElementById('closeModal').onclick=()=>modal.style.display='none';
-
-document.getElementById('company').addEventListener('input', (e)=>{
-  state.company=e.target.value || "THÜRINGER TANNENHOF";
-  localStorage.setItem("tnh_company", state.company);
-});
-document.getElementById('lang').addEventListener('change',(e)=>{
-  state.lang=e.target.value; localStorage.setItem("tnh_lang", state.lang);
-  updateTexts(); buildRows(); highlightToday();
-});
-document.getElementById('timePickerMode').addEventListener('change',(e)=>{
-  state.tpMode=e.target.value; localStorage.setItem("tnh_tp_mode", state.tpMode);
-});
-function syncStep(v){
-  v = Math.min(60, Math.max(1, Number(v)||15));
-  state.tpStep=v; localStorage.setItem("tnh_tp_step", String(v));
-  document.getElementById('stepRange').value=v;
-  document.getElementById('stepNum').value=v;
-}
-document.getElementById('stepRange').addEventListener('input',(e)=>syncStep(e.target.value));
-document.getElementById('stepNum').addEventListener('input',(e)=>syncStep(e.target.value));
-
-document.getElementById('theme').addEventListener('change',(e)=>{
-  state.theme=e.target.value; localStorage.setItem("tnh_theme", state.theme);
-  if(state.theme==="camo") document.body.setAttribute("data-theme","camo");
-  else document.body.removeAttribute("data-theme");
-});
-document.getElementById('fontToggle').addEventListener('change',(e)=>{
-  state.rounded = e.target.checked; localStorage.setItem("tnh_font_round", state.rounded?"1":"0");
-  document.body.classList.toggle("rounded-font", state.rounded);
+/* --- Klick på tider --- */
+tbody.addEventListener("click",async e=>{
+  const pill=e.target.closest("[data-time]");
+  if(!pill)return;
+  const val=await pickTimeSystem();
+  if(val)pill.querySelector(".value").textContent=val;
 });
 
-document.getElementById('wmRange').addEventListener('input',(e)=>{
-  state.wm=Number(e.target.value);
-  document.getElementById('wmVal').textContent=state.wm+"%";
-  document.getElementById('wm').style.opacity=(state.wm/100);
-  localStorage.setItem("tnh_wm", String(state.wm));
-});
-document.getElementById('logoFile').addEventListener('change', async (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  const dataURL=await fileToDataURL(f);
-  state.logo = dataURL; localStorage.setItem("tnh_logo", state.logo);
-  applyLogo();
+/* --- Kamera --- */
+const camOv=document.getElementById("camSheetOv");
+document.getElementById("btnCamClose").onclick=()=>camOv.style.display="none";
+document.getElementById("btnCamTake").onclick=()=>document.getElementById("pickCamera").click();
+document.getElementById("btnCamPick").onclick=()=>document.getElementById("pickGallery").click();
+tbody.addEventListener("click",e=>{
+  if(e.target.closest(".camBtn"))camOv.style.display="block";
 });
 
-/* ---------- LOGGA & WM ---------- */
-function applyLogo(){
-  const el=document.getElementById('logo'); if(state.logo) el.src=state.logo; else el.src="";
-  document.getElementById('wmImg').src = state.logo || "";
-}
+/* --- Inställningar --- */
+const modal=document.getElementById("modal");
+document.getElementById("fab").onclick=()=>modal.style.display="flex";
+document.getElementById("closeModal").onclick=()=>modal.style.display="none";
 
-/* ---------- INIT ---------- */
-function init(){
-  // tema & font
-  if(state.theme==="camo") document.body.setAttribute("data-theme","camo");
-  if(state.rounded) document.body.classList.add("rounded-font");
-  applyLogo();
-  // texts + month label
-  updateTexts();
-  // bygga rader
-  buildRows();
-  // watermark
-  document.getElementById('wm').style.opacity=(state.wm/100);
-  // sticky-top offset
-  setHeaderOffset(); window.addEventListener('resize', setHeaderOffset);
-}
-init();
+/* --- Watermark preview --- */
+document.getElementById("logoFile").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>document.getElementById("wmImg").src=r.result;r.readAsDataURL(f);
+});
 
-/* ---------- EVENTS FÖR DELA/PDF (stubbar) ---------- */
-document.getElementById('shareBtn').onclick=()=>alert('Export/Delning kan läggas till här (t.ex. skapa PDF och dela via WhatsApp/E-post).');
-document.getElementById('pdfBtn').onclick=()=>alert('PDF-export kommer i nästa steg (valfritt).');
-
-/* ---------- HELPER ---------- */
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.style.display='none'}));
+/* --- Headerhöjd fix för sticky --- */
+const setHeaderOffset=()=>document.documentElement.style.setProperty("--headerH",document.getElementById("hdr").offsetHeight+"px");
+setHeaderOffset();
+new ResizeObserver(()=>setHeaderOffset()).observe(document.getElementById("hdr"));
 </script>
 </body>
 </html>
