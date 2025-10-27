@@ -13,13 +13,11 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
 header{background:var(--green);color:#fff}
-.bar{max-width:var(--maxw);margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:10px;font-weight:700}
+.bar{max-width:var(--maxw);margin:0 auto;padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:700}
 .logo{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#1e4d2a}
-main{max-width:var(--maxw);margin:0 auto;padding:14px}
-.wrap{display:grid;grid-template-columns:320px 1fr;gap:18px}
-@media (max-width:860px){.wrap{grid-template-columns:1fr}}
+main{max-width:var(--maxw);margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px}
 .card{background:var(--card);border:1.5px solid var(--ring);border-radius:var(--r);box-shadow:var(--shadow)}
-.panel{padding:14px}
+.panel{padding:12px}
 .field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
 label{font-size:.92rem;color:var(--muted)}
 input,select,button{font-size:16px}
@@ -30,70 +28,89 @@ input[type="text"],input[type="time"],select{padding:12px;border:1.5px solid var
 .btn.block{width:100%}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .small{font-size:.85rem;color:var(--muted)}
-.gridHead,
-.row{display:grid;grid-template-columns:68px 1fr 1fr 1fr 1fr;gap:10px;align-items:center}
+.gridHead,.row{display:grid;grid-template-columns:68px 1fr 1fr 1fr 1fr;gap:10px;align-items:center}
 .gridHead{padding:0 8px 8px 8px;color:var(--muted);font-size:.9rem}
 .row{padding:10px;margin:10px 0;background:#fff;border:1.5px solid var(--ring);border-radius:14px}
 .day{font-weight:700;text-align:center}
 .total{background:#f8fbf8}
+.sumCard{margin-top:6px}
 .sumBox{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 hr.sep{border:none;border-top:1px solid var(--ring);margin:14px 0}
-footer{max-width:var(--maxw);margin:22px auto 28px;color:var(--muted);padding:0 14px}
-.badge{display:inline-block;background:#e9f5ec;color:#1c5a2a;border:1px solid #cce8d1;padding:3px 8px;border-radius:999px;font-size:.8rem}
+footer{max-width:var(--maxw);margin:16px auto 28px;color:var(--muted);padding:0 12px}
+
+/* Kollapsbar inställningspanel */
+details#settings{border:1.5px solid var(--ring);border-radius:var(--r);background:#fff}
+details#settings>summary{
+  list-style:none;cursor:pointer;padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--ring);font-weight:700
+}
+details#settings>summary::marker{display:none}
+.chev{transition:.2s transform}
+details[open] .chev{transform:rotate(180deg)}
+/* På större skärmar: starta öppet */
+@media (min-width:861px){ details#settings[open]{}
+}
 </style>
 </head>
 <body>
 <header><div class="bar"><div class="logo" id="logoBox">🌲</div><div id="hTitle">Tannenhofs tidtabell</div></div></header>
 
-<main class="wrap">
-  <!-- VÄNSTER -->
-  <section class="card panel">
-    <div class="field"><label id="lCompany">Företag</label><input id="company" type="text" placeholder="THÜRINGER TANNENHOF"></div>
-    <div class="field">
-      <label id="lLogo">Logga (bild eller emoji)</label>
-      <input id="logoText" type="text" placeholder="t.ex. 🌲 eller 🦌">
-      <input id="logoFile" type="file" accept="image/*">
-      <div class="small" id="lLocal">Sparas lokalt på den här enheten.</div>
-    </div>
+<main>
+  <!-- Kollapsbar inställningspanel -->
+  <details id="settings">
+    <summary>
+      <span id="sumTitle">Inställningar</span>
+      <span class="chev">▾</span>
+    </summary>
+    <div class="panel">
+      <div class="field"><label id="lCompany">Företag</label><input id="company" type="text" placeholder="THÜRINGER TANNENHOF"></div>
 
-    <div class="field"><label id="lLang">Språk</label>
-      <select id="lang">
-        <option value="sv">Svenska</option>
-        <option value="de">Deutsch</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn ghost" id="btnShare">Dela / Skicka</button>
-      <button class="btn primary" id="btnPrint">Skriv ut / PDF</button>
-      <button class="btn ghost" id="btnQR">QR-kod</button>
-    </div>
-
-    <hr class="sep">
-
-    <div class="field"><label id="lMonth">Månad</label><select id="month"></select></div>
-    <div class="field"><label id="lYear">År</label><select id="year"></select></div>
-    <button class="btn primary block" id="btnGen">Skapa dagar</button>
-
-    <div class="field">
-      <span class="badge" id="fillTitle">Snabbifyll</span>
-      <div class="btn-row" style="margin-top:8px">
-        <button class="btn ghost" id="btnFill">07:00–16:00 / 0:30 (vardagar)</button>
-        <button class="btn ghost" id="btnClear">Rensa allt</button>
+      <div class="field">
+        <label id="lLogo">Logga (bild eller emoji)</label>
+        <input id="logoText" type="text" placeholder="t.ex. 🌲 eller 🦌">
+        <input id="logoFile" type="file" accept="image/*">
+        <div class="small" id="lLocal">Sparas lokalt på den här enheten.</div>
       </div>
+
+      <div class="field"><label id="lLang">Språk</label>
+        <select id="lang">
+          <option value="sv">Svenska</option>
+          <option value="de">Deutsch</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn ghost" id="btnShare">Dela / Skicka</button>
+        <button class="btn primary" id="btnPrint">Skriv ut / PDF</button>
+        <button class="btn ghost" id="btnQR">QR-kod</button>
+      </div>
+
+      <hr class="sep">
+
+      <div class="field"><label id="lMonth">Månad</label><select id="month"></select></div>
+      <div class="field"><label id="lYear">År</label><select id="year"></select></div>
+      <button class="btn primary block" id="btnGen">Skapa dagar</button>
+
+      <div class="field">
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn ghost" id="btnFill">07:00–16:00 / 0:30 (vardagar)</button>
+          <button class="btn ghost" id="btnClear">Rensa allt</button>
+        </div>
+      </div>
+
+      <div class="field"><label><input type="checkbox" id="autosave"> <span id="lAutosave">Autospara (av)</span></label></div>
     </div>
+  </details>
 
-    <div class="field"><label><input type="checkbox" id="autosave"> <span id="lAutosave">Autospara (av)</span></label></div>
-  </section>
-
-  <!-- HÖGER -->
-  <section>
+  <!-- Tabell + summering -->
+  <section class="card panel">
     <div class="gridHead">
       <div id="hDay">Dag</div><div id="hFrom">Från</div><div id="hTo">Till</div><div id="hBreak">Paus (h:mm)</div><div id="hTotal">Totalt (h)</div>
     </div>
     <div id="rows"></div>
-    <div class="card panel" style="margin-top:12px">
+    <div class="card panel sumCard">
       <div class="sumBox">
         <div><b id="hSum">Summa:</b> <span id="sum">0.00</span> h</div>
         <div><b id="hLongest">Längsta dag:</b> <span id="longest">0.00</span> h</div>
@@ -107,20 +124,20 @@ footer{max-width:var(--maxw);margin:22px auto 28px;color:var(--muted);padding:0 
 <script>
 /* -------- språk -------- */
 const T={
-  sv:{title:"Tannenhofs tidtabell",company:"Företag",logo:"Logga (bild eller emoji)",local:"Sparas lokalt på den här enheten.",lang:"Språk",
+  sv:{title:"Tannenhofs tidtabell",settings:"Inställningar",company:"Företag",logo:"Logga (bild eller emoji)",local:"Sparas lokalt på den här enheten.",lang:"Språk",
       share:"Dela / Skicka",print:"Skriv ut / PDF",qr:"QR-kod",
       month:"Månad",year:"År",gen:"Skapa dagar",
-      quick:"Snabbifyll",quickBtn:"07:00–16:00 / 0:30 (vardagar)",clear:"Rensa allt",
+      quickBtn:"07:00–16:00 / 0:30 (vardagar)",clear:"Rensa allt",
       autosave:"Autospara",day:"Dag",from:"Från",to:"Till",break:"Paus (h:mm)",total:"Totalt (h)",sum:"Summa:",longest:"Längsta dag:"},
-  de:{title:"Tannenhof Stundenliste",company:"Arbeitgeber",logo:"Logo (Datei oder Emoji)",local:"Lokal auf diesem Gerät gespeichert.",lang:"Sprache",
+  de:{title:"Tannenhof Stundenliste",settings:"Einstellungen",company:"Arbeitgeber",logo:"Logo (Datei oder Emoji)",local:"Lokal auf diesem Gerät gespeichert.",lang:"Sprache",
       share:"Teilen / Senden",print:"Drucken / PDF",qr:"QR-Code",
       month:"Monat",year:"Jahr",gen:"Tage erstellen",
-      quick:"Schnell füllen",quickBtn:"07:00–16:00 / 0:30 (Werktage)",clear:"Alles löschen",
+      quickBtn:"07:00–16:00 / 0:30 (Werktage)",clear:"Alles löschen",
       autosave:"Autospeichern",day:"Tag",from:"Von",to:"Bis",break:"Pause (Std:Min)",total:"Gesamt (Std)",sum:"Summe:",longest:"Längster Tag:"},
-  en:{title:"Tannenhof Timesheet",company:"Company",logo:"Logo (image or emoji)",local:"Stored locally on this device.",lang:"Language",
+  en:{title:"Tannenhof Timesheet",settings:"Settings",company:"Company",logo:"Logo (image or emoji)",local:"Stored locally on this device.",lang:"Language",
       share:"Share / Send",print:"Print / PDF",qr:"QR code",
       month:"Month",year:"Year",gen:"Generate days",
-      quick:"Quick fill",quickBtn:"07:00–16:00 / 0:30 (weekdays)",clear:"Clear all",
+      quickBtn:"07:00–16:00 / 0:30 (weekdays)",clear:"Clear all",
       autosave:"Autosave",day:"Day",from:"From",to:"To",break:"Break (h:mm)",total:"Total (h)",sum:"Total:",longest:"Longest day:"}
 };
 const el=(s)=>document.querySelector(s);
@@ -132,23 +149,20 @@ const E={
   rows:el('#rows'), autosave:el('#autosave'), btnFill:el('#btnFill'), btnClear:el('#btnClear'),
   hDay:el('#hDay'), hFrom:el('#hFrom'), hTo:el('#hTo'), hBreak:el('#hBreak'), hTotal:el('#hTotal'),
   sum:el('#sum'), longest:el('#longest'), hSum:el('#hSum'), hLongest:el('#hLongest'),
-  yNow:el('#yNow')
+  yNow:el('#yNow'), settings:el('#settings'), sumTitle:el('#sumTitle')
 };
 E.yNow.textContent=new Date().getFullYear();
 
 function setLang(){
   const t=T[E.lang.value];
-  el('#lCompany').textContent=t.company;
-  el('#lLogo').textContent=t.logo;
-  el('#lLocal').textContent=t.local;
-  el('#lLang').textContent=t.lang;
+  E.tTitle.textContent=t.title; E.hTitle.textContent=t.title; E.sumTitle.textContent=t.settings;
+  el('#lCompany').textContent=t.company; el('#lLogo').textContent=t.logo; el('#lLocal').textContent=t.local; el('#lLang').textContent=t.lang;
   E.btnShare.textContent=t.share; E.btnPrint.textContent=t.print; E.btnQR.textContent=t.qr;
   el('#lMonth').textContent=t.month; el('#lYear').textContent=t.year; E.btnGen.textContent=t.gen;
-  el('#fillTitle').textContent=t.quick; E.btnFill.textContent=t.quickBtn; E.btnClear.textContent=t.clear;
-  el('#hDay').textContent=t.day; el('#hFrom').textContent=t.from; el('#hTo').textContent=t.to; el('#hBreak').textContent=t.break; el('#hTotal').textContent=t.total;
-  el('#hSum').textContent=t.sum; el('#hLongest').textContent=t.longest;
+  E.btnFill.textContent=t.quickBtn; E.btnClear.textContent=t.clear;
   el('#lAutosave').textContent=t.autosave+(E.autosave.checked?' (på)':' (av)');
-  E.tTitle.textContent=t.title; E.hTitle.textContent=t.title;
+  E.hDay.textContent=t.day; E.hFrom.textContent=t.from; E.hTo.textContent=t.to; E.hBreak.textContent=t.break; E.hTotal.textContent=t.total;
+  E.hSum.textContent=t.sum; E.hLongest.textContent=t.longest;
 }
 
 /* ---- månad/år ---- */
@@ -161,7 +175,7 @@ function setLang(){
 })();
 function daysInMonth(m,y){return new Date(Number(y),Number(m)+1,0).getDate()}
 
-/* ---- bygg rader ---- */
+/* ---- rader ---- */
 function build(){
   E.rows.innerHTML='';
   const n=daysInMonth(E.month.value,E.year.value);
@@ -176,6 +190,8 @@ function build(){
     E.rows.append(r);
   }
   calcAll();
+  // Stäng panelen efter “Skapa dagar” på mobil
+  if (window.innerWidth < 861) E.settings.open = false;
 }
 E.btnGen.onclick=build; build();
 
@@ -200,13 +216,12 @@ function calcAll(){
   E.longest.textContent=longest.toFixed(2);
 }
 
-/* ---- snabbifyll ---- */
+/* ---- snabbifyll & rensa ---- */
 E.btnFill.onclick=()=>{
   const n=daysInMonth(E.month.value,E.year.value);
   for(let d=1; d<=n; d++){
     const date=new Date(Number(E.year.value),Number(E.month.value),d);
-    const wd=date.getDay(); // 0 sön, 6 lör
-    if(wd===0||wd===6) continue;
+    const wd=date.getDay(); if(wd===0||wd===6) continue; // helg = hoppa över
     const r=E.rows.querySelector(`.row[data-day="${d}"]`);
     const [f,t,b]=r.querySelectorAll('input[type="time"]');
     f.value='07:00'; t.value='16:00'; b.value='00:30';
@@ -214,13 +229,12 @@ E.btnFill.onclick=()=>{
   }
   if(E.autosave.checked) saveLocal();
 };
-
-/* ---- rensa ---- */
 E.btnClear.onclick=()=>{ localStorage.removeItem('tannenhof-v2'); build(); };
 
 /* ---- språk/lagring ---- */
 E.lang.onchange=()=>{ setLang(); if(E.autosave.checked) saveLocal(); };
 E.autosave.onchange=()=>{ el('#lAutosave').textContent=T[E.lang.value].autosave+(E.autosave.checked?' (på)':' (av)'); if(!E.autosave.checked) localStorage.removeItem('tannenhof-v2'); else saveLocal(); };
+
 function getState(){
   const rows=[...E.rows.querySelectorAll('.row')].map(r=>{
     const [f,t,b,tot]=r.querySelectorAll('input'); return {f:f.value,t:t.value,b:b.value,tot:tot.value};
@@ -236,7 +250,6 @@ function loadLocal(){
   setLang(); build();
   if(s.rows){ [...E.rows.querySelectorAll('.row')].forEach((r,i)=>{ const it=s.rows[i]; if(!it) return; const [f,t,b,tot]=r.querySelectorAll('input'); f.value=it.f||''; t.value=it.t||''; b.value=it.b||''; tot.value=it.tot||''; }); calcAll(); }
 }
-setLang(); loadLocal();
 
 /* ---- dela/skriva ut/QR ---- */
 E.btnPrint.onclick=()=>window.print();
@@ -257,7 +270,6 @@ E.btnShare.onclick=async ()=>{
   else { await navigator.clipboard.writeText(text); alert('Kopierat till urklipp.'); }
 };
 E.btnQR.onclick=()=>{
-  // skapar en QR-bild via Googles chart API med sammanställningen
   const t=T[E.lang.value];
   const data=`${t.title} ${Number(E.month.value)+1}/${E.year.value}\n${t.sum} ${E.sum.textContent} h`;
   const url=`https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=${encodeURIComponent(data)}`;
@@ -267,6 +279,12 @@ E.btnQR.onclick=()=>{
 /* ---- logo ---- */
 E.logoText.oninput=()=>{ E.logoBox.textContent=E.logoText.value||'🌲'; E.logoBox.style.backgroundImage='none'; if(E.autosave.checked) saveLocal(); }
 E.logoFile.onchange=(ev)=>{ const f=ev.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ E.logoBox.style.backgroundImage=`url(${r.result})`; E.logoBox.textContent=''; if(E.autosave.checked) saveLocal(); }; r.readAsDataURL(f); };
+
+/* ---- init ---- */
+setLang();
+loadLocal();
+// Mobil: starta med stängd panel
+if (window.innerWidth < 861) E.settings.open = false;
 </script>
 </body>
 </html>
