@@ -14,10 +14,6 @@
     --ink:#0b2a10;
     --muted:#6b7a6c;
     --ring:#a5d6a7;
-    --row:#f7fbf8;
-    --row-alt:#eef6f0;
-    --accent:#1b5e20;
-    --danger:#b71c1c;
     --shadow:0 10px 30px rgba(0,0,0,.12);
     --radius:16px;
   }
@@ -25,47 +21,34 @@
   body{
     margin:0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    background:#f4f7f5;
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
+    background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
 
   /* Header */
-  .appbar{
-    position:sticky; top:0; z-index:30;
-    background: linear-gradient(0deg, var(--green) 0%, var(--green-700) 100%);
-    color:#fff; box-shadow:var(--shadow);
-  }
-  .appbar-inner{
-    max-width:1100px; margin:auto; padding:14px 16px;
-    display:flex; align-items:center; gap:12px;
-  }
-  .brand{display:flex; align-items:center; gap:12px; min-width:0;}
+  .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
+  .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px }
+  .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
   .brand img{ width:36px; height:36px; object-fit:cover; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.25)}
-  .brand h1{ margin:0; font-size:22px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .brand small{display:block; font-size:12px; opacity:.9}
+  .brand h1{ margin:0; font-size:22px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .brand small{ display:block; font-size:12px; opacity:.9 }
   .spacer{flex:1}
-  .btn{ appearance:none; border:0; border-radius:14px; padding:10px 14px;
-        background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow);}
+  .btn{ appearance:none; border:0; border-radius:14px; padding:10px 14px; background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow) }
   .btn--dark{ background:#0e1a11; color:#fff }
   .btn:active{ transform:translateY(1px) }
 
-  /* Total header */
-  .total{ max-width:1100px; margin:14px auto; padding:14px 16px; }
+  /* Total */
+  .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
   .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);
-              display:flex; align-items:center; justify-content:space-between; gap:10px; }
+              display:flex; align-items:center; justify-content:space-between; gap:10px }
   .total-title{font-weight:800; letter-spacing:.2px}
   .total-sum{font-size:20px; font-weight:800}
 
-  /* Table wrapper with horizontal scroll */
-  .table-wrap{
-    max-width:1100px; margin:0 auto 90px;
-    background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
-    overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action: pan-x pan-y;
-  }
-  table{border-collapse:separate; border-spacing:0; width:980px;}
+  /* Table */
+  .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+               overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action: pan-x pan-y; }
+  table{ border-collapse:separate; border-spacing:0; width:980px }
   thead th{ position:sticky; top:0; z-index:5; background:var(--green-100); color:var(--ink);
-            text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1; }
+            text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1 }
   tbody td{ padding:10px 12px; border-bottom:1px solid #eef2ee; background:#fff }
   tbody tr:nth-child(2n) td{ background:#fafdfb }
   .daycol{ width:70px; text-align:center; font-weight:800}
@@ -73,38 +56,35 @@
   .breakcol{ width:160px}
   .totalcol{ width:120px; font-weight:800}
   .projcol{ width:240px}
-  .actcol{ width:150px}
+  .actcol{ width:170px}
 
   /* Inputs */
   .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
   .t:focus{ outline:3px solid var(--ring); border-color:transparent }
-  .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px; }
+  .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px }
   .pill span{opacity:.7}
   .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
 
-  .btn-icon{
-    width:44px; height:44px; display:inline-grid; place-items:center; border-radius:12px;
-    background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative;
-  }
-  .btn-icon .bubble{
-    position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
-    background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center;
-  }
+  .btn-icon{ width:44px; height:44px; display:inline-grid; place-items:center; border-radius:12px;
+             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative }
+  .btn-icon.secondary{ background:#2b7a48 }
+  .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
+                     background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
-  /* Current day highlight */
-  .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green); }
+  /* Highlight today */
+  .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
   /* Watermark */
-  .wm{ position:fixed; right:16px; bottom:18px; width:260px; max-width:42vw; opacity:.7; z-index:0; pointer-events:none; filter:grayscale(.1); }
+  .wm{ position:fixed; right:16px; bottom:18px; width:260px; max-width:42vw; opacity:.7; z-index:0; pointer-events:none; filter:grayscale(.1) }
 
-  /* Floating settings button */
+  /* FAB */
   .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
-        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0;}
+        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0 }
 
   /* Modal */
-  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40; }
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
   .modal.open{ display:grid }
-  .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px; }
+  .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px }
   .sheet h3{ margin:0 0 8px 0 }
   .grid{ display:grid; gap:12px }
   .grid-2{ grid-template-columns:1fr 1fr }
@@ -248,7 +228,8 @@
       <textarea id="notesArea" class="t" style="height:180px" placeholder="Anteckningar…"></textarea>
       <div class="grid">
         <span>📷 <span data-i="photos">Foton (valfritt)</span></span>
-        <input id="photosInput" type="file" accept="image/*" capture="environment" multiple class="t">
+        <!-- Viktigt: INGEN capture här => galleri tillåtet -->
+        <input id="photosInput" type="file" accept="image/*" multiple class="t">
         <div id="photoList" class="muted"></div>
       </div>
       <div class="row" style="justify-content:flex-end">
@@ -412,7 +393,9 @@ function buildRows(){
       <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
       <td class="actcol">
         <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
-        <button class="btn-icon" data-photo="${d}" title="Foto">📷<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+        <!-- Nytt: två knappar -->
+        <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
+        <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galleri">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
       </td>
     `;
     bodyRows.appendChild(tr);
@@ -482,9 +465,11 @@ bodyRows.addEventListener("input", e=>{
 });
 bodyRows.addEventListener("click", async e=>{
   const noteBtn = e.target.closest("[data-note]");
-  const photoBtn = e.target.closest("[data-photo]");
+  const camBtn  = e.target.closest("[data-photo-camera]");
+  const galBtn  = e.target.closest("[data-photo-gallery]");
   if(noteBtn){ openNotes(noteBtn.dataset.note); return; }
-  if(photoBtn){ await quickPhoto(photoBtn.dataset.photo); return; }
+  if(camBtn){ await addPhotos(camBtn.dataset.photoCamera, {capture:true}); return; }
+  if(galBtn){ await addPhotos(galBtn.dataset.photoGallery, {capture:false}); return; }
 });
 
 function computeRow(d){
@@ -539,14 +524,13 @@ closeNotes.onclick = closeNotesModal;
 saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); closeNotesModal(); }
 photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); };
 
-/*** Quick camera button per row ***/
-async function quickPhoto(day){
-  // Create a transient input to open camera/gallery
+/*** Foto-hjälpare ***/
+async function addPhotos(day, {capture}){
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
-  input.capture = 'environment';
   input.multiple = true;
+  if(capture){ input.setAttribute('capture','environment'); } // endast kamera
   input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); };
   input.click();
 }
@@ -564,7 +548,7 @@ async function addFilesToDay(day, fileList){
   const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
   const files = [...fileList].slice(0, 10 - prev.length); // cap total 10/dag
   for(const f of files){
-    const data = await fileToDataURL(f, 1600); // skala ner
+    const data = await fileToDataURL(f, 1600);
     prev.push(data);
   }
   localStorage.setItem(photoKey(day), JSON.stringify(prev));
@@ -590,10 +574,10 @@ printBtn.onclick = ()=>window.print();
 /*** Logo input — scale & save immediately ***/
 logoFile.onchange = async (e)=>{
   const f = e.target.files?.[0]; if(!f) return;
-  logoData = await fileToDataURL(f, 512);  // skala ner logga
+  logoData = await fileToDataURL(f, 512);
   S.logoData = logoData;
   localStorage.setItem("tnh_settings", JSON.stringify(S));
-  applyLogo(); // visa direkt
+  applyLogo();
 }
 clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
 
@@ -628,7 +612,7 @@ function fileToDataURL(file, maxSide){
   });
 }
 
-/*** Restore settings on load ***/
+/*** Restore on load ***/
 function init(){
   companyInput.value = company;
   titleTxt.textContent = company || t('appTitle');
@@ -641,7 +625,7 @@ function init(){
 
   applyLogo(); buildRows(); applyLanguage(); computeAll();
 
-  // drag-to-scroll for desktop convenience
+  // drag-to-scroll for desktop
   const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
   scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
@@ -649,13 +633,6 @@ function init(){
   scroller.addEventListener('mousemove', (e)=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1; scroller.scrollLeft=scrollLeft-walk; });
 }
 document.addEventListener("DOMContentLoaded", init);
-
-/*** Recompute totals after every input ***/
-function recomputeAllRows(){
-  bodyRows.querySelectorAll("tr").forEach(tr=>{
-    computeRow(tr.dataset.day);
-  });
-}
 </script>
 </body>
 </html>
