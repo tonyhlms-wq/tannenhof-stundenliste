@@ -1,397 +1,545 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tannenhof – Tidsrapport</title>
-<meta name="theme-color" content="#2e7d32">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Thüringer Tannenhof – Tidsrapport</title>
+<meta name="theme-color" content="#1f6b3b" />
+<link rel="icon" href="favicon.ico" />
 <style>
   :root{
-    --bg:#f5f8f6;--card:#fff;--ink:#13261b;--muted:#6e7e73;
-    --brand:#2e7d32;--brand-2:#1f5a23;--accent:#235f3a;--pill:#f2f8f3;--ring:#a5d6a7;
+    --brand: #1f6b3b;     /* toppmeny, knappar */
+    --brand-2:#0f3e23;    /* mörkare skugga */
+    --accent:#ffffff;     /* knapptxt */
+    --chip:#eaf4ee;       /* småfält */
+    --text:#102017;       /* huvudtext */
+  }
+  /* Kamouflage-tema aktiveras genom att sätta data-theme="camo" på body */
+  body[data-theme="camo"]{
+    --brand:#2f4f3a;
+    --brand-2:#1e3426;
+    --chip:#eef3ef;
+    --text:#0e1a14;
+    background:
+      radial-gradient( circle at 15% 20%, #6b8f6a 0 20%, transparent 21%),
+      radial-gradient( circle at 80% 10%, #3f5b46 0 16%, transparent 17%),
+      radial-gradient( circle at 70% 70%, #5b6e54 0 22%, transparent 23%),
+      radial-gradient( circle at 20% 80%, #8aa27c 0 18%, transparent 19%),
+      #f7faf7;
+    background-attachment: fixed;
   }
   *{box-sizing:border-box}
-  body{margin:0;font:500 16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--bg)}
-  header{position:sticky;top:0;z-index:30;color:#fff;background:linear-gradient(180deg,var(--brand),var(--brand-2));box-shadow:0 10px 26px rgba(0,0,0,.12)}
-  .h{max-width:980px;margin:auto;padding:12px 14px;display:flex;gap:12px;align-items:center}
-  .logo{width:36px;height:36px;border-radius:10px;overflow:hidden;background:#fff;display:grid;place-items:center}
-  .logo img{width:100%;height:100%;object-fit:cover}
-  .ttl{font-weight:800;letter-spacing:.2px}
-  .sub{font-size:12px;opacity:.9}
-  .sp{flex:1}
-  .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:800;display:flex;gap:8px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-  .btn.white{background:#fff;color:var(--ink)}
-  .btn.black{background:#0d0f0e;color:#fff}
-  .wrap{max-width:980px;margin:14px auto;padding:0 14px}
-  .sum{background:var(--card);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.10);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .sum b{letter-spacing:.2px}
-  .tbl{background:var(--card);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.10);overflow:auto}
-  .head,.row{display:grid;grid-template-columns:78px 1fr 1fr 120px 90px 1.2fr;gap:12px;padding:12px 14px;align-items:center}
-  .head{position:sticky;top:0;background:#eaf4ee;font-weight:800;z-index:5}
-  .row{border-top:1px solid #e5eee8;background:#fcfefd}
-  .row:nth-child(odd){background:#f7fbf9}
-  .day{display:flex;align-items:center;gap:10px;position:relative}
-  .day .badge{width:40px;height:40px;border-radius:12px;border:1px solid #dbe9e2;background:#fff;display:grid;place-items:center}
-  .day .mark{position:absolute;left:0;top:0;bottom:0;width:6px;background:#2e7d32;opacity:.2;border-radius:0 6px 6px 0}
-  .pill{display:flex;gap:8px;align-items:center;background:var(--pill);border:1px solid #dbe9e2;border-radius:14px;padding:10px 12px}
-  .pill select,.pill input{border:0;background:transparent;outline:none;font:inherit;min-width:0}
-  .right{justify-content:flex-end;display:flex}
-  .total{font-weight:900}
-  .kit{display:flex;gap:8px}
-  .icon{width:46px;height:46px;border-radius:12px;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-  .icon.alt{background:var(--accent)}
-  .thumbs{grid-column:2 / -1;display:flex;gap:8px;flex-wrap:wrap}
-  .thumbs img{width:56px;height:56px;border-radius:10px;object-fit:cover;box-shadow:0 6px 14px rgba(0,0,0,.12)}
-  .fab{position:fixed;left:16px;bottom:16px;width:64px;height:64px;border-radius:18px;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.22);z-index:25}
-  body{padding-bottom:140px}
-  .wm{position:fixed;right:14px;bottom:54px;z-index:0;pointer-events:none;opacity:.7}
-  .wm img{width:260px;max-width:42vw}
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:60}
-  .modal.open{display:grid;place-items:center}
-  .sheet{background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:min(92vw,760px);max-height:88vh;overflow:auto;padding:16px}
-  .sheet h3{margin:0 0 10px}
-  .grid{display:grid;gap:10px}
-  .grid-2{grid-template-columns:1fr 1fr}
-  .close{float:right;border:0;border-radius:10px;background:#eee;padding:6px 10px}
-  .sbtn{border:1px solid #dbe9e2;border-radius:14px;padding:12px 14px;font-weight:800;background:#f7fbf8}
-  .sbtn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-  .hint{color:var(--muted);font-size:13px}
-  @media (max-width:560px){.head,.row{grid-template-columns:68px 1fr 1fr 110px 86px 1.2fr}.icon{width:44px;height:44px}}
-  /* Teman */
-  .theme-dark{--bg:#0f1412;--card:#111916;--ink:#e3f2ea;--muted:#9fb3a6;--brand:#1d4e2a;--brand-2:#14381e;--accent:#285b3a;--pill:#0b120f;--ring:#326b45}
-  .theme-brown{--bg:#f5f1ec;--card:#fff;--ink:#2a2018;--muted:#7b6a59;--brand:#6d4c41;--brand-2:#4e342e;--accent:#795548;--pill:#f7f2ef;--ring:#c7a899}
-  .theme-sage{--bg:#eef3f0;--card:#fff;--ink:#213329;--muted:#6b8072;--brand:#5b7f6a;--brand-2:#3e5b4a;--accent:#486957;--pill:#f4f7f5;--ring:#a3c0b0}
-  .theme-camo{
-    --bg:#e9eee9;--card:#ffffff;--ink:#202a22;--muted:#617362;--brand:#3f5d3f;--brand-2:#2c442e;--accent:#284a31;--pill:#f2f6f2;--ring:#98b59f;
-    background:
-      repeating-linear-gradient(25deg,rgba(56,77,56,.12)0 22px,rgba(94,115,94,.12)22px 44px),
-      repeating-linear-gradient(-18deg,rgba(160,173,150,.12)0 28px,rgba(120,141,120,.12)28px 56px);
-    background-attachment:fixed;
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    color:var(--text);
+  }
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    background: linear-gradient(0deg,var(--brand) 0%, var(--brand-2) 100%);
+    color:#fff; padding:.8rem .9rem; display:flex; align-items:center; gap:12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  }
+  .logo{
+    width:36px;height:36px;border-radius:8px;background:#fff;overflow:hidden;display:grid;place-items:center;flex:0 0 auto;
+  }
+  .logo img{max-width:100%;max-height:100%;display:block}
+  .title{font-weight:800; line-height:1.05}
+  .subtitle{font-weight:500; opacity:.85; font-size:.9rem}
+  .spacer{flex:1}
+  .pill{
+    background:#fff; color:#222; border-radius:16px; padding:.55rem .8rem; font-weight:700;
+    display:inline-flex; align-items:center; gap:.5rem; box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  .pill.dark{background:#111; color:#fff}
+  main{padding:16px}
+  .card{
+    background:#f2f7f4; border-radius:14px; padding:12px 16px; box-shadow:0 10px 20px rgba(0,0,0,.06);
+  }
+  .sumtitle{display:flex;align-items:center;gap:.6rem;font-weight:800}
+  .table-wrap{
+    overflow:auto; margin-top:10px; background:#fff; border-radius:14px; box-shadow:0 10px 20px rgba(0,0,0,.06);
+    position:relative;
+  }
+  table{border-collapse:separate;border-spacing:12px; min-width:900px; width:100%}
+  th,td{white-space:nowrap}
+  thead th{
+    position:sticky; top:0; background:#eaf4ee; padding:.8rem .9rem; border-radius:12px; text-align:left; font-weight:800; z-index:1;
+  }
+  tbody td{padding:0}
+  .chip{
+    background:var(--chip); border-radius:14px; padding:.8rem .9rem; display:flex; align-items:center; gap:.5rem;
+    border:1px solid #dfe9e3;
+  }
+  .num{font-weight:800; width:3.2rem; display:grid; place-items:center; background:#f0f6f2; border:1px solid #e5efe9; border-radius:14px}
+  .time{
+    width:9.8rem; display:flex; align-items:center; justify-content:space-between; gap:.25rem;
+  }
+  select,input[type=time],input[type=text]{border:none; background:transparent; font:inherit; color:inherit; width:100%}
+  .btn{
+    background:var(--brand); color:var(--accent); border:none; padding:.8rem; border-radius:14px; min-width:3.1rem;
+    display:grid; place-items:center; box-shadow:0 10px 16px rgba(0,0,0,.14);
+  }
+  .row{display:grid; grid-template-columns:4.2rem 11rem 11rem 10rem 6rem 11rem 8rem; gap:12px; align-items:center}
+  .right{display:flex; gap:12px; justify-content:flex-end}
+  .fab{
+    position:fixed; left:16px; bottom:16px; z-index:11;
+    width:64px;height:64px;border-radius:18px;background:var(--brand);color:#cfe9db; display:grid; place-items:center;
+    box-shadow:0 14px 28px rgba(0,0,0,.25);
+  }
+  .fab span{font-size:28px}
+  .footerpad{height:110px} /* så FAB inte täcker sista raden */
+  /* Modal */
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;place-items:center;z-index:20}
+  .modal{width:min(620px,92vw); background:#fff; border-radius:18px; padding:18px; box-shadow:0 20px 40px rgba(0,0,0,.35)}
+  .modal h3{margin:.2rem 0 1rem; font-size:1.25rem}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .field{background:#f5faf7;border:1px solid #e1eee7;border-radius:12px;padding:.6rem .7rem}
+  .field label{display:block;font-size:.8rem;opacity:.75;margin-bottom:.2rem}
+  .row-end{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+  .ghost{background:#eef4f0;color:#0e271a}
+  .range-row{display:flex;align-items:center;gap:10px}
+  input[type=range]{width:100%}
+  .theme-samples{display:flex;gap:8px;flex-wrap:wrap}
+  .swatch{width:42px;height:28px;border-radius:8px;border:2px solid #0001;cursor:pointer}
+  .swatch.camo{background:
+      radial-gradient( circle at 30% 40%, #6b8f6a 0 50%, transparent 51%),
+      radial-gradient( circle at 70% 30%, #3f5b46 0 45%, transparent 46%),
+      radial-gradient( circle at 60% 75%, #5b6e54 0 55%, transparent 56%),
+      #2f4f3a;}
+  /* Vattenstämpel */
+  .wm{
+    position:fixed; right:18px; bottom:88px; width:260px; aspect-ratio:1.3/1;
+    opacity:.7; pointer-events:none; z-index:0; mix-blend-mode:multiply;
+  }
+  .wm img{width:100%; height:100%; object-fit:contain; filter:grayscale(20%) contrast(1.05)}
+  /* Hjälp för små skärmar: rad bryts snyggt */
+  @media (max-width:480px){
+    .row{grid-template-columns:3.8rem 10.6rem 10.6rem 9.6rem 6rem 10.6rem 8rem}
   }
 </style>
 </head>
 <body>
-  <div class="wm"><img id="wmImg" alt=""></div>
-
-  <header>
-    <div class="h">
-      <div class="logo"><img id="logoImg" alt=""></div>
-      <div>
-        <div class="ttl" id="hdrTitle">Thüringer Tannenhof – Tidsrapport</div>
-        <div class="sub" id="hdrSub"></div>
-      </div>
-      <div class="sp"></div>
-      <button class="btn white" id="shareBtn">🔗 <span data-i="share">Dela / Skicka</span></button>
-      <button class="btn black" id="printBtn">🖨️ <span data-i="print">Skriv ut / PDF</span></button>
+  <div class="topbar">
+    <div class="logo"><img id="logoImg" alt="logo" src="tnh-tree-192.png"></div>
+    <div style="min-width:0">
+      <div class="title" id="titleTxt">Tannenhofs tidtabell</div>
+      <div class="subtitle" id="monthTxt"></div>
     </div>
-  </header>
-
-  <div class="wrap">
-    <div class="sum">
-      <div>⏳ <b id="sumTitle">Totalt – </b></div>
-      <div class="ttl" id="grandTotal">0.00</div>
-    </div>
-
-    <div class="tbl">
-      <div class="head">
-        <div data-i="day">Dag</div>
-        <div data-i="from">Från</div>
-        <div data-i="to">Till</div>
-        <div data-i="break">Paus</div>
-        <div data-i="totalCol">Totalt</div>
-        <div data-i="project">Projekt/plats</div>
-      </div>
-      <div id="rows"></div>
-    </div>
+    <div class="spacer"></div>
+    <button class="pill" id="shareBtn">🍰 <span id="shareTxt">Dela / Skicka</span></button>
+    <button class="pill dark" id="printBtn">🖨️ <span id="printTxt">Skriv ut / PDF</span></button>
   </div>
 
-  <button class="fab" id="fab">⚙️</button>
+  <main>
+    <div class="card">
+      <div class="sumtitle">⏳ <span id="sumHdr">Totalt – </span><span id="sumMonth"></span><div class="spacer"></div><strong id="sumHours">0.00</strong></div>
+    </div>
 
-  <!-- Settings -->
-  <div class="modal" id="settings">
-    <div class="sheet">
-      <button class="close" data-close>Stäng</button>
-      <h3 data-i="settings">Inställningar</h3>
-      <div class="grid grid-2">
-        <label class="grid"><span data-i="company">Företag</span><input id="company" class="pill" type="text" placeholder="THÜRINGER TANNENHOF"></label>
-        <label class="grid"><span data-i="language">Språk</span><select id="lang" class="pill"><option value="sv">Svenska</option><option value="de">Deutsch</option><option value="en">English</option></select></label>
-        <label class="grid"><span data-i="theme">Tema</span><select id="themeSel" class="pill">
-          <option value="green">Tannenhof-grön</option><option value="dark">Mörkläge</option><option value="brown">Träbrun</option><option value="sage">Grågrön</option><option value="camo">Kamouflage</option><option value="custom">Eget tema…</option>
-        </select></label>
-        <div id="customBox" class="grid" style="display:none">
-          <label class="grid"><span>Bakgrund</span><input id="cBg" class="pill" type="color" value="#f5f8f6"></label>
-          <label class="grid"><span>Knappar & rubrik</span><input id="cBrand" class="pill" type="color" value="#2e7d32"></label>
-          <label class="grid"><span>Text</span><input id="cInk" class="pill" type="color" value="#13261b"></label>
-          <button class="sbtn" id="saveCustom">Spara mitt tema</button>
+    <div class="table-wrap" id="tblWrap" aria-label="timesheet">
+      <table>
+        <thead>
+          <tr class="row">
+            <th id="hDay">Dag</th>
+            <th id="hFrom">Från</th>
+            <th id="hTo">Till</th>
+            <th id="hBreak">Paus</th>
+            <th id="hTotal">Totalt</th>
+            <th id="hProject">Projekt/plats</th>
+            <th id="hAction">Åtgärd</th>
+          </tr>
+        </thead>
+        <tbody id="bodyRows"></tbody>
+      </table>
+    </div>
+
+    <div class="footerpad"></div>
+  </main>
+
+  <!-- FAB settings -->
+  <button class="fab" id="fab" aria-label="Inställningar"><span>⚙️</span></button>
+
+  <!-- Modal -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal">
+      <h3 id="setHdr">Inställningar</h3>
+      <div class="grid-2">
+        <div class="field">
+          <label id="lblCompany">Företagsnamn</label>
+          <input id="inpCompany" type="text" placeholder="THÜRINGER TANNENHOF"/>
         </div>
-        <label class="grid"><span data-i="watermark">Vattenstämpel</span>
-          <div class="pill"><input id="wmRange" type="range" min="0" max="100" value="70" style="width:180px"><span id="wmVal">70%</span></div>
-        </label>
-        <div class="grid">
-          <span data-i="logo">Logga (bild)</span>
-          <input id="logoFile" type="file" accept="image/*" class="pill">
-          <span class="hint" data-i="logoHint">Loggan sparas lokalt och används även som vattenstämpel.</span>
+        <div class="field">
+          <label id="lblLang">Språk</label>
+          <select id="selLang">
+            <option value="sv">Svenska</option>
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lblWm">Vattenstämpel</label>
+          <div class="range-row">
+            <input id="rngWM" type="range" min="0" max="100" step="1" />
+            <span id="rngVal">70%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label id="lblLogo">Byt logga</label>
+          <input id="fileLogo" type="file" accept="image/*" />
+        </div>
+
+        <div class="field">
+          <label id="lblTheme">Tema</label>
+          <div class="theme-samples">
+            <div class="swatch" id="swatchGreen" style="background:linear-gradient(0deg,#1f6b3b,#0f3e23)"></div>
+            <div class="swatch camo" id="swatchCamo" title="Kamouflage"></div>
+            <div class="swatch" id="swatchCustom" style="display:grid;place-items:center">🎨</div>
+          </div>
+        </div>
+        <div class="field" id="customColors" style="display:none">
+          <label id="lblPick">Välj egna färger</label>
+          <div class="grid-2">
+            <div><small>Primär</small><input type="color" id="pickBrand" value="#1f6b3b" style="width:100%"></div>
+            <div><small>Mörk</small><input type="color" id="pickBrand2" value="#0f3e23" style="width:100%"></div>
+          </div>
         </div>
       </div>
-      <div class="grid" style="margin-top:12px"><button class="sbtn primary" data-close data-i="saveClose">Spara & stäng</button></div>
-    </div>
-  </div>
-
-  <!-- Camera/Gallery chooser -->
-  <div class="modal" id="camChooser">
-    <div class="sheet">
-      <button class="close" data-close>Stäng</button>
-      <h3 data-i="addPhoto">Lägg till foto</h3>
-      <div class="grid grid-2">
-        <button class="sbtn primary" id="camBtn">📷 <span data-i="camera">Kamera</span></button>
-        <button class="sbtn" id="galBtn">🖼️ <span data-i="gallery">Galleri</span></button>
+      <div class="row-end">
+        <button class="pill ghost" id="btnReset">Återställ</button>
+        <button class="pill" id="btnClose">Stäng</button>
       </div>
     </div>
   </div>
 
-  <!-- Hidden inputs for camera/gallery -->
-  <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none">
-  <input id="galleryInput" type="file" accept="image/*" multiple style="display:none">
+  <!-- Watermark -->
+  <div class="wm" id="wm"><img id="wmImg" src="tnh-tree-512.png" alt="wm"></div>
 
 <script>
-/* ---------- Translations ---------- */
-const I = {
-  sv:{share:"Dela / Skicka",print:"Skriv ut / PDF",total:"Totalt – ",
-      day:"Dag",from:"Från",to:"Till",break:"Paus",totalCol:"Totalt",project:"Projekt/plats",
-      settings:"Inställningar",company:"Företag",language:"Språk",theme:"Tema",
-      watermark:"Vattenstämpel",logo:"Logga (bild)",logoHint:"Loggan sparas lokalt och används även som vattenstämpel.",
-      saveClose:"Spara & stäng",addPhoto:"Lägg till foto",camera:"Kamera",gallery:"Galleri"},
-  de:{share:"Teilen / Senden",print:"Drucken / PDF",total:"Gesamt – ",
-      day:"Tag",from:"Von",to:"Bis",break:"Pause",totalCol:"Gesamt",project:"Projekt/Ort",
-      settings:"Einstellungen",company:"Arbeitgeber",language:"Sprache",theme:"Thema",
-      watermark:"Wasserzeichen",logo:"Logo (Bild)",logoHint:"Logo wird lokal gespeichert und auch als Wasserzeichen verwendet.",
-      saveClose:"Speichern & schließen",addPhoto:"Foto hinzufügen",camera:"Kamera",gallery:"Galerie"},
-  en:{share:"Share / Send",print:"Print / PDF",total:"Total – ",
-      day:"Day",from:"From",to:"To",break:"Break",totalCol:"Total",project:"Project/site",
-      settings:"Settings",company:"Company",language:"Language",theme:"Theme",
-      watermark:"Watermark",logo:"Logo (image)",logoHint:"Logo is stored locally and also used as the watermark.",
-      saveClose:"Save & close",addPhoto:"Add photo",camera:"Camera",gallery:"Gallery"},
+/* ---------- i18n ---------- */
+const i18n = {
+  sv:{
+    title:"Tannenhofs tidtabell",
+    share:"Dela / Skicka",
+    print:"Skriv ut / PDF",
+    total:"Totalt – ",
+    heads:["Dag","Från","Till","Paus","Totalt","Projekt/plats","Åtgärd"],
+    settings:"Inställningar", company:"Företagsnamn", lang:"Språk",
+    wm:"Vattenstämpel", logo:"Byt logga", theme:"Tema", pick:"Välj egna färger",
+    note:"Notis", projectPH:"Projekt/plats", action:"Åtgärd",
+    write:"✍️", camera:"📷"
+  },
+  de:{
+    title:"Tannenhofs Zeittabelle",
+    share:"Teilen / Senden",
+    print:"Drucken / PDF",
+    total:"Gesamt – ",
+    heads:["Tag","Von","Bis","Pause","Gesamt","Projekt/Ort","Aktion"],
+    settings:"Einstellungen", company:"Firmenname", lang:"Sprache",
+    wm:"Wasserzeichen", logo:"Logo wechseln", theme:"Thema", pick:"Eigene Farben wählen",
+    note:"Notiz", projectPH:"Projekt/Ort", action:"Aktion",
+    write:"✍️", camera:"📷"
+  },
+  en:{
+    title:"Tannenhof Timesheet",
+    share:"Share / Send",
+    print:"Print / PDF",
+    total:"Total – ",
+    heads:["Day","From","To","Break","Total","Project/site","Action"],
+    settings:"Settings", company:"Company name", lang:"Language",
+    wm:"Watermark", logo:"Change logo", theme:"Theme", pick:"Pick custom colors",
+    note:"Note", projectPH:"Project/site", action:"Action",
+    write:"✍️", camera:"📷"
+  }
 };
-let LANG = localStorage.getItem("tnh_lang") || "sv";
+let lang = localStorage.getItem("tnh_lang") || "sv";
+
+/* ---------- State ---------- */
+const state = {
+  month:new Date().getMonth(), year:new Date().getFullYear(),
+  wmOpacity: Number(localStorage.getItem("tnh_wm") ?? 70),
+  logoData: localStorage.getItem("tnh_logo") || "",
+  company: localStorage.getItem("tnh_company") || "THÜRINGER TANNENHOF",
+  theme: localStorage.getItem("tnh_theme") || "green",
+  brand: localStorage.getItem("tnh_brand") || "",
+  brand2: localStorage.getItem("tnh_brand2") || ""
+};
 
 /* ---------- Helpers ---------- */
-const rowsEl = document.getElementById('rows');
-const grandTotal = document.getElementById('grandTotal');
-const sumTitle = document.getElementById('sumTitle');
-const hdrSub = document.getElementById('hdrSub');
-const wmImg = document.getElementById('wmImg');
-const logoImg = document.getElementById('logoImg');
-
-function t(k){return I[LANG][k]}
-function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
-function monthLabel(y,m){return new Date(y,m,1).toLocaleDateString(LANG==="en"?"en-GB":(LANG==="de"?"de-DE":"sv-SE"),{month:"long",year:"numeric"}).replace(/^./,c=>c.toUpperCase())}
-function parseHM(v){if(!v)return 0;const[a,b]=v.split(':').map(Number);return a*60+b}
-
-/* ---------- Build UI ---------- */
-const today=new Date(); let curYear=today.getFullYear(), curMonth=today.getMonth();
-
-function build(){
-  rowsEl.innerHTML='';
-  const n=daysInMonth(curYear,curMonth);
-  for(let d=1; d<=n; d++){ rowsEl.insertAdjacentHTML("beforeend", rowHtml(d)); }
-  bindRowEvents(); restore(); markToday(); computeAll();
+function monthName(y,m, l=lang){
+  const f = new Intl.DateTimeFormat(l, {month:"long", year:"numeric"});
+  return f.format(new Date(y,m,1));
 }
-function rowHtml(d){
-  return `<div class="row" id="day-${d}" data-d="${d}">
-    <div class="day"><div class="badge">📅</div><b>${d}</b><div class="mark"></div></div>
-    <div class="pill"><select class="from">${timeOpts()}</select></div>
-    <div class="pill"><select class="to">${timeOpts()}</select></div>
-    <div class="pill"><select class="break"><option value=""></option><option>00:00</option><option>00:10</option><option>00:15</option><option>00:30</option><option>00:45</option><option>01:00</option></select></div>
-    <div class="right"><div class="total" data-sum>0.00</div></div>
-    <div class="pill" style="min-width:160px"><input class="project" type="text" placeholder="${t('project')}"></div>
-    <div class="kit"><button class="icon noteBtn">📝</button><button class="icon alt camBtn">📷</button></div>
-    <div class="thumbs"></div>
-  </div>`;
+function pad2(n){return (n<10?"0":"")+n;}
+function diffHours(from,to,brk){
+  if(!from || !to) return 0;
+  const [fh,fm] = from.split(":").map(Number);
+  const [th,tm] = to.split(":").map(Number);
+  let mins = (th*60+tm) - (fh*60+fm) - (parseInt(brk||"0")||0);
+  if (mins<0) mins += 24*60; // över midnatt fallback
+  return Math.max(0, mins)/60;
 }
-function timeOpts(){let s=`<option value=""></option>`;for(let h=0;h<24;h++){for(let m=0;m<60;m+=5){const v=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;s+=`<option value="${v}">${v}</option>`}}return s}
-function computeRow(row){
-  const f=parseHM(row.querySelector('.from').value);
-  const to=parseHM(row.querySelector('.to').value);
-  const b=parseHM(row.querySelector('.break').value);
-  const mins=Math.max(0,to-f-b);
-  row.querySelector('[data-sum]').textContent=(mins/60).toFixed(2);
+function saveLS(){  // spara enklare preferenser
+  localStorage.setItem("tnh_lang", lang);
+  localStorage.setItem("tnh_company", state.company);
+  localStorage.setItem("tnh_wm", String(state.wmOpacity));
+  localStorage.setItem("tnh_logo", state.logoData);
+  localStorage.setItem("tnh_theme", state.theme);
+  if(state.brand) localStorage.setItem("tnh_brand", state.brand);
+  if(state.brand2) localStorage.setItem("tnh_brand2", state.brand2);
 }
-function computeAll(){let s=0;document.querySelectorAll('[data-sum]').forEach(e=>s+=parseFloat(e.textContent||'0'));grandTotal.textContent=s.toFixed(2)}
 
-/* ---------- Storage ---------- */
-function KR(d){return `tnh_${curYear}_${curMonth}_d${d}` }
-function KP(d){return `tnh_${curYear}_${curMonth}_pics_${d}` }
-function KN(d){return `tnh_${curYear}_${curMonth}_note_${d}` }
+/* ---------- Build table ---------- */
+const bodyRows = document.getElementById("bodyRows");
+function daysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
 
-function saveRow(row){
-  const d=row.dataset.d;
-  localStorage.setItem(KR(d), JSON.stringify({
-    from:row.querySelector('.from').value,
-    to:row.querySelector('.to').value,
-    break:row.querySelector('.break').value,
-    project:row.querySelector('.project').value
-  }));
-}
-function restore(){
-  const n=daysInMonth(curYear,curMonth);
-  for(let d=1; d<=n; d++){
-    const row=document.getElementById(`day-${d}`);
-    const st=JSON.parse(localStorage.getItem(KR(d))||"null");
-    if(st){row.querySelector('.from').value=st.from||"";row.querySelector('.to').value=st.to||"";row.querySelector('.break').value=st.break||"";row.querySelector('.project').value=st.project||"";computeRow(row)}
-    renderThumbs(row, JSON.parse(localStorage.getItem(KP(d))||"[]"));
+function buildRows(){
+  bodyRows.innerHTML="";
+  const days = daysInMonth(state.year, state.month);
+  for(let d=1; d<=days; d++){
+    const tr = document.createElement("tr");
+    tr.className="row";
+    // Dag
+    const tdNum = document.createElement("td");
+    tdNum.innerHTML = `<div class="num">${d}</div>`;
+    tr.appendChild(tdNum);
+    // Från
+    const tdF = document.createElement("td");
+    tdF.innerHTML = `<div class="chip time">⏰ <input type="time" value=""> <select><option></option></select></div>`;
+    tr.appendChild(tdF);
+    // Till
+    const tdT = document.createElement("td");
+    tdT.innerHTML = `<div class="chip time">🕓 <input type="time" value=""> <select><option></option></select></div>`;
+    tr.appendChild(tdT);
+    // Paus
+    const tdP = document.createElement("td");
+    tdP.innerHTML = `<div class="chip time">☕ <input type="time" value="00:00"></div>`;
+    tr.appendChild(tdP);
+    // Totalt
+    const tdTot = document.createElement("td");
+    tdTot.innerHTML = `<div class="chip" data-tot>0.00</div>`;
+    tr.appendChild(tdTot);
+    // Projekt
+    const tdProj = document.createElement("td");
+    tdProj.innerHTML = `<div class="chip"><span style="font-size:18px">🧱</span> <input type="text" placeholder="${i18n[lang].projectPH}"></div>`;
+    tr.appendChild(tdProj);
+    // Åtgärd (anteckning + kamera)
+    const tdAct = document.createElement("td");
+    tdAct.innerHTML = `
+      <div class="right">
+        <button class="btn" title="Anteckning">${i18n[lang].write}</button>
+        <button class="btn camBtn" title="Kamera">${i18n[lang].camera}</button>
+      </div>`;
+    tr.appendChild(tdAct);
+
+    bodyRows.appendChild(tr);
   }
+  wireRowEvents();
+  updateTexts();
+  updateMonthText();
 }
+function wireRowEvents(){
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const [ , fromTd, toTd, brkTd ] = tr.children;
+    const from = fromTd.querySelector('input[type="time"]');
+    const to   = toTd.querySelector('input[type="time"]');
+    const brk  = brkTd.querySelector('input[type="time"]');
+    const out  = tr.querySelector('[data-tot]');
+    function calc(){
+      const brkMin = (brk.value||"00:00").split(":").map(Number);
+      const mins = brkMin[0]*60 + brkMin[1];
+      const h = diffHours(from.value,to.value, mins);
+      out.textContent = h.toFixed(2);
+      sumAll();
+    }
+    from.addEventListener("change",calc);
+    to.addEventListener("change",calc);
+    brk.addEventListener("change",calc);
 
-/* ---------- Row events ---------- */
-let activeRow=null;
-function bindRowEvents(){
-  document.querySelectorAll('.row').forEach(row=>{
-    row.querySelectorAll('.from,.to,.break,.project').forEach(el=>{
-      el.addEventListener('change',()=>{computeRow(row);computeAll();saveRow(row)})
-      el.addEventListener('input',()=>{computeRow(row);computeAll();saveRow(row)})
+    // Kamera/Galleri-val
+    tr.querySelectorAll(".camBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>openCameraMenu());
     });
-    row.querySelector('.noteBtn').addEventListener('click',()=>{
-      const d=row.dataset.d; const cur=localStorage.getItem(KN(d))||""; const t=prompt('Anteckning / Notiz / Note:',cur); if(t!==null) localStorage.setItem(KN(d),t);
-    });
-    row.querySelector('.camBtn').addEventListener('click',()=>{activeRow=row; openModal('camChooser')});
   });
 }
 
-/* ---------- Photos ---------- */
-const cameraInput=document.getElementById('cameraInput');
-const galleryInput=document.getElementById('galleryInput');
-document.getElementById('camBtn').onclick=()=>{closeModal('camChooser');cameraInput.click()};
-document.getElementById('galBtn').onclick=()=>{closeModal('camChooser');galleryInput.click()};
-cameraInput.onchange=e=>handleFiles(e.target.files);
-galleryInput.onchange=e=>handleFiles(e.target.files);
-
-async function handleFiles(list){
-  if(!activeRow||!list||!list.length)return;
-  const d=activeRow.dataset.d;
-  const prev=JSON.parse(localStorage.getItem(KP(d))||"[]");
-  const files=[...list].slice(0,10-prev.length);
-  for(const f of files){prev.push(await toDataURLScaled(f,1600))}
-  localStorage.setItem(KP(d), JSON.stringify(prev));
-  renderThumbs(activeRow, prev);
-}
-function renderThumbs(row,arr){
-  const box=row.querySelector('.thumbs'); box.innerHTML='';
-  arr.forEach((b64,i)=>{
-    const im=new Image(); im.src=b64; im.title="Tryck = öppna, håll = ta bort";
-    im.addEventListener('click',()=>window.open(b64,'_blank'));
-    im.addEventListener('contextmenu',e=>{e.preventDefault(); if(confirm('Ta bort bilden?')){arr.splice(i,1);localStorage.setItem(KP(row.dataset.d),JSON.stringify(arr));renderThumbs(row,arr);}})
-    box.appendChild(im);
-  });
-}
-function toDataURLScaled(file,maxSide){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;const m=Math.max(w,h);if(m>maxSide){const k=maxSide/m;w=Math.round(w*k);h=Math.round(h*k)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.85))};img.src=r.result};r.readAsDataURL(file)})}
-
-/* ---------- Today mark & header ---------- */
-function markToday(){const d=new Date(); if(d.getMonth()===curMonth&&d.getFullYear()===curYear){const row=document.getElementById(`day-${d.getDate()}`); if(row) row.querySelector('.mark').style.opacity='.35';}}
-function setHeaderTexts(){const m=monthLabel(curYear,curMonth); hdrSub.textContent=m; sumTitle.textContent=t('total')+m}
-
-/* ---------- Share / Print ---------- */
-document.getElementById('printBtn').onclick=()=>window.print();
-document.getElementById('shareBtn').onclick=async()=>{ if(navigator.share){await navigator.share({title:document.title,text:`${hdrSub.textContent} – ${grandTotal.textContent} h`,url:location.href})} else {prompt('Kopiera länk:',location.href)} };
-
-/* ---------- Modals ---------- */
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target.classList.contains('modal')||e.target.hasAttribute('data-close')) m.classList.remove('open')}));
-
-/* ---------- Settings ---------- */
-const company=document.getElementById('company');
-const langSel=document.getElementById('lang');
-const themeSel=document.getElementById('themeSel');
-const customBox=document.getElementById('customBox');
-const cBg=document.getElementById('cBg'), cBrand=document.getElementById('cBrand'), cInk=document.getElementById('cInk');
-document.getElementById('saveCustom').onclick=()=>{applyCustom(); saveSettings()}
-
-const wmRange=document.getElementById('wmRange'), wmVal=document.getElementById('wmVal');
-wmRange.oninput=()=>{wmVal.textContent=wmRange.value+'%'; document.getElementById('wmImg').style.opacity=(Number(wmRange.value)/100)}
-
-document.getElementById('fab').onclick=()=>openModal('settings');
-
-langSel.onchange=()=>{LANG=langSel.value; tr(); setHeaderTexts(); build(); saveSettings()};
-company.oninput=()=>{document.getElementById('hdrTitle').textContent=company.value||'Thüringer Tannenhof – Tidsrapport'};
-
-themeSel.onchange=()=>{const v=themeSel.value; customBox.style.display=(v==='custom')?'grid':'none'; applyTheme(v); saveSettings()};
-
-function applyTheme(v){
-  document.body.className='';
-  if(v==='dark') document.body.classList.add('theme-dark');
-  else if(v==='brown') document.body.classList.add('theme-brown');
-  else if(v==='sage') document.body.classList.add('theme-sage');
-  else if(v==='camo') document.body.classList.add('theme-camo');
-  // green is default
-}
-function applyCustom(){
-  document.body.className='theme-custom';
-  document.documentElement.style.setProperty('--bg', cBg.value);
-  document.documentElement.style.setProperty('--card','#ffffff');
-  document.documentElement.style.setProperty('--ink', cInk.value);
-  document.documentElement.style.setProperty('--brand', cBrand.value);
-  document.documentElement.style.setProperty('--brand-2', cBrand.value);
-  document.documentElement.style.setProperty('--accent', cBrand.value);
-  document.documentElement.style.setProperty('--pill','#f7fbf8');
-  document.documentElement.style.setProperty('--ring','#bcdac4');
+/* ---------- Sum ---------- */
+function sumAll(){
+  let sum=0;
+  bodyRows.querySelectorAll('[data-tot]').forEach(n=> sum+= Number(n.textContent||0));
+  document.getElementById("sumHours").textContent = sum.toFixed(2);
 }
 
-function saveSettings(){
-  localStorage.setItem('tnh_company', company.value.trim());
-  localStorage.setItem('tnh_lang', LANG);
-  localStorage.setItem('tnh_theme', themeSel.value);
-  localStorage.setItem('tnh_wm_op', wmRange.value);
-  if(document.body.className==='theme-custom'){
-    localStorage.setItem('tnh_custom_bg', cBg.value);
-    localStorage.setItem('tnh_custom_brand', cBrand.value);
-    localStorage.setItem('tnh_custom_ink', cInk.value);
+/* ---------- Watermark & Logo ---------- */
+const wm = document.getElementById("wm");
+const wmImg = document.getElementById("wmImg");
+function applyWM(){
+  wm.style.opacity = (state.wmOpacity/100).toFixed(2);
+  const rng = document.getElementById("rngWM");
+  const lbl = document.getElementById("rngVal");
+  if(rng){ rng.value = state.wmOpacity; }
+  if(lbl){ lbl.textContent = state.wmOpacity + "%"; }
+  if(state.logoData){
+    wmImg.src = state.logoData;
+    document.getElementById("logoImg").src = state.logoData;
   }
 }
 
-function loadSettings(){
-  company.value = localStorage.getItem('tnh_company') || 'THÜRINGER TANNENHOF';
-  document.getElementById('hdrTitle').textContent = company.value || 'Thüringer Tannenhof – Tidsrapport';
-  LANG = localStorage.getItem('tnh_lang') || LANG; langSel.value=LANG;
-  themeSel.value = localStorage.getItem('tnh_theme') || 'green'; applyTheme(themeSel.value);
-  wmRange.value = Number(localStorage.getItem('tnh_wm_op') || 70); wmVal.textContent=wmRange.value+'%'; wmImg.style.opacity=(Number(wmRange.value)/100);
-  const l = localStorage.getItem('tnh_logo'); if(l){logoImg.src=l; wmImg.src=l}else{logoImg.src=DEFAULT_LOGO; wmImg.src=DEFAULT_LOGO}
-}
-
-/* ---------- Logo upload (updates watermark too) ---------- */
-document.getElementById('logoFile').onchange = async (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  const data=await toDataURLScaled(f,512);
-  localStorage.setItem('tnh_logo', data);
-  logoImg.src=data; wmImg.src=data;
+/* ---------- Settings modal ---------- */
+const modalBack = document.getElementById("modalBack");
+document.getElementById("fab").onclick = ()=> modalBack.style.display="grid";
+document.getElementById("btnClose").onclick = ()=> { modalBack.style.display="none"; saveLS(); };
+document.getElementById("btnReset").onclick = ()=>{
+  localStorage.removeItem("tnh_logo");
+  localStorage.removeItem("tnh_brand");
+  localStorage.removeItem("tnh_brand2");
+  localStorage.removeItem("tnh_theme");
+  state.logoData=""; state.brand=""; state.brand2=""; state.theme="green";
+  document.getElementById("logoImg").src="tnh-tree-192.png";
+  wmImg.src="tnh-tree-512.png";
+  document.body.removeAttribute("data-theme");
+  setBrand("#1f6b3b","#0f3e23");
+  applyWM();
 };
 
-/* ---------- Language apply ---------- */
-function tr(){
-  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i'); el.textContent=I[LANG][k]});
-  document.querySelectorAll('.project').forEach(i=>i.placeholder = I[LANG].project);
+document.getElementById("selLang").onchange = (e)=>{ lang = e.target.value; saveLS(); updateTexts(); };
+
+document.getElementById("rngWM").oninput = (e)=>{ state.wmOpacity = Number(e.target.value); applyWM(); };
+
+document.getElementById("fileLogo").onchange = (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  const rdr = new FileReader();
+  rdr.onload = ()=>{ state.logoData = rdr.result; applyWM(); saveLS(); };
+  rdr.readAsDataURL(f);
+};
+
+/* ---------- Theme handling ---------- */
+function setBrand(b1,b2){
+  document.documentElement.style.setProperty('--brand', b1);
+  document.documentElement.style.setProperty('--brand-2', b2);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', b1);
+}
+document.getElementById("swatchGreen").onclick = ()=>{
+  state.theme="green"; document.body.removeAttribute("data-theme");
+  document.getElementById("customColors").style.display="none";
+  setBrand("#1f6b3b","#0f3e23"); saveLS();
+};
+document.getElementById("swatchCamo").onclick = ()=>{
+  state.theme="camo"; document.body.setAttribute("data-theme","camo");
+  document.getElementById("customColors").style.display="none";
+  saveLS();
+};
+document.getElementById("swatchCustom").onclick = ()=>{
+  state.theme="custom"; document.body.removeAttribute("data-theme");
+  document.getElementById("customColors").style.display="";
+  const b1 = state.brand || "#1f6b3b";
+  const b2 = state.brand2|| "#0f3e23";
+  setBrand(b1,b2); saveLS();
+};
+document.getElementById("pickBrand").oninput = (e)=>{ state.brand = e.target.value; setBrand(state.brand, state.brand2||"#0f3e23"); saveLS(); };
+document.getElementById("pickBrand2").oninput = (e)=>{ state.brand2= e.target.value; setBrand(state.brand||"#1f6b3b", state.brand2); saveLS(); };
+
+/* ---------- Camera menu (kamera/galleri) ---------- */
+function openCameraMenu(){
+  // Skapa två inputs dynamiskt så Android visar val
+  const wrap = document.createElement("div");
+  wrap.style.position="fixed"; wrap.style.inset="0"; wrap.style.display="grid"; wrap.style.placeItems="center";
+  wrap.style.background="rgba(0,0,0,.35)"; wrap.style.zIndex="50";
+  const box = document.createElement("div");
+  box.style.background="#fff"; box.style.padding="14px"; box.style.borderRadius="12px"; box.style.display="grid"; box.style.gap="8px";
+  const cam = document.createElement("input");
+  cam.type="file"; cam.accept="image/*"; cam.capture="environment";
+  const gal = document.createElement("input");
+  gal.type="file"; gal.accept="image/*";
+  const lab1 = document.createElement("label"); lab1.textContent="📷 Kamera"; lab1.className="pill"; lab1.style.cursor="pointer";
+  const lab2 = document.createElement("label"); lab2.textContent="🖼️ Galleri"; lab2.className="pill"; lab2.style.cursor="pointer";
+  lab1.appendChild(cam); lab2.appendChild(gal);
+  const close = document.createElement("button"); close.textContent="Stäng"; close.className="pill ghost";
+  close.onclick = ()=> document.body.removeChild(wrap);
+  box.append(lab1, lab2, close); wrap.append(box); document.body.append(wrap);
+  const handle = (e)=>{
+    const f = e.target.files?.[0]; if(!f){ document.body.removeChild(wrap); return; }
+    // Här kan du ladda upp eller bara visa kvitto
+    const toast = document.createElement("div");
+    toast.textContent = "✅ Bild vald";
+    toast.style.position="fixed"; toast.style.bottom="18px"; toast.style.left="50%"; toast.style.transform="translateX(-50%)";
+    toast.style.background="#111"; toast.style.color="#fff"; toast.style.padding="8px 12px"; toast.style.borderRadius="10px";
+    toast.style.zIndex="60";
+    document.body.append(toast);
+    setTimeout(()=>toast.remove(),1600);
+    document.body.removeChild(wrap);
+  };
+  cam.onchange = handle; gal.onchange = handle;
 }
 
-/* ---------- Smart FAB ---------- */
-const fab=document.getElementById('fab');
-window.addEventListener('scroll', ()=> {
-  const doc=document.documentElement;
-  const dist=doc.scrollHeight-doc.scrollTop-doc.clientHeight;
-  const bottom = dist<140 ? 140-dist+16 : 16;
-  fab.style.bottom = bottom+'px';
+/* ---------- Text/labels ---------- */
+function updateTexts(){
+  const t = i18n[lang];
+  document.getElementById("titleTxt").textContent = t.title;
+  document.getElementById("shareTxt").textContent = t.share;
+  document.getElementById("printTxt").textContent = t.print;
+  document.getElementById("sumHdr").textContent = t.total;
+  document.getElementById("hDay").textContent = t.heads[0];
+  document.getElementById("hFrom").textContent = t.heads[1];
+  document.getElementById("hTo").textContent = t.heads[2];
+  document.getElementById("hBreak").textContent = t.heads[3];
+  document.getElementById("hTotal").textContent = t.heads[4];
+  document.getElementById("hProject").textContent = t.heads[5];
+  document.getElementById("hAction").textContent = t.heads[6];
+
+  document.getElementById("setHdr").textContent = t.settings;
+  document.getElementById("lblCompany").textContent = t.company;
+  document.getElementById("lblLang").textContent = t.lang;
+  document.getElementById("lblWm").textContent = t.wm;
+  document.getElementById("lblLogo").textContent = t.logo;
+  document.getElementById("lblTheme").textContent = t.theme;
+  document.getElementById("lblPick").textContent = t.pick;
+
+  // uppdatera placeholders på befintliga rader
+  document.querySelectorAll('input[placeholder]').forEach(el=>{
+    if(el.placeholder.includes("Projekt")) el.placeholder = t.projectPH;
+  });
+
+  // uppdatera språkval & company i modal
+  document.getElementById("selLang").value = lang;
+  document.getElementById("inpCompany").value = state.company;
+  document.getElementById("monthTxt").textContent = monthName(state.year, state.month, lang);
+  document.getElementById("sumMonth").textContent = monthName(state.year, state.month, lang);
+}
+function updateMonthText(){
+  document.getElementById("monthTxt").textContent = monthName(state.year, state.month, lang);
+  document.getElementById("sumMonth").textContent = monthName(state.year, state.month, lang);
+}
+
+/* ---------- Company binding ---------- */
+document.getElementById("inpCompany").addEventListener("input", (e)=>{
+  state.company = e.target.value || "THÜRINGER TANNENHOF";
+  document.getElementById("titleTxt").textContent = state.company ? state.company + " – " + i18n[lang].title.split(" ").slice(-1).join(" ") : i18n[lang].title;
 });
 
 /* ---------- Init ---------- */
-function init(){
-  // Default inline logo (alltid tillgänglig)
-  logoImg.src=DEFAULT_LOGO; wmImg.src=DEFAULT_LOGO;
-  loadSettings(); tr(); setHeaderTexts(); build();
-}
-init();
-
-/* ---------- Default logo (SVG data URI) ---------- */
-const DEFAULT_LOGO = (()=>{
-  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><g fill='#2e7d32'><rect x='36' y='214' width='184' height='18'/><path d='M128 18l42 62h-20l30 44h-20l26 38h-48v-28h-12v28H76l26-38H82l30-44H92z'/></g></svg>`;
-  return "data:image/svg+xml;utf8,"+encodeURIComponent(svg);
+(function init(){
+  // återställ tema
+  if(state.theme==="camo"){ document.body.setAttribute("data-theme","camo"); }
+  if(state.theme==="custom"){
+    document.body.removeAttribute("data-theme");
+    const b1 = state.brand || "#1f6b3b";
+    const b2 = state.brand2|| "#0f3e23";
+    setBrand(b1,b2);
+    document.getElementById("customColors").style.display="";
+  }
+  document.getElementById("rngWM").value = state.wmOpacity;
+  document.getElementById("rngVal").textContent = state.wmOpacity+"%";
+  document.getElementById("inpCompany").value = state.company;
+  if(state.logoData){
+    document.getElementById("logoImg").src = state.logoData;
+    wmImg.src = state.logoData;
+  }
+  applyWM();
+  buildRows();
+  sumAll();
+  // Lagra på stängning
+  window.addEventListener("beforeunload", saveLS);
 })();
 </script>
 </body>
