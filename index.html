@@ -1,488 +1,394 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Thüringer Tannenhof – Tidsrapport</title>
-<meta name="theme-color" content="#165a31" />
-<link rel="icon" href="favicon.ico" />
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+
+<!-- Enkel, snygg Tannenhof-grön -->
 <style>
-  :root{
-    --green-900:#0e3c24;
-    --green-800:#124c2b;
-    --green-700:#165a31; /* Primär Tannenhof-grön */
-    --green-600:#1d6a40;
-    --green-100:#e8f4ee;
-    --ink:#0a1a12;
-    --muted:#335244;
-    --card:#f7fbf8;
-    --shadow: 0 12px 30px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.08);
-    --radius:18px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    color:var(--ink);
-    background:linear-gradient(180deg,var(--green-100),#f8fffb);
-  }
-
-  /* Topbar */
-  .topbar{
-    position:sticky; top:0; z-index:50;
-    display:flex; gap:.75rem; align-items:center; justify-content:space-between;
-    padding:12px 16px;
-    background:linear-gradient(180deg,var(--green-700),var(--green-800));
-    color:#fff;
-    box-shadow: var(--shadow);
-  }
-  .brand{
-    display:flex; align-items:center; gap:.6rem;
-    font-weight:700; letter-spacing:.2px; font-size:1.05rem;
-  }
-  .chip{background:rgba(255,255,255,.12); padding:6px 10px; border-radius:999px; font-weight:600}
-  .btn{
-    border:0; border-radius:14px; padding:10px 14px; font-weight:700;
-    box-shadow: var(--shadow); cursor:pointer;
-  }
-  .btn--light{ background:#fff; color:var(--green-800)}
-  .btn--dark{ background:var(--green-700); color:#fff}
-  .btn:disabled{opacity:.5; pointer-events:none}
-
-  /* Container card */
-  .card{
-    margin:18px auto; width:min(1024px,92vw); background:#fff; border-radius:var(--radius);
-    padding:16px; box-shadow: var(--shadow);
-  }
-  .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-
-  /* Header controls */
-  .hstack{ display:flex; gap:10px; align-items:center }
-  .bubble{
-    background:var(--card); border-radius:16px; padding:10px 14px; font-weight:800;
-    color:var(--green-800); box-shadow: inset 0 0 0 1px rgba(22,90,49,.12);
-  }
-  .navbtn{
-    width:48px; height:48px; border-radius:14px; border:0; cursor:pointer;
-    background:var(--green-700); color:#fff; font-size:20px; font-weight:900;
-    display:grid; place-items:center; box-shadow: var(--shadow);
-  }
-  .spacer{flex:1}
-
-  /* Table */
-  table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:10px}
-  thead th{
-    text-align:left; font-size:.92rem; color:var(--muted); padding:0 10px;
-  }
-  tbody tr{ background: var(--card) }
-  tbody td{
-    padding:10px; background:#fff; border-top:1px solid #e9f3ef; border-bottom:1px solid #e9f3ef;
-  }
-  tbody td:first-child{ border-left:1px solid #e9f3ef; border-top-left-radius:12px; border-bottom-left-radius:12px}
-  tbody td:last-child{ border-right:1px solid #e9f3ef; border-top-right-radius:12px; border-bottom-right-radius:12px}
-  input[type="time"], input[type="number"], input[type="date"]{
-    width:100%; padding:10px 12px; border:1px solid #d5e7df; border-radius:10px;
-    font:inherit; background:#fff;
-  }
-  input[type="number"]{ -moz-appearance:textfield }
-  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
-
-  .actions .sm{padding:8px 10px; border-radius:10px; border:0; cursor:pointer; font-weight:700}
-  .a-del{ background:#fee; color:#a11}
-  .a-copy{ background:#eefaf4; color:var(--green-700)}
-  .a-add{ background:#e6f3ee; color:var(--green-800)}
-
-  /* Footer / signatures */
-  .footer{
-    margin-top:14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap
-  }
-  .sig-pad{ display:flex; gap:12px; align-items:center }
-  .sig-box{
-    width:min(320px,80vw); height:120px; background:#fff;border:1px dashed #cfe3da;border-radius:12px;
-    display:grid; place-items:center; color:#789; position:relative; overflow:hidden
-  }
-  .sig-box canvas{ width:100%; height:100% }
-  .tiny{ font-size:.8rem; color:#567 }
-
-  /* Debug panel */
-  .debug{
-    position:fixed; left:12px; bottom:12px; width:min(420px,92vw);
-    background:#0d1e16; color:#c9ffe3; border:1px solid #174d31; border-radius:14px;
-    box-shadow: var(--shadow); overflow:hidden; z-index:2000;
-  }
-  .debug h4{ margin:0; padding:8px 10px; background:#123c28; font-size:.95rem; display:flex; align-items:center; justify-content:space-between }
-  .debug pre{ margin:0; padding:10px; max-height:160px; overflow:auto; font-size:.8rem }
-  .debug button{ background:transparent; color:#c9ffe3; border:0; font-weight:700; cursor:pointer }
-  .hidden{ display:none }
-
-  @media print{
-    .topbar,.debug,.actions .sm,.navbtn,.btn,.footer-controls{ display:none !important }
-    body{ background:#fff }
-    .card{ box-shadow:none; margin:0; width:100%; }
-    .sig-box{ border:1px solid #ccc }
-  }
+:root{
+  --green:#0d5a2b;          /* huvudgrön */
+  --green-2:#0f6a33;        /* knappar */
+  --green-3:#e8f3ec;        /* bakgrundston */
+  --ink:#0f2a18;
+  --card:#ffffff;
+  --muted:#6c7b73;
+  --danger:#d9534f;
+  --radius:16px;
+  font-synthesis-weight:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#f3f8f5;color:var(--ink);font:16px system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+.container{max-width:980px;margin:16px auto;padding:0 12px}
+.header{
+  position:sticky;top:0;z-index:3;
+  background:linear-gradient(180deg,var(--green),#0a4a24);
+  color:#fff;border-bottom:3px solid #083d1e;
+}
+.header .row{display:flex;align-items:center;gap:10px;justify-content:space-between; padding:10px 12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.badge{background:#fff;color:var(--green);border-radius:999px;padding:6px 12px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer;user-select:none}
+.badge:active{transform:scale(.98)}
+.card{background:var(--card);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:14px}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{background:var(--green-3);padding:10px 14px;border-radius:999px;display:inline-flex;gap:10px;align-items:center}
+.pill strong{font-size:1.25rem}
+.btn{border:none;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
+.btn-green{background:var(--green-2);color:#fff}
+.btn-ghost{background:#eef4f1;color:var(--ink)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn:active{transform:translateY(1px)}
+.iconbtn{width:46px;height:46px;border-radius:12px;background:var(--green-2);color:#fff;border:none;font-size:18px}
+.iconbtn:active{transform:translateY(1px)}
+.small{font-size:.9rem;color:var(--muted)}
+.table-wrap{overflow:auto;border-radius:18px}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:640px}
+thead th{position:sticky;top:0;background:#f0f6f2;color:#234;z-index:1;padding:12px 10px;text-align:left}
+tbody td{padding:10px;border-top:1px solid #eef2ef}
+tbody tr:nth-child(odd){background:#fcfdfc}
+input[type="time"],input[type="date"],input[type="number"]{
+  width:100%;padding:8px 10px;border:1px solid #dfe7e2;border-radius:10px;background:#fff;color:#123;
+}
+input[type="number"]{text-align:right}
+.total-badge{font-weight:700}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.siggrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.sig{background:#fff;border-radius:14px;border:1px solid #dfe7e2;padding:10px}
+.sig h4{margin:0 0 6px 0}
+canvas{width:100%;height:150px;border-radius:10px;background:#fff;display:block;border:1px dashed #bcd3c6}
+.sig .row{display:flex;gap:10px;margin-top:8px}
+.footer-note{color:var(--muted);text-align:center;font-size:.9rem;margin-top:4px}
+.debug{
+  position:fixed;left:10px;bottom:10px;background:var(--green);color:#fff;
+  padding:8px 10px;border-radius:12px;max-width:92vw;width:360px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);font-family:ui-monospace,Consolas,Menlo,monospace;
+}
+.debug header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.debug .log{max-height:140px;overflow:auto;background:#06361c;border-radius:8px;padding:6px}
+.debug .log p{margin:0 0 2px 0;font-size:12px;white-space:pre}
+.today{font-weight:700}
 </style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span style="width:28px;height:28px;display:inline-grid;place-items:center;background:#fff;color:var(--green-800);border-radius:8px;font-weight:900">TN</span>
-      Thüringer Tannenhof – Tidsrapport
-    </div>
-    <div class="hstack">
-      <button class="btn btn--light" id="shareBtn">Dela</button>
-      <button class="btn btn--light" id="pdfBtn">PDF</button>
-    </div>
-  </header>
-
-  <main class="card" aria-live="polite">
-    <div class="row">
-      <div class="bubble">Totalt – <span id="grandTotal">0.00</span></div>
-      <div class="hstack">
-        <button class="navbtn" id="prevMonth" aria-label="Föregående månad">«</button>
-        <button class="navbtn" id="nextMonth" aria-label="Nästa månad">»</button>
+  <div class="header">
+    <div class="row container">
+      <div class="brand">
+        <div class="badge">TN</div>
+        <div>Thüringer Tannenhof – <span style="opacity:.9">Tidsrapport</span></div>
       </div>
-      <div class="spacer"></div>
-      <div class="footer-controls hstack">
-        <button class="btn btn--dark" id="addToday">+ Lägg till rad för idag</button>
-        <button class="btn btn--light" id="clearMonth">Rensa denna månad</button>
+      <div style="display:flex;gap:10px">
+        <button id="btnShare" class="badge">Dela</button>
+        <button id="btnPdf" class="badge">PDF</button>
       </div>
     </div>
+  </div>
 
-    <div style="margin-top:8px;font-weight:800;color:var(--green-800);">
-      <span id="monthLabel">–</span>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th style="width:10ch">Dag</th>
-          <th style="width:15ch">Datum</th>
-          <th style="width:12ch">Från</th>
-          <th style="width:12ch">Till</th>
-          <th style="width:10ch">Paus (min)</th>
-          <th style="width:10ch">Total</th>
-          <th style="width:16ch">Åtgärder</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-
-    <section class="footer">
-      <div class="sig-pad">
-        <div>
-          <div style="font-weight:700;color:var(--green-800);">Signatur – Medarbetare</div>
-          <div class="sig-box"><canvas id="sigEmp"></canvas><span class="tiny" id="sigEmpHint">Skriv här ✍️</span></div>
-          <div class="hstack tiny">
-            <button class="btn btn--light" id="clearEmp">Rensa</button>
-          </div>
+  <div class="container" style="margin-top:14px">
+    <div class="card">
+      <div class="controls" style="justify-content:space-between">
+        <div class="pill">
+          <span>Totalt – </span>
+          <strong id="grandTotal">0.00</strong>
         </div>
-        <div>
-          <div style="font-weight:700;color:var(--green-800);">Signatur – Chef</div>
-          <div class="sig-box"><canvas id="sigMgr"></canvas><span class="tiny" id="sigMgrHint">Skriv här ✍️</span></div>
-          <div class="hstack tiny">
-            <button class="btn btn--light" id="clearMgr">Rensa</button>
-          </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="iconbtn" id="btnPrev" title="Föregående månad">«</button>
+          <button class="iconbtn" id="btnNext" title="Nästa månad">»</button>
+          <button id="btnAddToday" class="btn btn-green">+ Lägg till rad för idag</button>
+          <button id="btnClearMonth" class="btn btn-ghost">Rensa denna månad</button>
         </div>
       </div>
-      <div class="spacer"></div>
-      <div class="hstack">
-        <span class="tiny">Allt sparas automatiskt i denna enhet.</span>
+
+      <h3 id="monthTitle" style="margin:12px 4px 8px 4px;color:#1b3a2a"></h3>
+
+      <div class="table-wrap">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th style="width:70px">Dag</th>
+              <th style="width:140px">Datum</th>
+              <th style="width:120px">Från</th>
+              <th style="width:120px">Till</th>
+              <th style="width:110px">Paus (min)</th>
+              <th style="width:110px">Total</th>
+              <th style="width:220px">Åtgärder</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
       </div>
-    </section>
-  </main>
+
+      <div class="siggrid">
+        <div class="sig">
+          <h4>Signatur – Medarbetare</h4>
+          <canvas id="sigEmp" height="150"></canvas>
+          <div class="row"><button class="btn btn-ghost" id="sigEmpClear">Rensa</button></div>
+        </div>
+        <div class="sig">
+          <h4>Signatur – Chef</h4>
+          <canvas id="sigBoss" height="150"></canvas>
+          <div class="row"><button class="btn btn-ghost" id="sigBossClear">Rensa</button></div>
+        </div>
+      </div>
+
+      <p class="footer-note">Allt sparas automatiskt i denna enhet.</p>
+    </div>
+  </div>
 
   <!-- Debug panel -->
-  <aside class="debug" id="debug">
-    <h4>Felsökning
-      <span>
-        <button id="dbgToggle">Fäll in</button>
-        <button id="dbgClear" title="Rensa logg">Rensa</button>
-      </span>
-    </h4>
-    <pre id="dbgLog"></pre>
-  </aside>
+  <div class="debug" id="debugBox">
+    <header>
+      <strong>Felsökning</strong>
+      <div>
+        <button class="btn btn-ghost" id="btnFold">Fäll in</button>
+        <button class="btn btn-ghost" id="btnLogClear">Rensa</button>
+      </div>
+    </header>
+    <div class="log" id="log"></div>
+  </div>
+
+<!-- html2canvas + jsPDF för PDF -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
-(function(){
-  "use strict";
-
-  /* ---------- Utils & Debug ---------- */
-  const logEl = document.getElementById('dbgLog');
-  const debug = (...args) => {
-    const msg = args.map(x => (typeof x==='object'? JSON.stringify(x): String(x))).join(' ');
-    logEl.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-    logEl.scrollTop = logEl.scrollHeight;
-  };
-  window.addEventListener('error', e => debug('ERROR:', e.message));
-  window.addEventListener('unhandledrejection', e => debug('PROMISE:', e.reason));
-
-  document.getElementById('dbgClear').onclick = ()=> logEl.textContent='';
-  document.getElementById('dbgToggle').onclick = (e)=>{
-    const pre = logEl;
-    pre.classList.toggle('hidden');
-    e.target.textContent = pre.classList.contains('hidden') ? 'Visa' : 'Fäll in';
-  };
-
+(() => {
+  // ======= Hjälp =======
   const $ = s => document.querySelector(s);
   const pad = n => String(n).padStart(2,'0');
-  const fmtHours = h => (Math.round(h*100)/100).toFixed(2);
-  const todayISO = () => new Date().toISOString().slice(0,10);
+  const log = (m)=>{ const t=new Date().toTimeString().slice(0,8); $("#log").insertAdjacentHTML('beforeend',`<p>[${t}] ${m}</p>`); $("#log").scrollTop = 9e9; }
 
-  /* ---------- State ---------- */
-  let current = new Date();
-  current.setDate(1);
-  const tbody = $('#tbody');
-  const totalEl = $('#grandTotal');
-  const monthLabel = $('#monthLabel');
-  const KEY = 'tnh-stunden-v3';
+  // ======= Tillstånd =======
+  let cur = new Date();
+  cur.setDate(1);
+  cur.setHours(12,0,0,0);
 
-  function loadAll(){
-    try{
-      return JSON.parse(localStorage.getItem(KEY) || '{}');
-    }catch(e){
-      debug('loadAll JSON fail:', e.message);
-      return {};
-    }
-  }
-  function saveAll(data){
-    try{
-      localStorage.setItem(KEY, JSON.stringify(data));
-    }catch(e){ debug('saveAll fail:', e.message); }
-  }
-  function monthKey(dt){
-    return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}`;
-  }
+  const key = () => `tnh:${cur.getFullYear()}-${pad(cur.getMonth()+1)}`;
+  const monthName = (d)=>{
+    return d.toLocaleDateString('sv-SE',{year:'numeric',month:'long'});
+  };
 
-  /* ---------- Rows Model ---------- */
-  function getMonthData(dt=current){
-    const all = loadAll();
-    const key = monthKey(dt);
-    return all[key] || { rows:[], sigEmp:null, sigMgr:null };
-  }
-  function setMonthData(data, dt=current){
-    const all = loadAll();
-    all[monthKey(dt)] = data;
-    saveAll(all);
-  }
+  // ======= Utskrift =======
+  const setMonthTitle = () => {
+    $("#monthTitle").textContent = cur.toLocaleDateString('sv-SE',{month:'long', year:'numeric'});
+  };
 
-  /* ---------- Rendering ---------- */
-  function render(){
-    const data = getMonthData();
-    // header
-    monthLabel.textContent = new Intl.DateTimeFormat('sv-SE', {month:'long', year:'numeric'}).format(current);
-    // body
-    tbody.innerHTML = '';
-    let gTotal = 0;
+  const dayName = (d)=> d.toLocaleDateString('sv-SE',{weekday:'short'});
 
-    if(data.rows.length===0){
-      // create helpful empty state row
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td colspan="7" style="text-align:center;padding:22px;border:1px dashed #cfe3da;border-radius:12px;">
-        Inga rader ännu. Klicka <b>+ Lägg till rad för idag</b> eller använd åtgärderna för att lägga till fler dagar.
-      </td>`;
-      tbody.appendChild(tr);
-    }else{
-      data.rows.forEach((row, idx)=>{
-        const tr = document.createElement('tr');
-        const d = new Date(row.date);
-        const dayName = new Intl.DateTimeFormat('sv-SE',{weekday:'short'}).format(d);
-        tr.innerHTML = `
-          <td>${dayName}</td>
-          <td><input type="date" value="${row.date}" data-idx="${idx}" data-k="date"></td>
-          <td><input type="time" value="${row.from}" data-idx="${idx}" data-k="from"></td>
-          <td><input type="time" value="${row.to}" data-idx="${idx}" data-k="to"></td>
-          <td><input type="number" min="0" step="1" value="${row.break||0}" data-idx="${idx}" data-k="break"></td>
-          <td><b>${fmtHours(row.total || 0)}</b></td>
-          <td class="actions">
-            <button class="sm a-copy" data-act="dup" data-idx="${idx}">Duplicera</button>
-            <button class="sm a-del" data-act="del" data-idx="${idx}">Ta bort</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-        gTotal += (row.total||0);
+  function allDaysOfMonth(d){
+    const y=d.getFullYear(), m=d.getMonth();
+    const last=new Date(y,m+1,0).getDate();
+    const arr=[];
+    for(let i=1;i<=last;i++){
+      const dt=new Date(y,m,i);
+      arr.push({
+        date: dt.toISOString().split('T')[0],
+        start: "", end:"", breakMin: 0, total: "0.00"
       });
     }
-    totalEl.textContent = fmtHours(gTotal);
-
-    // signatures
-    if(data.sigEmp) drawImageToCanvas(empCanvas, data.sigEmp);
-    if(data.sigMgr) drawImageToCanvas(mgrCanvas, data.sigMgr);
+    return arr;
   }
 
-  /* ---------- Calculations ---------- */
-  function computeTotal(from, to, brMin){
-    if(!from || !to) return 0;
-    const [fh,fm] = from.split(':').map(Number);
-    const [th,tm] = to.split(':').map(Number);
-    let start = fh*60+fm, end = th*60+tm;
-    if(end < start) end += 24*60; // pass midnight
-    const durMin = Math.max(0, end - start - (parseInt(brMin||0)));
-    return durMin/60;
+  // ======= Beräkningar =======
+  function calcRowTotal(start,end,breakMin){
+    if(!start || !end) return "0.00";
+    const [sh,sm]=start.split(":").map(Number);
+    const [eh,em]=end.split(":").map(Number);
+    const s=sh*60+sm, e=eh*60+em;
+    let diff=e-s;
+    if(diff<0) diff+=24*60; // över midnatt
+    diff-= (Number(breakMin)||0);
+    const hrs=Math.max(0,diff)/60;
+    return hrs.toFixed(2);
   }
 
-  function upsert(idx, key, value){
-    const data = getMonthData();
-    if(!data.rows[idx]) return;
-    data.rows[idx][key] = value;
-    data.rows[idx].total = computeTotal(data.rows[idx].from, data.rows[idx].to, data.rows[idx].break);
-    setMonthData(data);
-    render();
+  // ======= Storage =======
+  function load(){
+    const raw=localStorage.getItem(key());
+    if(raw){
+      const data=JSON.parse(raw);
+      log(`Loaded ${key()} (${data.rows.length} rader).`);
+      return data.rows;
+    }
+    // Förifyll ALLA dagar i månaden (som du ville)
+    const seeded = allDaysOfMonth(cur);
+    save(seeded);
+    log(`Ny månad – förifyller ${seeded.length} dagar för ${key()}.`);
+    return seeded;
   }
 
-  /* ---------- Handlers ---------- */
-  tbody.addEventListener('input', (e)=>{
-    const t = e.target;
-    const {idx,k} = t.dataset;
-    if(idx==null) return;
-    upsert(Number(idx), k, t.value);
+  function save(rows){
+    localStorage.setItem(key(),JSON.stringify({rows}));
+  }
+
+  // ======= Render =======
+  function render(){
+    setMonthTitle();
+    const rows = load();
+    const tb = $("#tbody");
+    tb.innerHTML="";
+    let grand=0;
+
+    const todayISO = new Date().toISOString().split('T')[0];
+
+    rows.forEach((r,idx)=>{
+      // säkerställ total uppdaterad
+      r.total = calcRowTotal(r.start,r.end,r.breakMin);
+      grand += Number(r.total)||0;
+
+      const d = new Date(r.date);
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td class="${r.date===todayISO?'today':''}">${dayName(d)}</td>
+        <td><input type="date" value="${r.date}" data-idx="${idx}" data-k="date"></td>
+        <td><input type="time" value="${r.start||''}" data-idx="${idx}" data-k="start"></td>
+        <td><input type="time" value="${r.end||''}" data-idx="${idx}" data-k="end"></td>
+        <td><input type="number" min="0" step="1" value="${r.breakMin||0}" data-idx="${idx}" data-k="breakMin"></td>
+        <td class="total-badge" id="total-${idx}">${r.total}</td>
+        <td class="actions">
+          <button class="btn btn-ghost" data-act="dup" data-idx="${idx}">Duplicera</button>
+          <button class="btn btn-danger" data-act="del" data-idx="${idx}">Ta bort</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    $("#grandTotal").textContent = grand.toFixed(2);
+    save(rows);
+  }
+
+  // ======= Händelser =======
+  $("#tbody").addEventListener("input",(ev)=>{
+    const t=ev.target;
+    const idx=Number(t.dataset.idx); const k=t.dataset.k;
+    if(isNaN(idx) || !k) return;
+    const rows = load();
+    let v = t.value;
+    if(k==="breakMin") v = Number(v||0);
+    rows[idx][k]=v;
+    // räkna om
+    rows[idx].total = calcRowTotal(rows[idx].start, rows[idx].end, rows[idx].breakMin);
+    $("#total-"+idx).textContent = rows[idx].total;
+    // totalsumma
+    const sum = rows.reduce((a,b)=>a+(Number(b.total)||0),0);
+    $("#grandTotal").textContent = sum.toFixed(2);
+    save(rows);
   });
 
-  tbody.addEventListener('click', (e)=>{
-    const b = e.target.closest('button');
-    if(!b) return;
-    const idx = Number(b.dataset.idx);
-    const data = getMonthData();
-    if(b.dataset.act==='del'){
-      data.rows.splice(idx,1);
-      setMonthData(data); render();
-    }else if(b.dataset.act==='dup'){
-      const r = structuredClone(data.rows[idx]);
-      // By default place duplicated row at next day
-      const nd = new Date(r.date); nd.setDate(nd.getDate()+1);
-      r.date = nd.toISOString().slice(0,10);
-      data.rows.splice(idx+1,0,r);
-      setMonthData(data); render();
+  $("#tbody").addEventListener("click",(ev)=>{
+    const b=ev.target.closest("button"); if(!b) return;
+    const idx=Number(b.dataset.idx); const act=b.dataset.act;
+    const rows = load();
+    if(act==="del"){
+      rows.splice(idx,1);
+      save(rows); render(); log(`Rad ${idx+1} togs bort.`);
+    }else if(act==="dup"){
+      rows.splice(idx+1,0,JSON.parse(JSON.stringify(rows[idx])));
+      save(rows); render(); log(`Rad ${idx+1} duplicerades.`);
     }
   });
 
-  document.getElementById('addToday').onclick = ()=>{
-    const data = getMonthData();
-    const d = new Date();
-    d.setMonth(current.getMonth()); d.setFullYear(current.getFullYear());
-    const iso = todayISO();
-    data.rows.push({ date: iso, from:'08:00', to:'17:00', break:60, total: computeTotal('08:00','17:00',60) });
-    setMonthData(data); render();
+  $("#btnPrev").onclick = ()=>{ cur.setMonth(cur.getMonth()-1); render(); log(`Bytte till ${monthName(cur)}.`); };
+  $("#btnNext").onclick = ()=>{ cur.setMonth(cur.getMonth()+1); render(); log(`Bytte till ${monthName(cur)}.`); };
+  $("#btnClearMonth").onclick = ()=>{
+    if(confirm("Rensa alla rader denna månad?")){
+      localStorage.removeItem(key());
+      render(); log("Månad rensad & återskapad.");
+    }
   };
 
-  document.getElementById('clearMonth').onclick = ()=>{
-    if(!confirm('Rensa alla rader för denna månad?')) return;
-    setMonthData({ rows:[], sigEmp:null, sigMgr:null }); render();
+  $("#btnAddToday").onclick = ()=>{
+    const rows = load();
+    const tISO = new Date().toISOString().split('T')[0];
+    rows.push({date:tISO,start:"",end:"",breakMin:0,total:"0.00"});
+    save(rows); render(); log("La till rad för idag.");
   };
 
-  document.getElementById('prevMonth').onclick = ()=>{
-    current.setMonth(current.getMonth()-1);
-    render();
-  };
-  document.getElementById('nextMonth').onclick = ()=>{
-    current.setMonth(current.getMonth()+1);
-    render();
-  };
-
-  // Share / PDF
-  document.getElementById('shareBtn').onclick = async ()=>{
-    try{
-      if(navigator.share){
-        await navigator.share({
-          title: document.title,
-          text: 'Min tidsrapport – ' + monthLabel.textContent,
-          url: location.href
-        });
-      }else{
-        await navigator.clipboard.writeText(location.href);
-        alert('Länk kopierad till urklipp.');
-      }
-    }catch(err){ debug('Share:', err.message); }
-  };
-  document.getElementById('pdfBtn').onclick = ()=> window.print();
-
-  /* ---------- Signatures ---------- */
-  const empCanvas = document.getElementById('sigEmp');
-  const mgrCanvas = document.getElementById('sigMgr');
-  const empHint = document.getElementById('sigEmpHint');
-  const mgrHint = document.getElementById('sigMgrHint');
-
-  function setupCanvas(cnv, hintEl, key){
-    const ctx = cnv.getContext('2d');
+  // ======= Signaturer =======
+  function makePad(canvasId, clearBtnId, storageKey){
+    const cvs=$(canvasId), ctx=cvs.getContext('2d');
+    ctx.lineWidth=3; ctx.lineCap='round'; ctx.strokeStyle='#0b5a2b';
     let drawing=false, last=null;
-    const DPR = Math.max(1, window.devicePixelRatio || 1);
-    function resize(){
-      const rect = cnv.getBoundingClientRect();
-      cnv.width = Math.round(rect.width*DPR);
-      cnv.height = Math.round(rect.height*DPR);
-      ctx.scale(DPR,DPR);
-      ctx.lineJoin = 'round'; ctx.lineCap='round';
-      ctx.lineWidth = 2.8; ctx.strokeStyle='#0a4026';
-      // repaint saved
-      const data = getMonthData();
-      const img = data[key];
-      if(img) drawImageToCanvas(cnv, img);
-    }
-    resize(); window.addEventListener('resize', resize);
 
     function pos(e){
-      const r = cnv.getBoundingClientRect();
-      const x = (e.touches? e.touches[0].clientX: e.clientX) - r.left;
-      const y = (e.touches? e.touches[0].clientY: e.clientY) - r.top;
+      const r=cvs.getBoundingClientRect();
+      const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+      const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
       return {x,y};
     }
-    function start(e){ drawing=true; last=pos(e); hintEl?.classList.add('hidden'); e.preventDefault(); }
+    function start(e){ drawing=true; last=pos(e); e.preventDefault(); }
     function move(e){
       if(!drawing) return;
-      const p = pos(e);
+      const p=pos(e);
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
-      last=p; e.preventDefault();
+      last=p;
     }
-    function end(){
-      if(!drawing) return; drawing=false;
-      // save
-      const data = getMonthData();
-      data[key] = cnv.toDataURL('image/png');
-      setMonthData(data);
-      debug('Signature saved:', key);
-    }
-    cnv.addEventListener('mousedown', start);
-    cnv.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', end);
-    cnv.addEventListener('touchstart', start,{passive:false});
-    cnv.addEventListener('touchmove', move,{passive:false});
-    cnv.addEventListener('touchend', end);
-  }
-  function drawImageToCanvas(cnv, dataUrl){
-    const ctx = cnv.getContext('2d');
-    const img = new Image();
-    img.onload = ()=>{ ctx.clearRect(0,0,cnv.width,cnv.height); ctx.drawImage(img,0,0,cnv.width,cnv.height);}
-    img.src = dataUrl;
-  }
-  setupCanvas(empCanvas, empHint, 'sigEmp');
-  setupCanvas(mgrCanvas, mgrHint, 'sigMgr');
+    function end(){ if(drawing){ drawing=false; saveSig(); } }
 
-  document.getElementById('clearEmp').onclick = ()=>{
-    const d = getMonthData(); d.sigEmp=null; setMonthData(d);
-    const ctx = empCanvas.getContext('2d'); ctx.clearRect(0,0,empCanvas.width,empCanvas.height);
-    empHint.classList.remove('hidden');
-  };
-  document.getElementById('clearMgr').onclick = ()=>{
-    const d = getMonthData(); d.sigMgr=null; setMonthData(d);
-    const ctx = mgrCanvas.getContext('2d'); ctx.clearRect(0,0,mgrCanvas.width,mgrCanvas.height);
-    mgrHint.classList.remove('hidden');
+    function saveSig(){
+      try{ localStorage.setItem(storageKey,cvs.toDataURL()); log(`Signature saved: ${storageKey}`); }catch{}
+    }
+    function loadSig(){
+      const d=localStorage.getItem(storageKey);
+      if(d){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,cvs.width,cvs.height); img.src=d; }
+    }
+
+    ["mousedown","touchstart"].forEach(ev=>cvs.addEventListener(ev,start,{passive:false}));
+    ["mousemove","touchmove"].forEach(ev=>cvs.addEventListener(ev,move,{passive:false}));
+    ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=>cvs.addEventListener(ev,end));
+    $(clearBtnId).onclick=()=>{ ctx.clearRect(0,0,cvs.width,cvs.height); localStorage.removeItem(storageKey); log(`Signature cleared: ${storageKey}`); };
+    loadSig();
+  }
+  makePad("#sigEmp","#sigEmpClear","sigEmp");
+  makePad("#sigBoss","#sigBossClear","sigBoss");
+
+  // ======= Dela & PDF =======
+  $("#btnShare").onclick = async ()=>{
+    try{
+      if(navigator.share){
+        await navigator.share({title:document.title,text:"Tidsrapport",url:location.href});
+      }else{
+        await navigator.clipboard.writeText(location.href);
+        alert("Länk kopierad!");
+      }
+      log("Delning ok.");
+    }catch(e){ log("Delning avbruten."); }
   };
 
-  /* ---------- First paint ---------- */
-  // If first time, seed with an example row so du ser att allt lever
-  (function seedIfEmpty(){
-    const data = getMonthData();
-    if((data.rows||[]).length===0){
-      const iso = todayISO();
-      data.rows = [{date: iso, from:'08:00', to:'17:00', break:60, total: computeTotal('08:00','17:00',60)}];
-      setMonthData(data);
-      debug('Seeded with example row for', iso);
-    }
-  })();
+  $("#btnPdf").onclick = async ()=>{
+    log("Skapar PDF…");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({unit:"pt",format:"a4"});
+    const card=document.querySelector(".card");
+    const canvas=await html2canvas(card,{scale:2,backgroundColor:"#ffffff"});
+    const img=canvas.toDataURL("image/png");
+    const pageW=pdf.internal.pageSize.getWidth();
+    const ratio=canvas.height/canvas.width;
+    const h=pageW*ratio;
+    pdf.addImage(img,"PNG",20,20,pageW-40,(pageW-40)*ratio);
+    pdf.save(`tidsrapport-${key().slice(4)}.pdf`);
+    log("PDF klar.");
+  };
 
+  // ======= Debug UI =======
+  $("#btnFold").onclick = ()=>{
+    const logBox=$("#log");
+    if(logBox.style.display==="none"){
+      logBox.style.display="block"; $("#btnFold").textContent="Fäll in";
+    }else{
+      logBox.style.display="none"; $("#btnFold").textContent="Visa";
+    }
+  };
+  $("#btnLogClear").onclick = ()=>{$("#log").innerHTML="";};
+
+  // ======= Init =======
   render();
-  debug('App start OK. Månad:', monthKey(current));
+  log(`App start OK. Månad: ${key().slice(4)}`);
 })();
 </script>
 </body>
