@@ -1,466 +1,427 @@
 <!doctype html>
 <html lang="sv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Thüringer Tannenhof – Tidsrapport</title>
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#114a2b">
+<meta name="theme-color" content="#134a2c" />
 <style>
-:root{
-  --bg:#eef5f1; --card:#ffffff; --text:#0b2a19; --muted:#486557;
-  --brand:#164c2e; --brand-2:#2a6b45; --accent:#dfe7e2; --danger:#b73a35;
-}
-[data-theme="camouflage"]{
-  --bg:#e8efe7; --card:#ffffff; --text:#0a2415; --muted:#445b4f;
-  --brand:#2d3f2f; --brand-2:#4a6a3f; --accent:#dbe3d9;
-}
-[data-theme="dark"]{
-  --bg:#0e1512; --card:#131d19; --text:#dfeae5; --muted:#97b1a6;
-  --brand:#1c6b3f; --brand-2:#2fa368; --accent:#25352f;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,Segoe UI,Roboto,Helvetica,Arial}
-header{
-  position:sticky;top:0;z-index:10;background:var(--brand);
-  color:#fff;display:flex;align-items:center;gap:14px;padding:10px 14px;box-shadow:0 2px 6px rgba(0,0,0,.15)
-}
-.logo{width:42px;height:42px;border-radius:12px;background:#edfff5 url('tnh-tree-192.png') center/70% no-repeat}
-.title{font-weight:800;font-size:20px}
-.spacer{flex:1}
-.btn{
-  background:#fff;color:var(--brand);border:none;border-radius:14px;
-  padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.05)
-}
-.btn:active{transform:translateY(1px)}
-.btn-ghost{background:var(--accent);color:var(--text)}
-.btn-danger{background:var(--danger);color:#fff}
-.wrap{max-width:1100px;margin:18px auto;padding:0 14px}
-.card{background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.total{display:inline-flex;align-items:center;gap:10px;background:var(--accent);border-radius:16px;padding:12px 16px;font-size:22px;font-weight:800}
-.navbtn{width:56px;height:56px;border-radius:14px;background:var(--brand);color:#fff;border:none;font-size:20px;font-weight:900}
-.monthTitle{background:#f5faf8;border-radius:16px;padding:10px 14px;margin:16px 0;font-size:28px;font-weight:800}
-.table{width:100%;border-collapse:separate;border-spacing:0 10px}
-.table th{color:var(--muted);font-weight:800;text-align:left;padding:6px 10px}
-.row{background:var(--card);border:1px solid var(--accent);border-radius:14px;overflow:hidden}
-.row td{padding:10px}
-.select, .timeSel, .breakSel, .commentInput{
-  width:100%;height:44px;border:1px solid var(--accent);border-radius:10px;background:#fff;padding:0 10px;font-size:16px
-}
-.timeSel,.breakSel{appearance:none;background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="%23666666"><path d="M7 10l5 5 5-5z"/></svg>') right 8px center/18px no-repeat;padding-right:38px}
-.dayCell{font-weight:700}
-.cameraCell{display:flex;align-items:center;gap:10px;min-width:160px}
-.camBtn{border:none;border-radius:10px;background:#eef4f1;padding:10px 12px;cursor:pointer;font-weight:700}
-.thumbs{display:flex;gap:8px;flex-wrap:wrap}
-.thumb{position:relative;width:48px;height:48px;border-radius:8px;overflow:hidden;border:1px solid var(--accent)}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.thumb .del{position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;border:none;border-radius:999px;width:20px;height:20px;line-height:18px;font-size:12px;cursor:pointer}
-.actionsCell{display:flex;gap:8px;flex-wrap:wrap}
-.badge{display:inline-block;padding:.25rem .5rem;border-radius:999px;background:var(--accent);font-weight:700}
-.footerCard{margin-top:14px;display:grid;gap:14px}
-.grid2{display:grid;grid-template-columns:1fr;gap:14px}
-@media (min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
-.signBox{background:var(--card);border:1px solid var(--accent);border-radius:14px;padding:12px}
-.signTitle{font-weight:800;margin-bottom:8px}
-.signPad{width:100%;height:140px;border:1px dashed var(--accent);border-radius:12px;background:#fff;touch-action:none}
-.watermark{
-  position:fixed;right:18px;bottom:18px;width:200px;height:140px;opacity:.12;
-  background:url('tnh-tree-512.png') center/contain no-repeat;pointer-events:none
-}
-/* FELSÖKNING */
-#debugBox{position:fixed;left:14px;bottom:14px;z-index:20;background:var(--brand);color:#fff;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);min-width:260px;max-width:95vw}
-#debugHead{display:flex;align-items:center;gap:10px;padding:10px 12px}
-#debugHead .title{font-size:16px}
-#debugBody{max-height:40vh;overflow:auto;background:#0d2117;padding:10px;border-radius:0 0 14px 14px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
-#gear{position:fixed;right:18px;bottom:18px;width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;border:none;font-weight:900;font-size:22px;box-shadow:0 10px 18px rgba(0,0,0,.25)}
-/* MODAL */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:30}
-.modal .panel{width:min(720px,94vw);background:var(--card);color:var(--text);border-radius:18px;border:1px solid var(--accent);padding:16px}
-.modal h3{margin:0 0 10px 0}
-.flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.label{font-weight:700;width:170px}
+  :root{
+    --g1:#0f3c24; --g2:#134a2c; --g3:#1a5e39; --g4:#dff0e6;
+    --bg:#f3f7f5; --card:#ffffff; --ink:#082015; --muted:#5c6f65;
+    --accent:#1a5e39; --danger:#b31d1d; --border:#d9e6df;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui, -apple-system, Segoe UI, Roboto, sans-serif}
+  header{position:sticky;top:0;z-index:5;background:linear-gradient(0deg,var(--g2),var(--g1));color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .topbar{display:flex;align-items:center;gap:12px;padding:10px 12px;max-width:1100px;margin:0 auto}
+  .logo{display:flex;align-items:center;gap:10px}
+  .badge{width:36px;height:36px;border-radius:10px;background:#173f28;display:grid;place-items:center}
+  .badge svg{width:24px;height:24px;fill:#cfe8dc}
+  h1{font-size:18px;line-height:1.1;margin:0}
+  .actions{margin-left:auto;display:flex;gap:10px}
+  .btn{appearance:none;border:0;border-radius:14px;padding:10px 14px;background:#fff;color:var(--g1);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.1);cursor:pointer}
+  .btn.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+  main{max-width:1100px;margin:14px auto;padding:0 12px}
+  .panel{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:14px}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .pill{background:var(--bg);border-radius:14px;padding:10px 14px;font-weight:700;color:var(--g1)}
+  .navbtn{width:56px;height:48px;border-radius:14px;background:var(--g3);color:#fff;font-size:18px;font-weight:900;border:0}
+  .subbtn{padding:12px 16px;border-radius:14px;background:#eef6f1;border:1px solid var(--border);font-weight:700;color:var(--g1)}
+  h2{margin:18px 0 8px 2px;color:var(--g1)}
+  table{width:100%;border-collapse:separate;border-spacing:0 10px}
+  thead th{font-size:14px;color:var(--muted);text-align:left;padding:2px 10px}
+  tbody tr{background:var(--card);box-shadow:0 1px 6px rgba(0,0,0,.05)}
+  td{padding:10px}
+  .rownum{width:56px;color:var(--muted);font-weight:700}
+  .daycell{width:86px;font-weight:700}
+  .datecell{width:150px}
+  .time{width:120px}
+  .pause{width:110px}
+  .comment{min-width:220px}
+  .actions-col{width:150px}
+  input[type="time"], input[type="number"], select, textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#fff;font-weight:600
+  }
+  textarea{min-height:46px;resize:vertical}
+  .photo-wrap{display:flex;align-items:center;gap:8px}
+  .thumb{width:42px;height:42px;border-radius:8px;border:1px solid var(--border);object-fit:cover;background:#fafafa}
+  .a-btn{padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:700}
+  .danger{border-color:#f1d1d1;color:#7d1414;background:#fff5f5}
+  .watermark{position:fixed;right:16px;bottom:16px;opacity:.08;z-index:0}
+  .gear{position:fixed;right:16px;bottom:16px;z-index:4}
+  .gear .fab{width:58px;height:58px;border-radius:14px;background:var(--g2);color:#fff;border:0;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+  .menu{position:fixed;right:16px;bottom:84px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:10px;display:none;min-width:260px}
+  .menu.open{display:block}
+  .menu h4{margin:6px 8px;color:var(--g1)}
+  .menu .row{display:flex;gap:8px;padding:6px}
+  .signature{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  canvas.sig{width:100%;height:180px;background:#fff;border:1px solid var(--border);border-radius:12px;touch-action:none}
+  .dbg{position:fixed;left:12px;right:12px;bottom:12px;z-index:6;max-width:1100px;margin:0 auto}
+  .dbg .wrap{background:var(--g2);color:#e9fff4;border-radius:12px}
+  .dbg header{position:initial;background:transparent;box-shadow:none}
+  .dbg h3{margin:0;padding:10px 12px;font-size:14px;color:#e9fff4}
+  .dbg pre{margin:0;max-height:180px;overflow:auto;padding:10px 12px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;background:transparent}
+  @media (max-width:820px){
+    .signature{grid-template-columns:1fr}
+    .actions-col{width:120px}
+    .comment{min-width:160px}
+  }
+  @media print{
+    .gear,.dbg,.menu,.btn,.navbtn,.subbtn{display:none !important}
+    header{position:static}
+    .panel{box-shadow:none}
+    body{background:#fff}
+  }
 </style>
 </head>
-<body data-theme="default">
+<body>
 <header>
-  <div class="logo" id="logoBox"></div>
-  <div class="title">Thüringer Tannenhof – Tidsrapport</div>
-  <div class="spacer"></div>
-  <button class="btn" id="shareBtn">Dela</button>
-  <button class="btn" id="pdfBtn">PDF</button>
+  <div class="topbar">
+    <div class="logo">
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M6 20h12l-6-16-6 16zm6-10 3.5 10h-7L12 10z"/></svg>
+      </div>
+      <div>
+        <h1>Thüringer Tannenhof – Tidsrapport</h1>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="shareBtn">Dela</button>
+      <button class="btn" id="pdfBtn">PDF</button>
+    </div>
+  </div>
 </header>
 
-<div class="wrap">
-  <div class="card topbar">
-    <div class="total">Totalt – <span id="totalHours">0.00</span></div>
-    <button class="navbtn" id="prevMon">«</button>
-    <button class="navbtn" id="nextMon">»</button>
-    <button class="btn" id="addToday">+ Lägg till rad för idag</button>
-    <button class="btn-ghost btn" id="clearMonth">Rensa denna månad</button>
-  </div>
-
-  <div class="monthTitle" id="monthTitle">oktober 2025</div>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Dag</th><th>Datum</th>
-        <th>Från</th><th>Till</th><th>Paus (min)</th>
-        <th>Kommentar</th><th>Foto</th>
-        <th>Total</th><th>Åtgärder</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-
-  <div class="footerCard grid2">
-    <div class="signBox">
-      <div class="signTitle">Signatur – Medarbetare</div>
-      <canvas id="sigEmp" class="signPad"></canvas>
-      <div class="flex"><button class="btn-ghost btn" data-clear="sigEmp">Rensa</button></div>
+<main>
+  <section class="panel">
+    <div class="controls">
+      <div class="pill">Totalt – <span id="totalHours">0.00</span></div>
+      <button class="navbtn" id="prevMonth">«</button>
+      <button class="navbtn" id="nextMonth">»</button>
+      <button class="subbtn" id="addToday">+ Lägg till rad för idag</button>
+      <button class="subbtn" id="clearMonth">Rensa denna månad</button>
     </div>
-    <div class="signBox">
-      <div class="signTitle">Signatur – Chef</div>
-      <canvas id="sigBoss" class="signPad"></canvas>
-      <div class="flex"><button class="btn-ghost btn" data-clear="sigBoss">Rensa</button></div>
+  </section>
+
+  <h2 id="monthTitle">oktober 2025</h2>
+
+  <section class="panel" aria-label="tidsrader">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Dag</th>
+          <th>Datum</th>
+          <th>Från</th>
+          <th>Till</th>
+          <th>Paus (min)</th>
+          <th>Kommentar</th>
+          <th>Foto</th>
+          <th>Åtgärder</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="signature">
+      <div>
+        <h3>Signatur – Medarbetare</h3>
+        <canvas class="sig" id="sigEmp"></canvas>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="a-btn" data-clear="sigEmp">Rensa</button>
+        </div>
+      </div>
+      <div>
+        <h3>Signatur – Chef</h3>
+        <canvas class="sig" id="sigBoss"></canvas>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="a-btn" data-clear="sigBoss">Rensa</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+    <p style="margin-top:10px;color:var(--muted)">Allt sparas automatiskt i denna enhet.</p>
+  </section>
+</main>
 
 <!-- Watermark -->
-<div class="watermark" id="wm"></div>
+<svg class="watermark" width="180" height="180" viewBox="0 0 120 120">
+  <g fill="#134a2c">
+    <path d="M60 10 90 100H30z"/>
+    <path d="M25 40 45 100H5z"/>
+    <path d="M95 40 115 100H75z"/>
+  </g>
+</svg>
 
-<!-- Felsökning -->
-<div id="debugBox">
-  <div id="debugHead">
-    <div class="title">Felsökning</div>
-    <div class="spacer"></div>
-    <button class="btn-ghost btn" id="dbgToggle">Fäll in</button>
-    <button class="btn-ghost btn" id="dbgClear">Rensa</button>
-  </div>
-  <div id="debugBody"></div>
-</div>
-
-<!-- Gear -->
-<button id="gear">⚙️</button>
-
-<!-- Inställningar -->
-<div class="modal" id="settings">
-  <div class="panel">
-    <h3>Inställningar</h3>
-    <div class="flex"><div class="label">Tema</div>
-      <select id="themeSel" class="select">
-        <option value="default">Grön (standard)</option>
-        <option value="camouflage">Camouflage</option>
-        <option value="dark">Mörk</option>
-      </select>
-    </div>
-    <div class="flex"><div class="label">Visa felsökning</div>
-      <input type="checkbox" id="showDebug">
-    </div>
-    <div class="flex"><div class="label">Vattenstämpel</div>
-      <input type="checkbox" id="showWM" checked>
-    </div>
-    <div class="flex"><div class="label">Inkludera foton i PDF</div>
-      <input type="checkbox" id="pdfPhotos" checked>
-    </div>
-    <div class="flex"><div class="label">Byt logga</div>
-      <input type="file" id="logoPicker" accept="image/*">
-    </div>
-    <div class="flex"><button class="btn-danger btn" id="resetApp">Återställ allt</button>
-      <div class="spacer"></div>
-      <button class="btn-ghost btn" id="closeSettings">Stäng</button>
-    </div>
+<!-- Gear & menu -->
+<div class="gear">
+  <button class="fab" id="gearBtn">⚙️</button>
+  <div class="menu" id="gearMenu">
+    <h4>Inställningar</h4>
+    <div class="row"><button class="a-btn" id="exportBtn">Exportera data</button><button class="a-btn" id="importBtn">Importera data</button></div>
+    <div class="row"><button class="a-btn danger" id="wipeAll">Rensa allt</button></div>
+    <div class="row" style="font-size:12px;color:var(--muted)">Version: TNH Timesheet – “Grön gran”</div>
   </div>
 </div>
 
-<!-- libs för PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5aQm3l7H6w8n4mJQ2qgD1h3TQ4qjv1c9g9gkS8lH9m6t8HkY3L+8Z9qN+4M8C5Jp0J1fQyM1sQ0D1k7vYkw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-YkqN5m2h5aN0d5q8eULeC2FJxwGk2s1m4n7z3Q5S6ZbGm0xS8y0+qQkQF3dF0qR9h6Qn6hQ2Hq1g8fQZ3yQwNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Debug console -->
+<div class="dbg" id="dbg">
+  <div class="wrap">
+    <h3>Felsökning <button class="a-btn" id="dbgToggle">Fäll in</button> <button class="a-btn" id="dbgClear">Rensa</button></h3>
+    <pre id="log"></pre>
+  </div>
+</div>
 
 <script>
-/* ====== Hjälp ====== */
-const $=sel=>document.querySelector(sel);
-const pad = n => String(n).padStart(2,'0');
-const weekday = d => ["sön","mån","tis","ons","tors","fre","lör"][d.getDay()];
-const monthName = (y,m)=> new Date(y,m,1).toLocaleDateString('sv-SE',{month:'long',year:'numeric'});
-const timeOpts = ()=>{ let s=''; for(let h=0; h<24; h++){ for(let m=0;m<60;m+=5){ const t=`${pad(h)}:${pad(m)}`; s+=`<option value="${t}">${t}</option>` } } return s; };
-const breakOpts = ()=>[0,5,10,15,20,30,45,60,90,120].map(x=>`<option value="${x}">${x}</option>`).join('');
+(()=>{
+// ---------- Utils & Debug ----------
+const logEl = document.getElementById('log');
+let dbgCollapsed = false;
+function log(...args){ const t=new Date().toTimeString().slice(0,8); logEl.textContent += `[${t}] `+args.join(' ') + "\\n"; logEl.scrollTop = logEl.scrollHeight; }
+document.getElementById('dbgClear').onclick=()=>{logEl.textContent='';}
+document.getElementById('dbgToggle').onclick=()=>{dbgCollapsed=!dbgCollapsed;logEl.parentElement.style.display=dbgCollapsed?'none':'block'}
 
-/* ====== Logg ====== */
-function log(msg){
-  const t = new Date().toTimeString().slice(0,8);
-  $("#debugBody").insertAdjacentHTML('beforeend',`<div>[${t}] ${msg}</div>`);
-  $("#debugBody").scrollTop = $("#debugBody").scrollHeight;
+// ---------- State keys ----------
+let current = new Date();
+current.setDate(1);
+const rowsTbody = document.getElementById('rows');
+const totalEl = document.getElementById('totalHours');
+const titleEl = document.getElementById('monthTitle');
+
+function keyFor(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); return `tnh:${y}-${m}`; }
+
+// ---------- Storage ----------
+function loadMonth(d){
+  const key = keyFor(d);
+  const json = localStorage.getItem(key);
+  if(!json) return null;
+  try{return JSON.parse(json)}catch{ return null }
+}
+function saveMonth(d, data){
+  localStorage.setItem(keyFor(d), JSON.stringify(data));
 }
 
-/* ====== State per månad ====== */
-let cur = new Date();
-let timeOptions = timeOpts();
-let breakOptions = breakOpts();
-
-function keyFor(y,m){ return `tnh:${y}-${pad(m+1)}`; }
-
-function loadRows(d=cur){
+// ---------- Build month ----------
+function monthMeta(d){
   const y=d.getFullYear(), m=d.getMonth();
-  const k = keyFor(y,m);
-  const raw = localStorage.getItem(k);
-  let rows = raw ? JSON.parse(raw) : seedMonth(d);
-  // normalisera
-  rows.forEach(r=>{
-    if(typeof r.comment!=="string") r.comment="";
-    if(!Array.isArray(r.photos)) r.photos=[];
-    if(typeof r.breakMin==="string") r.breakMin = (+r.breakMin)||0;
-    if(typeof r.total!=="string") r.total="0.00";
-  });
-  return rows;
+  const first = new Date(y,m,1);
+  const last = new Date(y, m+1, 0).getDate();
+  return {year:y, month:m, days:last, first};
 }
-function saveRows(rows, d=cur){
-  const y=d.getFullYear(), m=d.getMonth();
-  localStorage.setItem(keyFor(y,m), JSON.stringify(rows));
-  updateTotal(rows);
+
+const WEEK = ['sön','mån','tis','ons','tors','fre','lör'];
+
+function emptyRow(dateStr){
+  return { date: dateStr, from:'', to:'', breakMin:0, note:'', photo:null }
 }
-function seedMonth(d){
-  const y=d.getFullYear(), m=d.getMonth();
-  const last=new Date(y,m+1,0).getDate();
-  const out=[];
-  for(let day=1; day<=last; day++){
-    const iso=`${y}-${pad(m+1)}-${pad(day)}`;
-    out.push({date:iso,start:"",end:"",breakMin:0,total:"0.00",comment:"",photos:[]});
+
+function ensureData(d){
+  const meta = monthMeta(d);
+  let data = loadMonth(d);
+  if(!data){
+    data = { rows: [] };
+    for(let day=1; day<=meta.days; day++){
+      const ds = `${meta.year}-${String(meta.month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      data.rows.push(emptyRow(ds));
+    }
+    saveMonth(d,data);
+    log(`Ny månad – förifyller ${meta.days} dagar för ${titleText(d)}.`);
   }
-  log(`Ny månad – förifyller ${last} dagar för ${monthName(y,m)}.`);
-  return out;
+  return data;
 }
 
-/* ====== Render ====== */
+function titleText(d){
+  const monthNames = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+  return `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// ---------- Rendering ----------
 function render(){
-  $("#monthTitle").textContent = monthName(cur.getFullYear(), cur.getMonth());
-  const rows = loadRows();
-  const tb = $("#tbody"); tb.innerHTML="";
-  rows.forEach((r,idx)=>{
-    const d = new Date(r.date);
-    const tr = document.createElement('tr'); tr.className='row';
-    tr.innerHTML = `
-      <td class="dayCell">${weekday(d)}</td>
-      <td>${r.date}</td>
-      <td><select class="timeSel" data-idx="${idx}" data-k="start">${timeOptions}</select></td>
-      <td><select class="timeSel" data-idx="${idx}" data-k="end">${timeOptions}</select></td>
-      <td><select class="breakSel" data-idx="${idx}" data-k="breakMin">${breakOptions}</select></td>
-      <td><input class="commentInput" placeholder="Kommentar…" value="${r.comment||""}" data-idx="${idx}" data-k="comment"></td>
-      <td class="cameraCell">
-        <label class="camBtn">📷 Kamera
-          <input type="file" accept="image/*" capture="environment" data-idx="${idx}" data-act="cam" style="display:none">
-        </label>
-        <div class="thumbs" id="th-${idx}"></div>
+  titleEl.textContent = titleText(current);
+  rowsTbody.innerHTML = '';
+  const data = ensureData(current);
+  const meta = monthMeta(current);
+  data.rows.forEach((r,idx)=>{
+    const tr = document.createElement('tr');
+    const dt = new Date(r.date+'T00:00:00');
+    const cells = `
+      <td class="rownum">${idx+1}</td>
+      <td class="daycell">${WEEK[dt.getDay()]}</td>
+      <td class="datecell"><input type="date" value="${r.date}" data-i="${idx}" data-k="date"></td>
+      <td class="time"><input type="time" value="${r.from}" data-i="${idx}" data-k="from"></td>
+      <td class="time"><input type="time" value="${r.to}" data-i="${idx}" data-k="to"></td>
+      <td class="pause"><input type="number" min="0" step="1" value="${r.breakMin||0}" data-i="${idx}" data-k="breakMin"></td>
+      <td class="comment"><textarea data-i="${idx}" data-k="note" placeholder="Kommentar…">${r.note||''}</textarea></td>
+      <td>
+        <div class="photo-wrap">
+          <img class="thumb" id="thumb-${idx}" src="${r.photo||''}" alt="">
+          <label class="a-btn"><input style="display:none" type="file" accept="image/*" capture="environment" data-i="${idx}" data-k="photo">Kamera</label>
+        </div>
       </td>
-      <td class="totalCell" id="tot-${idx}">${r.total}</td>
-      <td class="actionsCell">
-        <button class="btn-ghost btn" data-act="dup" data-idx="${idx}">Duplicera</button>
-        <button class="btn-danger btn" data-act="del" data-idx="${idx}">Ta bort</button>
-      </td>`;
-    tb.appendChild(tr);
-    // förinställ
-    tr.querySelector(`select[data-idx="${idx}"][data-k="start"]`).value = r.start||"";
-    tr.querySelector(`select[data-idx="${idx}"][data-k="end"]`).value = r.end||"";
-    tr.querySelector(`select[data-idx="${idx}"][data-k="breakMin"]`).value = r.breakMin||0;
-    renderThumbs(idx, r.photos);
+      <td class="actions-col">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="a-btn" data-act="dup" data-i="${idx}">Duplicera</button>
+          <button class="a-btn danger" data-act="del" data-i="${idx}">Ta bort</button>
+        </div>
+      </td>
+    `;
+    tr.innerHTML = cells;
+    rowsTbody.appendChild(tr);
   });
-  updateTotal(rows);
-}
-function updateTotal(rows){
-  const sum = (rows||loadRows()).reduce((s,r)=>s+parseFloat(r.total||0),0);
-  $("#totalHours").textContent = sum.toFixed(2);
+  bindInputs();
+  updateTotal();
+  log(`Loaded ${keyFor(current)} (${data.rows.length} rader).`);
 }
 
-/* ====== Händelser i tabellen ====== */
-$("#tbody").addEventListener("change", e=>{
-  const t=e.target; const idx=+t.dataset.idx; const k=t.dataset.k;
-  let rows=loadRows();
-  if(k==="start"||k==="end"||k==="breakMin"){
-    rows[idx][k] = k==="breakMin" ? (+t.value||0) : t.value;
-    rows[idx].total = calcTotal(rows[idx].start, rows[idx].end, rows[idx].breakMin);
-    $("#tot-"+idx).textContent = rows[idx].total;
-    saveRows(rows);
-    log(`Rad ${idx+1} uppdaterad (${k}). Total: ${rows[idx].total}`);
-    return;
-  }
-  if(k==="comment"){
-    rows[idx].comment = t.value||"";
-    saveRows(rows);
-    log(`Kommentar sparad på rad ${idx+1}.`);
-    return;
-  }
-});
-$("#tbody").addEventListener("click", e=>{
-  const act = e.target.dataset.act;
-  if(!act) return;
-  const idx = +e.target.dataset.idx;
-  let rows = loadRows();
-  if(act==="dup"){
-    rows.splice(idx+1,0, JSON.parse(JSON.stringify(rows[idx])));
-    saveRows(rows); render(); log(`Rad ${idx+1} duplicerades.`);
-  }
-  if(act==="del"){
-    rows.splice(idx,1); saveRows(rows); render(); log(`Rad ${idx+1} togs bort.`);
-  }
-});
-$("#tbody").addEventListener("change", e=>{
-  const input = e.target;
-  if(input.dataset.act==="cam"){
-    const idx=+input.dataset.idx; const file=input.files?.[0];
-    if(!file) return;
-    const r=new FileReader();
-    r.onload=()=>{
-      const rows=loadRows();
-      const arr=rows[idx].photos||(rows[idx].photos=[]);
-      if(arr.length>=4) arr.shift();
-      arr.push(r.result);
-      saveRows(rows); renderThumbs(idx,arr);
-      log(`Foto tillagt på rad ${idx+1}.`);
-    };
-    r.readAsDataURL(file);
-    input.value="";
-  }
-});
-$("#tbody").addEventListener("click", e=>{
-  const del=e.target.closest(".del");
-  if(del){
-    const idx=+del.dataset.idx, p=+del.dataset.p;
-    const rows=loadRows(); rows[idx].photos.splice(p,1);
-    saveRows(rows); renderThumbs(idx, rows[idx].photos);
-    log(`Foto borttaget på rad ${idx+1}.`);
-    return;
-  }
-  const img=e.target.closest(".thumb img");
-  if(img){
-    const w=window.open(); w.document.write(`<img src="${img.getAttribute('src')}" style="max-width:100%">`);
-  }
-});
-function renderThumbs(idx, photos){
-  const box = document.getElementById(`th-${idx}`); if(!box) return;
-  box.innerHTML = (photos||[]).map((src,i)=>`
-    <div class="thumb">
-      <img src="${src}">
-      <button class="del" title="Ta bort" data-idx="${idx}" data-p="${i}">×</button>
-    </div>`).join("");
+function bindInputs(){
+  rowsTbody.querySelectorAll('input, textarea').forEach(el=>{
+    if(el.type==='file'){
+      el.addEventListener('change', async (e)=>{
+        const idx=+el.dataset.i;
+        const f=e.target.files[0]; if(!f) return;
+        const url = await fileToDataUrl(f);
+        const data = ensureData(current);
+        data.rows[idx].photo = url;
+        saveMonth(current,data);
+        const img = document.getElementById(`thumb-${idx}`); img.src=url;
+        log(`Foto sparat på rad ${idx+1}.`);
+      });
+    }else{
+      el.addEventListener('input', ()=>{
+        const data = ensureData(current);
+        const idx=+el.dataset.i, k=el.dataset.k;
+        let val = (k==='breakMin') ? Number(el.value||0) : el.value;
+        data.rows[idx][k]=val;
+        saveMonth(current,data);
+        if(k==='from'||k==='to'||k==='breakMin') updateTotalDebounced();
+      });
+    }
+  });
+  rowsTbody.querySelectorAll('button[data-act]').forEach(btn=>{
+    btn.onclick=()=>{
+      const i=+btn.dataset.i;
+      const data=ensureData(current);
+      if(btn.dataset.act==='dup'){
+        data.rows.splice(i+1,0, structuredClone(data.rows[i]));
+        saveMonth(current,data); render(); log(`Rad ${i+1} duplicerades.`);
+      }else{
+        data.rows.splice(i,1);
+        saveMonth(current,data); render(); log(`Rad ${i+1} togs bort.`);
+      }
+    }
+  });
 }
 
-/* ====== Beräkning ====== */
-function calcTotal(start,end,breakMin){
-  if(!start||!end) return "0.00";
-  const [sh,sm]=start.split(':').map(Number);
-  const [eh,em]=end.split(':').map(Number);
-  let mins=(eh*60+em)-(sh*60+sm)-(+breakMin||0);
-  if(mins<0) mins+=24*60; // nattpass
-  return (mins/60).toFixed(2);
+function fileToDataUrl(f){
+  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); });
 }
 
-/* ====== Top-knappar ====== */
-$("#prevMon").onclick=()=>{ cur=new Date(cur.getFullYear(),cur.getMonth()-1,1); render(); log(`Bytte till ${monthName(cur.getFullYear(),cur.getMonth())}.`); };
-$("#nextMon").onclick=()=>{ cur=new Date(cur.getFullYear(),cur.getMonth()+1,1); render(); log(`Bytte till ${monthName(cur.getFullYear(),cur.getMonth())}.`); };
-$("#addToday").onclick=()=>{
-  const rows=loadRows();
-  const t=new Date(); const iso=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
-  rows.push({date:iso,start:"",end:"",breakMin:0,total:"0.00",comment:"",photos:[]});
-  saveRows(rows); render(); log("La till rad för idag.");
+// ---------- Totals ----------
+function diffHours(f,t){
+  if(!f || !t) return 0;
+  const [fh,fm]=f.split(':').map(Number);
+  const [th,tm]=t.split(':').map(Number);
+  let m = (th*60+tm) - (fh*60+fm);
+  if(m<0) m+=24*60; // över midnatt
+  return m/60;
+}
+function updateTotal(){
+  const data = ensureData(current);
+  let sum=0;
+  for(const r of data.rows){
+    const hrs = diffHours(r.from, r.to) - (Number(r.breakMin)||0)/60;
+    if(!isNaN(hrs)) sum += Math.max(0, hrs);
+  }
+  totalEl.textContent = sum.toFixed(2);
+}
+const updateTotalDebounced = debounce(updateTotal, 150);
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }}
+
+// ---------- Month navigation ----------
+document.getElementById('prevMonth').onclick=()=>{ current.setMonth(current.getMonth()-1); render(); log(`Bytte till ${titleText(current)}.`); }
+document.getElementById('nextMonth').onclick=()=>{ current.setMonth(current.getMonth()+1); render(); log(`Bytte till ${titleText(current)}.`); }
+document.getElementById('clearMonth').onclick=()=>{
+  if(!confirm('Rensa alla rader för månaden?')) return;
+  localStorage.removeItem(keyFor(current)); render(); log('Rensade denna månad.');
+}
+document.getElementById('addToday').onclick=()=>{
+  const data=ensureData(current);
+  const d=new Date(); const ds=d.toISOString().slice(0,10);
+  data.rows.push(emptyRow(ds)); saveMonth(current,data); render(); log('La till rad för idag.');
+}
+
+// ---------- Share / PDF ----------
+document.getElementById('shareBtn').onclick=async ()=>{
+  const text = `Tidsrapport ${titleText(current)} – totalt ${totalEl.textContent} h.`;
+  if(navigator.share){ try{ await navigator.share({text, title:document.title, url:location.href}); log('Delning ok.'); }catch{ log('Delning avbruten.'); } }
+  else { await navigator.clipboard.writeText(text + " " + location.href); alert('Länk kopierad.'); log('Länk kopierad.'); }
 };
-$("#clearMonth").onclick=()=>{
-  if(!confirm("Rensa alla rader för denna månad?")) return;
-  localStorage.removeItem(keyFor(cur.getFullYear(),cur.getMonth())); render(); log("Denna månad rensades.");
-};
+document.getElementById('pdfBtn').onclick=()=>{ log('Skapar PDF…'); window.print(); log('PDF klar.'); }
 
-/* ====== Signaturer ====== */
-function signPadSetup(id){
-  const c=$(id), ctx=c.getContext('2d'); let d=false, px,py;
-  const get=(e)=>{ const r=c.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y}; };
-  const draw=(x,y)=>{ ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#053'; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(x,y); ctx.stroke(); px=x; py=y; };
-  const start=e=>{ d=true; const p=get(e); px=p.x; py=p.y; e.preventDefault(); };
-  const move=e=>{ if(!d) return; const p=get(e); draw(p.x,p.y); e.preventDefault(); };
-  const end=()=>{ d=false; saveSig(id.slice(1)); };
+// ---------- Gear menu ----------
+const gearBtn=document.getElementById('gearBtn'), gearMenu=document.getElementById('gearMenu');
+gearBtn.onclick=()=>gearMenu.classList.toggle('open');
+document.addEventListener('click',(e)=>{ if(!gearMenu.contains(e.target) && e.target!==gearBtn) gearMenu.classList.remove('open'); });
+document.getElementById('exportBtn').onclick=()=>{
+  const out = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k.startsWith('tnh:') || k.startsWith('sigEmp') || k.startsWith('sigBoss')) out[k]=localStorage.getItem(k);
+  }
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tnh-export.json'; a.click();
+  log('Export klar.');
+}
+document.getElementById('importBtn').onclick=()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.onchange=async ()=>{
+    const f=inp.files[0]; if(!f) return;
+    const txt=await f.text();
+    try{
+      const obj=JSON.parse(txt);
+      Object.entries(obj).forEach(([k,v])=>localStorage.setItem(k,v));
+      log('Import klar.'); render();
+    }catch(e){ alert('Felaktig fil'); log('Import FEL: '+e.message); }
+  };
+  inp.click();
+}
+document.getElementById('wipeAll').onclick=()=>{
+  if(!confirm('Rensa ALL data för appen?')) return;
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith('tnh:')||k.startsWith('sig')) keys.push(k); }
+  keys.forEach(k=>localStorage.removeItem(k));
+  log('All lokal data rensad.'); render();
+}
+
+// ---------- Signatures ----------
+function bindSig(id, storeKey){
+  const c=document.getElementById(id); const ctx=c.getContext('2d');
+  const saved=localStorage.getItem(storeKey); if(saved){ drawDataUrl(ctx,saved,c); }
+  let drawing=false, last=null;
+  function pos(e){ const r=c.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y};}
+  function start(e){ drawing=true; last=pos(e); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const p=pos(e); ctx.strokeStyle='#134a2c'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }
+  function end(){ if(!drawing) return; drawing=false; const url=c.toDataURL('image/png'); localStorage.setItem(storeKey,url); log(`Signature saved: ${storeKey}`); }
   c.addEventListener('mousedown',start); c.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
   c.addEventListener('touchstart',start,{passive:false}); c.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',end);
-  // ladda om det finns
-  const data = localStorage.getItem(id.slice(1)); if(data){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,c.width,c.height); img.src=data; }
+  document.querySelector(`[data-clear="${id}"]`).onclick=()=>{ ctx.clearRect(0,0,c.width,c.height); localStorage.removeItem(storeKey); log(`Signature cleared: ${storeKey}`); }
 }
-function saveSig(key){ const c=$("#"+key); try{ localStorage.setItem(key, c.toDataURL()); log(`Signature saved: ${key}`);}catch{} }
-document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{ const id=b.dataset.clear; const c=$("#"+id); c.getContext('2d').clearRect(0,0,c.width,c.height); localStorage.removeItem(id); log(`Signatur rensad: ${id}`); });
+function drawDataUrl(ctx,url,canvas){ const img=new Image(); img.onload=()=>{ ctx.drawImage(img,0,0,canvas.width,canvas.height); }; img.src=url; }
 
-/* ====== PDF / DELA ====== */
-$("#pdfBtn").onclick=async()=>{
-  log("Skapar PDF…");
-  const wrap=document.querySelector('.wrap').cloneNode(true);
-  if(!$("#pdfPhotos").checked){ wrap.querySelectorAll('.thumbs').forEach(x=>x.remove()); }
-  const node=document.createElement('div'); node.style.padding='12px'; node.appendChild(wrap);
-  document.body.appendChild(node); // offscreen render
-  const canvas=await html2canvas(node,{scale:2,backgroundColor:null});
-  node.remove();
-  const img=canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf=new jsPDF({unit:'pt',format:'a4'});
-  const pageW=pdf.internal.pageSize.getWidth(), pageH=pdf.internal.pageSize.getHeight();
-  const ratio=Math.min(pageW/canvas.width, pageH/canvas.height);
-  const w=canvas.width*ratio, h=canvas.height*ratio;
-  pdf.addImage(img,'PNG',(pageW-w)/20,20,w,h);
-  pdf.save(`tidsrapport-${keyFor(cur.getFullYear(),cur.getMonth()).slice(4)}.pdf`);
-  log("PDF klar.");
-};
-$("#shareBtn").onclick=async()=>{
-  try{
-    if(navigator.share){ await navigator.share({title:document.title, text:"Min tidsrapport", url:location.href}); log("Delning ok."); }
-    else{ log("Delning avbruten (saknas stöd)."); alert("Delning stöds inte av din webbläsare."); }
-  }catch{ log("Delning avbruten."); }
-};
-
-/* ====== Inställningar ====== */
-const prefsKey="tnh:prefs";
-function loadPrefs(){ try{return JSON.parse(localStorage.getItem(prefsKey))||{};}catch{return {}} }
-function savePrefs(p){ localStorage.setItem(prefsKey, JSON.stringify(p)); }
-function applyPrefs(){
-  const p=loadPrefs();
-  document.body.setAttribute('data-theme', p.theme||'default');
-  $("#themeSel").value = p.theme||'default';
-  $("#showDebug").checked = p.showDebug!==false;
-  $("#debugBox").style.display = (p.showDebug!==false) ? "block":"none";
-  $("#showWM").checked = p.showWM!==false;
-  $("#wm").style.display = (p.showWM!==false) ? "block":"none";
-  $("#pdfPhotos").checked = p.pdfPhotos!==false;
-  if(p.logo){ $("#logoBox").style.backgroundImage=`url('${p.logo}')`; }
-}
-applyPrefs();
-$("#gear").onclick=()=>$("#settings").style.display="flex";
-$("#closeSettings").onclick=()=>$("#settings").style.display="none";
-$("#themeSel").onchange=e=>{ const p=loadPrefs(); p.theme=e.target.value; savePrefs(p); applyPrefs(); };
-$("#showDebug").onchange=e=>{ const p=loadPrefs(); p.showDebug=e.target.checked; savePrefs(p); applyPrefs(); };
-$("#showWM").onchange=e=>{ const p=loadPrefs(); p.showWM=e.target.checked; savePrefs(p); applyPrefs(); };
-$("#pdfPhotos").onchange=e=>{ const p=loadPrefs(); p.pdfPhotos=e.target.checked; savePrefs(p); };
-$("#logoPicker").onchange=e=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ const p=loadPrefs(); p.logo=r.result; savePrefs(p); applyPrefs(); log("Logga uppdaterad."); };
-  r.readAsDataURL(f);
-};
-$("#resetApp").onclick=()=>{
-  if(!confirm("Återställ alla data och inställningar?")) return;
-  Object.keys(localStorage).filter(k=>k.startsWith('tnh:')||k==='sigEmp'||k==='sigBoss').forEach(k=>localStorage.removeItem(k));
-  localStorage.removeItem(prefsKey);
-  location.reload();
-};
-$("#dbgToggle").onclick=()=>{
-  const b=$("#debugBody"); const h=$("#dbgToggle");
-  if(b.style.display==="none"){ b.style.display="block"; h.textContent="Fäll in"; }
-  else{ b.style.display="none"; h.textContent="Visa"; }
-};
-$("#dbgClear").onclick=()=>{ $("#debugBody").innerHTML=""; };
-
-/* ====== Start ====== */
-window.addEventListener('load',()=>{
-  // storlek på signaturer
-  [$("#sigEmp"), $("#sigBoss")].forEach(c=>{ c.width=c.clientWidth; c.height=c.clientHeight; });
-  signPadSetup('#sigEmp'); signPadSetup('#sigBoss');
+// ---------- Init ----------
+function init(){
+  // make canvases crisp
+  document.querySelectorAll('canvas.sig').forEach(c=>{
+    const rect=c.getBoundingClientRect(); c.width=rect.width*2; c.height=rect.height*2; const ctx=c.getContext('2d'); ctx.scale(2,2);
+  });
+  bindSig('sigEmp','sigEmp'); bindSig('sigBoss','sigBoss');
   render();
-  log(`App start OK. Månad: ${cur.getFullYear()}-${pad(cur.getMonth()+1)}`);
-});
+  log(`App start OK. Månad: ${keyFor(current).slice(4)}`);
+}
+init();
+})();
 </script>
 </body>
 </html>
