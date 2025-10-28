@@ -9,23 +9,22 @@
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{
-  --green:#0d5a2b; --green-2:#0f6a33; --green-3:#e8f3ec;
-  --ink:#0f2a18; --muted:#6c7b73; --danger:#d9534f;
+  --g:#0d5a2b; --g2:#0f6a33; --g3:#e8f3ec; --ink:#10281b; --muted:#6b7b72; --danger:#b73a35;
 }
 *{box-sizing:border-box} html,body{margin:0;background:#f3f8f5;color:var(--ink);font:16px system-ui,Segoe UI,Inter,Roboto,Arial}
 .container{max-width:980px;margin:16px auto;padding:0 12px}
-.header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--green),#0a4a24);color:#fff;border-bottom:3px solid #083d1e}
+.header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--g),#0a4723);color:#fff;border-bottom:3px solid #083d1e}
 .header .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.logo{width:34px;height:34px;border-radius:50%;overflow:hidden;background:#fff;display:grid;place-items:center}
-.logo img{width:26px;height:26px}
-.badge{background:#fff;color:var(--green);border-radius:999px;padding:6px 12px;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.badgeLogo{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff}
+.badgeLogo img{width:28px;height:28px}
+.badge{background:#fff;color:var(--g);border-radius:999px;padding:8px 14px;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .badge:active{transform:scale(.98)}
 .card{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:14px}
-.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
-.pill{background:var(--green-3);padding:10px 14px;border-radius:999px;display:flex;gap:10px;align-items:center}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{background:var(--g3);padding:10px 14px;border-radius:999px;display:flex;gap:10px;align-items:center}
 .pill strong{font-size:1.25rem}
-.iconbtn{width:46px;height:46px;border-radius:12px;background:var(--green-2);color:#fff;border:none;font-size:18px;cursor:pointer}
+.iconbtn{width:46px;height:46px;border-radius:12px;background:var(--g2);color:#fff;border:none;font-size:18px;cursor:pointer}
 .iconbtn:active{transform:translateY(1px)}
 .btn{border:none;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
 .btn-ghost{background:#eef4f1}
@@ -35,23 +34,43 @@ table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px}
 thead th{position:sticky;top:0;background:#f0f6f2;color:#234;padding:12px 10px;text-align:left}
 tbody td{padding:10px;border-top:1px solid #eef2ef}
 tbody tr:nth-child(odd){background:#fcfdfc}
-input[type="time"],input[type="number"]{width:100%;padding:8px 10px;border:1px solid #dfe7e2;border-radius:10px;background:#fff}
+input[type="time"],input[type="number"],input[type="date"]{width:100%;padding:8px 10px;border:1px solid #dfe7e2;border-radius:10px;background:#fff}
 input[type="number"]{text-align:right}
 .total-badge{font-weight:800}
-.today{font-weight:800}
-.monthTitle{margin:12px 4px 8px;color:#1b3a2a}
 .footer-note{color:var(--muted);text-align:center;font-size:.9rem;margin-top:6px}
-.debug{position:fixed;left:10px;bottom:10px;background:var(--green);color:#fff;padding:8px 10px;border-radius:12px;max-width:92vw;width:360px;box-shadow:0 10px 25px rgba(0,0,0,.25);font-family:ui-monospace,Consolas,Menlo}
+
+/* Signaturer */
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.sigBox{background:#fff;border-radius:14px;border:1px solid #e4ebe6;padding:10px}
+.sigTitle{font-weight:700;color:#1a3a28;margin:0 0 6px}
+.sigCanvas{width:100%;height:140px;border-radius:10px;border:1px dashed #cfdad3;background:#fbfffd}
+.sigBtns{display:flex;gap:10px;margin-top:6px}
+
+/* Debug */
+.debug{position:fixed;left:10px;bottom:10px;background:var(--g);color:#fff;padding:8px 10px;border-radius:12px;max-width:92vw;width:360px;box-shadow:0 10px 25px rgba(0,0,0,.25);font-family:ui-monospace,Consolas,Menlo}
 .debug header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.debug .log{max-height:140px;overflow:auto;background:#06361c;border-radius:8px;padding:6px}
+.debug .log{max-height:160px;overflow:auto;background:#06361c;border-radius:8px;padding:6px}
 .debug .log p{margin:0 0 2px;font-size:12px;white-space:pre}
+
+/* Kugghjul FAB */
+.fab{position:fixed;left:16px;bottom:90px;width:64px;height:64px;border-radius:18px;background:var(--g2);color:#fff;border:none;font-size:26px;box-shadow:0 12px 28px rgba(0,0,0,.25);cursor:pointer}
+.fab:active{transform:translateY(1px)}
+
+/* Settings modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+.modal .sheet{background:#fff;border-radius:16px;max-width:540px;width:100%;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.rowBetween{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.switch{appearance:none;width:50px;height:28px;border-radius:999px;background:#d6e3dc;position:relative;cursor:pointer;outline:0}
+.switch:checked{background:var(--g2)}
+.switch:before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}
+.switch:checked:before{left:25px}
 </style>
 </head>
 <body>
   <div class="header">
     <div class="row container">
       <div class="brand">
-        <div class="logo"><img src="tnh-tree-192.png" alt="TN"></div>
+        <div class="badgeLogo"><img src="tnh-tree-192.png" alt="TN"></div>
         <div>Thüringer Tannenhof – <span style="opacity:.9">Tidsrapport</span></div>
       </div>
       <div style="display:flex;gap:10px">
@@ -63,32 +82,50 @@ input[type="number"]{text-align:right}
 
   <div class="container" style="margin-top:14px">
     <div class="card">
-      <div class="controls">
+      <div class="controls" style="justify-content:space-between">
         <div class="pill">Totalt – <strong id="grandTotal">0.00</strong></div>
-        <div style="display:flex;gap:10px;align-items:center">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <button class="iconbtn" id="btnPrev" title="Föregående månad">«</button>
           <button class="iconbtn" id="btnNext" title="Nästa månad">»</button>
+          <button id="btnAddToday" class="btn" style="background:var(--g2);color:#fff">+ Lägg till rad för idag</button>
           <button id="btnClearMonth" class="btn btn-ghost">Rensa denna månad</button>
         </div>
       </div>
 
-      <h3 id="monthTitle" class="monthTitle"></h3>
+      <h3 id="monthTitle" style="margin:12px 4px 8px;color:#1b3a2a"></h3>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th style="width:70px">Dag</th>
-              <th style="width:140px">Datum</th>
+              <th style="width:160px">Datum</th>
               <th style="width:120px">Från</th>
               <th style="width:120px">Till</th>
               <th style="width:110px">Paus (min)</th>
               <th style="width:110px">Total</th>
-              <th style="width:180px">Åtgärder</th>
+              <th style="width:220px">Åtgärder</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
         </table>
+      </div>
+
+      <div id="sigWrap" class="sigs" style="display:none">
+        <div class="sigBox">
+          <p class="sigTitle">Signatur – Medarbetare</p>
+          <canvas id="sigEmp" class="sigCanvas"></canvas>
+          <div class="sigBtns">
+            <button class="btn btn-ghost" id="sigEmpClr">Rensa</button>
+          </div>
+        </div>
+        <div class="sigBox">
+          <p class="sigTitle">Signatur – Chef</p>
+          <canvas id="sigMgr" class="sigCanvas"></canvas>
+          <div class="sigBtns">
+            <button class="btn btn-ghost" id="sigMgrClr">Rensa</button>
+          </div>
+        </div>
       </div>
 
       <p class="footer-note">Allt sparas automatiskt i denna enhet.</p>
@@ -107,13 +144,37 @@ input[type="number"]{text-align:right}
     <div class="log" id="log"></div>
   </div>
 
+  <!-- Kugghjul FAB -->
+  <button class="fab" id="btnSettings" title="Inställningar">⚙️</button>
+
+  <!-- Inställningsmodal -->
+  <div class="modal" id="modal">
+    <div class="sheet">
+      <div class="rowBetween">
+        <h3 style="margin:0">Inställningar</h3>
+        <button class="btn btn-ghost" id="closeModal">Stäng</button>
+      </div>
+      <div style="margin-top:10px;display:grid;gap:12px">
+        <label class="rowBetween">Visa felsökning
+          <input type="checkbox" id="swDebug" class="switch">
+        </label>
+        <label class="rowBetween">Visa signaturrutor
+          <input type="checkbox" id="swSigs" class="switch">
+        </label>
+        <label class="rowBetween">Autofyll månadens alla dagar
+          <input type="checkbox" id="swAutofill" class="switch">
+        </label>
+      </div>
+    </div>
+  </div>
+
   <!-- PDF -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
 (()=>{
-// ===== Helpers =====
+// ===== Helpers & state =====
 const $=s=>document.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
 const log=m=>{const t=new Date().toTimeString().slice(0,8);$("#log").insertAdjacentHTML('beforeend',`<p>[${t}] ${m}</p>`);$("#log").scrollTop=9e9;}
@@ -123,7 +184,7 @@ const key=()=>`tnh:${cur.getFullYear()}-${pad(cur.getMonth()+1)}`;
 const monthLabel=d=>d.toLocaleDateString('sv-SE',{month:'long',year:'numeric'});
 const dayShort=d=>d.toLocaleDateString('sv-SE',{weekday:'short'});
 
-// Skapa rader för ALLA dagar (låst datumkolumn)
+// ===== Storage shape =====
 function seedMonth(d){
   const y=d.getFullYear(), m=d.getMonth();
   const last=new Date(y,m+1,0).getDate();
@@ -134,17 +195,18 @@ function seedMonth(d){
   }
   return rows;
 }
-
 function load(){
   const raw=localStorage.getItem(key());
   if(raw){ const data=JSON.parse(raw); log(`Loaded ${key()} (${data.rows.length} rader).`); return data.rows; }
-  const rows=seedMonth(cur); save(rows);
-  log(`Ny månad – förifyller ${rows.length} dagar för ${key()}.`);
+  const auto = JSON.parse(localStorage.getItem("tnh:autofill")||"true");
+  const rows= auto ? seedMonth(cur) : [];
+  save(rows);
+  if(auto) log(`Ny månad – förifyller ${rows.length} dagar för ${key()}.`);
   return rows;
 }
-
 function save(rows){ localStorage.setItem(key(),JSON.stringify({rows})); }
 
+// ===== Calculations =====
 function calcTotal(start,end,breakMin){
   if(!start||!end) return "0.00";
   const [sh,sm]=start.split(':').map(Number);
@@ -156,12 +218,12 @@ function calcTotal(start,end,breakMin){
   return hrs.toFixed(2);
 }
 
+// ===== Render =====
 function render(){
   $("#monthTitle").textContent=monthLabel(cur);
   const rows=load();
   const tb=$("#tbody"); tb.innerHTML="";
   let sum=0;
-  const todayISO=new Date().toISOString().split('T')[0];
 
   rows.forEach((r,idx)=>{
     r.total=calcTotal(r.start,r.end,r.breakMin);
@@ -169,8 +231,8 @@ function render(){
     const d=new Date(r.date);
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td class="${r.date===todayISO?'today':''}">${dayShort(d)}</td>
-      <td>${r.date}</td>
+      <td>${dayShort(d)}</td>
+      <td><input type="date" value="${r.date}" data-idx="${idx}" data-k="date"></td>
       <td><input type="time" value="${r.start||''}" data-idx="${idx}" data-k="start"></td>
       <td><input type="time" value="${r.end||''}" data-idx="${idx}" data-k="end"></td>
       <td><input type="number" min="0" step="1" value="${r.breakMin||0}" data-idx="${idx}" data-k="breakMin"></td>
@@ -186,13 +248,19 @@ function render(){
   save(rows);
 }
 
-// Händelser
+// ===== Row events =====
 $("#tbody").addEventListener("input",(e)=>{
   const t=e.target; const idx=+t.dataset.idx; const k=t.dataset.k;
   if(Number.isNaN(idx)||!k) return;
   const rows=load();
-  let v=t.value; if(k==="breakMin") v=Number(v||0);
+  let v=t.value;
+  if(k==="breakMin") v=Number(v||0);
   rows[idx][k]=v;
+  // uppdatera dag-text live om datum ändras
+  if(k==="date"){
+    const row=t.closest("tr"); const d=new Date(v);
+    row.children[0].textContent = dayShort(d);
+  }
   rows[idx].total=calcTotal(rows[idx].start,rows[idx].end,rows[idx].breakMin);
   $("#tot-"+idx).textContent=rows[idx].total;
   const sum=rows.reduce((a,b)=>a+(+b.total||0),0);
@@ -208,11 +276,17 @@ $("#tbody").addEventListener("click",(e)=>{
   if(act==="dup"){ rows.splice(idx+1,0,JSON.parse(JSON.stringify(rows[idx]))); save(rows); render(); log(`Rad ${idx+1} duplicerades.`); }
 });
 
+// ===== Top controls =====
 $("#btnPrev").onclick=()=>{ cur.setMonth(cur.getMonth()-1); render(); log(`Bytte till ${monthLabel(cur)}.`); };
 $("#btnNext").onclick=()=>{ cur.setMonth(cur.getMonth()+1); render(); log(`Bytte till ${monthLabel(cur)}.`); };
 $("#btnClearMonth").onclick=()=>{ if(confirm("Rensa alla rader denna månad?")){ localStorage.removeItem(key()); render(); log("Månad rensad & återskapad."); } };
+$("#btnAddToday").onclick=()=>{
+  const rows=load(); const today=new Date(); const iso=today.toISOString().slice(0,10);
+  rows.push({date:iso,start:"",end:"",breakMin:0,total:"0.00"});
+  save(rows); render(); log("La till rad för idag.");
+};
 
-// Dela/PDF
+// ===== Share & PDF =====
 $("#btnShare").onclick=async()=>{
   try{
     if(navigator.share){ await navigator.share({title:document.title,text:"Tidsrapport",url:location.href}); }
@@ -226,17 +300,62 @@ $("#btnPdf").onclick=async()=>{
   const pdf=new jsPDF({unit:"pt",format:"a4"});
   const card=document.querySelector(".card");
   const canvas=await html2canvas(card,{scale:2,backgroundColor:"#ffffff"});
-  pdf.addImage(canvas.toDataURL("image/png"),"PNG",20,20,pdf.internal.pageSize.getWidth()-40,(pdf.internal.pageSize.getWidth()-40)*(canvas.height/canvas.width));
+  const w=pdf.internal.pageSize.getWidth()-40;
+  const h=w*(canvas.height/canvas.width);
+  pdf.addImage(canvas.toDataURL("image/png"),"PNG",20,20,w,h);
   pdf.save(`tidsrapport-${key().slice(4)}.pdf`);
   log("PDF klar.");
 };
 
-// Debug UI
+// ===== Debug UI =====
 $("#btnFold").onclick=()=>{const box=$("#log");const f=$("#btnFold");if(box.style.display==="none"){box.style.display="block";f.textContent="Fäll in";}else{box.style.display="none";f.textContent="Visa";}};
 $("#btnLogClear").onclick=()=>{$("#log").innerHTML="";};
 
-// Init
-render(); log(`App start OK. Månad: ${key().slice(4)}`);
+// ===== Settings modal (kugghjul) =====
+const modal=$("#modal");
+$("#btnSettings").onclick=()=>{ modal.style.display="flex"; syncSwitches(); };
+$("#closeModal").onclick=()=>modal.style.display="none";
+modal.addEventListener("click",(e)=>{ if(e.target===modal) modal.style.display="none"; });
+
+function syncSwitches(){
+  $("#swDebug").checked = JSON.parse(localStorage.getItem("tnh:debug")||"true");
+  $("#swSigs").checked  = JSON.parse(localStorage.getItem("tnh:sigs")||"false");
+  $("#swAutofill").checked = JSON.parse(localStorage.getItem("tnh:autofill")||"true");
+  $("#debugBox").style.display = $("#swDebug").checked?"block":"none";
+  $("#sigWrap").style.display  = $("#swSigs").checked?"grid":"none";
+}
+["swDebug","swSigs","swAutofill"].forEach(id=>{
+  $("#"+id).addEventListener("change",e=>{
+    const map={swDebug:"tnh:debug",swSigs:"tnh:sigs",swAutofill:"tnh:autofill"};
+    localStorage.setItem(map[id],JSON.stringify(e.target.checked));
+    syncSwitches();
+    log(`Inställning ändrad: ${id} = ${e.target.checked}`);
+  });
+});
+
+// ===== Signatures (enkelt rit-läge) =====
+function initSig(id,clrId,storeKey){
+  const c=$(id), ctx=c.getContext("2d");
+  const dpi=window.devicePixelRatio||1; c.width=c.clientWidth*dpi; c.height=c.clientHeight*dpi; ctx.scale(dpi,dpi);
+  let dr=false,px=0,py=0;
+  function draw(x,y){ctx.lineWidth=2;ctx.lineCap="round";ctx.strokeStyle="#0a3";ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();[px,py]=[x,y];}
+  c.addEventListener("pointerdown",e=>{dr=true;const r=c.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top;});
+  c.addEventListener("pointermove",e=>{if(!dr)return;const r=c.getBoundingClientRect();draw(e.clientX-r.left,e.clientY-r.top);});
+  window.addEventListener("pointerup",()=>{dr=false; localStorage.setItem(storeKey,c.toDataURL()); log(`Signature saved: ${storeKey}`);});
+  // load
+  const saved=localStorage.getItem(storeKey); if(saved){const i=new Image(); i.onload=()=>ctx.drawImage(i,0,0,c.clientWidth,c.clientHeight); i.src=saved;}
+  $(clrId).onclick=()=>{ctx.clearRect(0,0,c.clientWidth,c.clientHeight); localStorage.removeItem(storeKey); log(`Signature cleared: ${storeKey}`);}
+}
+function resizeCanvases(){ ["sigEmp","sigMgr"].forEach(id=>{const c=$("#"+id); if(!c) return; const img=localStorage.getItem(id==="sigEmp"?"sigEmp":"sigMgr"); const ctx=c.getContext("2d"); const dpi=window.devicePixelRatio||1; c.width=c.clientWidth*dpi; c.height=c.clientHeight*dpi; ctx.scale(dpi,dpi); if(img){const im=new Image(); im.onload=()=>ctx.drawImage(im,0,0,c.clientWidth,c.clientHeight); im.src=img;} }); }
+window.addEventListener("resize",resizeCanvases);
+
+// ===== Init =====
+render();
+syncSwitches();
+initSig("#sigEmp","#sigEmpClr","sigEmp");
+initSig("#sigMgr","#sigMgrClr","sigMgr");
+resizeCanvases();
+log(`App start OK. Månad: ${key().slice(4)}`);
 })();
 </script>
 </body>
