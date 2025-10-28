@@ -6,7 +6,6 @@
 <title>Thüringer Tannenhof – Stundennachweis / Tidrapport</title>
 <style>
   :root{
-    /* Tannenhof-grönt */
     --bg:#f3fbf6; --ink:#0f2c1b; --muted:#5b6d66;
     --surface:#ffffff; --card:#e9f4ed; --accent:#17643a; --accent-2:#0f4a2b;
     --ok:#0b7b3b; --warn:#bb3a3a; --radius:16px; --shadow:0 8px 24px rgba(0,0,0,.12);
@@ -14,8 +13,6 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-
-  /* Header */
   header{position:sticky;top:0;z-index:40;color:#fff;background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:var(--shadow)}
   .bar{display:flex;align-items:center;gap:12px;padding:12px 14px}
   .brand{display:flex;align-items:center;gap:10px;min-width:0}
@@ -26,14 +23,12 @@
   .btn{border:0;border-radius:16px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
   .btn.white{background:#fff;color:#111}
   .btn.dark{background:#0f2b1b;color:#fff}
-
   main{max-width:980px;margin:16px auto;padding:0 12px}
   .panel{background:var(--card);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .sum{font-size:22px;font-weight:900}
   .chip{background:#fff;border:1px solid #0001;border-radius:14px;padding:8px 10px;font-weight:700}
   .mnav{display:flex;gap:8px}
   .icon{border:0;border-radius:12px;width:42px;height:42px;display:grid;place-items:center;background:var(--accent);color:#fff;box-shadow:var(--shadow);cursor:pointer}
-
   .sheet{background:var(--surface);border-radius:20px;margin-top:12px;box-shadow:var(--shadow);overflow:hidden}
   .thead{position:sticky;top:64px;background:#e6f1ea;z-index:20;display:grid;grid-template-columns:68px 1fr 1fr 94px 88px 136px;gap:8px;padding:8px 10px;font-weight:900}
   .row{display:grid;grid-template-columns:68px 1fr 1fr 94px 88px 136px;gap:8px;padding:8px 10px;align-items:center;border-top:1px solid #00000010}
@@ -43,14 +38,13 @@
   input[type="time"],input[type="number"],input[type="text"]{width:100%;border:0;outline:none;background:transparent;font-weight:700;color:var(--ink);font-size:16px}
   input[type="number"]{text-align:center}
   .totalBox{font-weight:900;text-align:center;background:#fff;border:1px solid #0001;border-radius:12px;min-height:44px;display:grid;place-items:center}
-  .act{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+  .act{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
   .mini{border:0;border-radius:12px;padding:10px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:var(--shadow)}
   .mini.gray{background:#86938c}
+  .pcount{font-weight:900;margin-left:4px;background:#fff;color:#0f2c1b;border:1px solid #0002;border-radius:10px;padding:3px 6px}
   .today{outline:3px solid var(--ok);outline-offset:-3px;border-radius:12px}
   .foot{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:#54676b;font-weight:800;background:#fff}
-
   .fab{position:fixed;left:16px;bottom:16px;width:64px;height:64px;border-radius:18px;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow);cursor:pointer;z-index:50}
-
   dialog{border:0;border-radius:18px;box-shadow:0 28px 80px rgba(0,0,0,.35);max-width:640px;width:calc(100% - 24px);padding:0;background:#fff}
   .dlg-h{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #0001;font-weight:900}
   .dlg-b{padding:16px}
@@ -58,21 +52,16 @@
   .grid.two{grid-template-columns:1fr 1fr}
   .field, select, input[type="file"], input[type="range"]{width:100%;padding:10px;border:1px solid #0002;border-radius:12px;background:#fff;font-weight:700}
   .help{font-size:13px;color:#5e6d67}
-  .row-g{display:flex;gap:10px;flex-wrap:wrap}
-
-  /* Print: adresshuvud + diagonal vattenstämpel under innehåll */
   @media print{
     header,.fab,.tools,.act .mini.view,.act .mini.photo,.dlg-h button,.dlg-b button,#shareDlg,#signDlg,#settingsDlg{display:none !important}
     body{background:#fff}
     main{margin:0;padding:0;max-width:100%}
     .sheet{border-radius:0;box-shadow:none}
     .thead{top:0}
-    /* Adresshuvud */
     body::after{
       content:"Thüringer Tannenhof • Wittchenstein 6, 07819 Geroda • Deutschland";
       position:fixed; top:8px; left:0; right:0; text-align:center; font-weight:800; color:#222;
     }
-    /* Diagonal logo (styrka styrs via --wm-opacity) */
     body.print-wm::before{
       content:""; position:fixed; inset:0; z-index:-1;
       background-repeat:no-repeat; background-position:center; background-size:90%;
@@ -105,11 +94,11 @@
 
 <main>
   <section class="panel">
-    <div class="row-g">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <div class="chip" id="sumLabel">Totalt –</div>
       <div class="sum" id="sumHours">0.00</div>
     </div>
-    <div class="row-g">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <div class="mnav">
         <button class="icon" id="prevM">‹</button>
         <button class="icon" id="nextM">›</button>
@@ -132,7 +121,7 @@
     <div class="foot"><span id="footLabel">Månadssumma</span><span id="footSum">0.00</span></div>
   </section>
 
-  <!-- Signaturer för skärm + print -->
+  <!-- Signaturer (visas även i print) -->
   <section id="signSection" class="sheet" style="background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:10px 12px; margin-top:12px;">
     <div class="sigbox">
       <div class="siglabel" id="sigEmpLabel">Anställd</div>
@@ -150,7 +139,6 @@
   </section>
 </main>
 
-<!-- ⚙️ längst NER till vänster så den inte krockar med vattenstämpel/kalender -->
 <button class="fab" id="openSettings">⚙️</button>
 
 <!-- Settings -->
@@ -234,7 +222,7 @@
       <div>
         <label id="empLbl">Anställd</label>
         <canvas id="empSig" width="500" height="160" style="border:1px solid #0002;border-radius:12px;background:#fff"></canvas>
-        <div class="row-g" style="margin-top:8px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           <button class="btn" id="empClear">Rensa</button>
           <input id="empName" class="field" type="text" placeholder="Namn">
         </div>
@@ -242,13 +230,13 @@
       <div>
         <label id="supLbl">Chef/Arbetsledare</label>
         <canvas id="supSig" width="500" height="160" style="border:1px solid #0002;border-radius:12px;background:#fff"></canvas>
-        <div class="row-g" style="margin-top:8px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           <button class="btn" id="supClear">Rensa</button>
           <input id="supName" class="field" type="text" placeholder="Namn">
         </div>
       </div>
     </div>
-    <div class="row-g" style="margin-top:12px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
       <input id="sigPlace" class="field" type="text" placeholder="Ort" style="max-width:200px">
       <input id="sigDate" class="field" type="date" style="max-width:200px">
       <button class="btn dark" id="sigSave">Spara signaturer</button>
@@ -316,7 +304,7 @@ const T={
 };
 
 // ===== Storage / state =====
-const VER='tt_core_v1';
+const VER='tt_core_v1_1';
 const $=q=>document.querySelector(q);
 const rowsEl=$('#rows');
 let cfg=loadCfg();
@@ -331,63 +319,26 @@ function saveCfg(){localStorage.setItem(VER+'-cfg',JSON.stringify(cfg));}
 function loadData(){try{return JSON.parse(localStorage.getItem(VER+'-data')||'')}catch{return {}}}
 function saveData(){localStorage.setItem(VER+'-data',JSON.stringify(data));}
 
-// Default “tre granar” logga om inget laddas
-const defaultLogo='data:image/svg+xml;utf8,'+encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
-  <rect width="160" height="160" fill="#ffffff"/>
-  <g transform="translate(10,10)" fill="#177043">
-    <polygon points="50,0 0,80 100,80"/>
-    <polygon points="90,20 40,100 140,100"/>
-    <polygon points="70,60 30,130 110,130"/>
-  </g>
-</svg>`);
+// Default logo (tre granar)
+const defaultLogo='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" fill="#ffffff"/><g transform="translate(10,10)" fill="#177043"><polygon points="50,0 0,80 100,80"/><polygon points="90,20 40,100 140,100"/><polygon points="70,60 30,130 110,130"/></g></svg>`);
 
 // ===== UI apply =====
 function applyLang(){
   L=T[cfg.lang]||T.sv;
   $('#appTitle').textContent=L.title;
-  $('#shareOpen').textContent=L.share;
-  $('#pdfBtn').textContent=L.pdf;
-  $('#sumLabel').textContent=L.total;
-  $('#thDay').textContent=L.day;
-  $('#thFrom').textContent=L.from;
-  $('#thTo').textContent=L.to;
-  $('#thPause').textContent=L.pause;
-  $('#thDaily').textContent=L.daily;
-  $('#thAct').textContent=L.action;
-  $('#footLabel').textContent=L.monthsum;
-
-  $('#camTitle').textContent=L.camTitle;
-  $('#takePhoto').textContent=L.take;
-  $('#pickPhoto').textContent=L.pick;
-  $('#viewPhoto').textContent=L.view;
-
-  $('#projLabel').textContent=L.proj;
-  $('#notesLabel').textContent=L.notes;
-  $('#saveNote').textContent=L.save;
-
-  $('#dlgSettingsTitle').textContent=L.settings;
-  $('#wmHelp').textContent=L.wmHelp;
-  $('#logoHelp').textContent=L.logoHelp;
-
-  $('#shareTitle').textContent=L.shareTitle;
-  $('#doWebShare').textContent=L.doWebShare;
-  $('#doWhats').textContent=L.doWhats;
-  $('#doEmail').textContent=L.doEmail;
-  $('#doCopy').textContent=L.doCopy;
-  $('#doPDF').textContent=L.doPDF;
-
-  $('#signTitle').textContent=L.signTitle;
-  $('#empLbl').textContent=L.emp;
-  $('#supLbl').textContent=L.sup;
-  $('#sigEmpLabel').textContent=L.emp;
-  $('#sigSupLabel').textContent=L.sup;
+  $('#shareOpen').textContent=L.share; $('#pdfBtn').textContent=L.pdf;
+  $('#sumLabel').textContent=L.total; $('#thDay').textContent=L.day; $('#thFrom').textContent=L.from;
+  $('#thTo').textContent=L.to; $('#thPause').textContent=L.pause; $('#thDaily').textContent=L.daily;
+  $('#thAct').textContent=L.action; $('#footLabel').textContent=L.monthsum;
+  $('#camTitle').textContent=L.camTitle; $('#takePhoto').textContent=L.take; $('#pickPhoto').textContent=L.pick; $('#viewPhoto').textContent=L.view;
+  $('#projLabel').textContent=L.proj; $('#notesLabel').textContent=L.notes; $('#saveNote').textContent=L.save;
+  $('#dlgSettingsTitle').textContent=L.settings; $('#wmHelp').textContent=L.wmHelp; $('#logoHelp').textContent=L.logoHelp;
+  $('#shareTitle').textContent=L.shareTitle; $('#doWebShare').textContent=L.doWebShare; $('#doWhats').textContent=L.doWhats; $('#doEmail').textContent=L.doEmail; $('#doCopy').textContent=L.doCopy; $('#doPDF').textContent=L.doPDF;
+  $('#signTitle').textContent=L.signTitle; $('#empLbl').textContent=L.emp; $('#supLbl').textContent=L.sup;
+  $('#sigEmpLabel').textContent=L.emp; $('#sigSupLabel').textContent=L.sup;
 }
 function applyLogo(){ $('#brandLogo').src=(cfg.logo||defaultLogo); }
-function applyMonthName(){
-  const [y,m]=month.split('-').map(Number);
-  $('#monthName').textContent=`${L.monthNames[m-1]} ${y}`;
-}
+function applyMonthName(){ const [y,m]=month.split('-').map(Number); $('#monthName').textContent=`${L.monthNames[m-1]} ${y}`; }
 
 // ===== Build sheet =====
 function getRec(d){
@@ -422,8 +373,9 @@ function render(){
     const cAct=div('act');
     const bEdit=mini('📝',()=>openEdit(d));
     const bCam=mini('📷',()=>openCam(d));
+    const count=document.createElement('span'); count.className='pcount'; count.id=`pc-${d}`; count.textContent='×'+(r.photos?.length||0);
     const bGal=mini('👁️',()=>openGallery(d));
-    cAct.append(bEdit,bCam,bGal);
+    cAct.append(bEdit,bCam,count,bGal);
 
     row.append(cDay,cFrom,cTo,cPause,cDaily,cAct);
     rowsEl.append(row);
@@ -450,10 +402,15 @@ function calc(){
     }
     sum += Math.max(0,mins);
     const box=$(`#dtotal-${d}`); if(box) box.textContent=fmt(Math.max(0,mins));
+    updatePhotoCount(d); // ← håll badge uppdaterad även vid rerender
   }
   const hrs=(sum/60).toFixed(2);
   $('#sumHours').textContent=hrs;
   $('#footSum').textContent=hrs;
+}
+function updatePhotoCount(day){
+  const r=getRec(day);
+  const el=$(`#pc-${day}`); if(el) el.textContent='×'+(r.photos?.length||0);
 }
 
 // ===== Notes / Project =====
@@ -482,6 +439,7 @@ function pickFile(useCamera){
     const f=inp.files?.[0]; if(!f) return;
     const b64=await toBase64Compressed(f,1600);
     const rec=getRec(camDay); rec.photos=rec.photos||[]; rec.photos.push({name:f.name,data:b64}); saveData();
+    updatePhotoCount(camDay);
     camDlg.close();
   };
   inp.click();
@@ -504,10 +462,11 @@ function openGallery(day){
   const rec=getRec(day); const arr=rec.photos||[];
   if(arr.length===0){ body.textContent='—'; galDlg.showModal(); return; }
   arr.forEach((p,i)=>{
-    const img=new Image(); img.src=p.data; img.style.maxWidth='100%'; img.style.borderRadius='12px'; img.style.margin='8px 0';
+    const wrap=document.createElement('div'); wrap.style.margin='8px 0';
+    const img=new Image(); img.src=p.data; img.style.maxWidth='100%'; img.style.borderRadius='12px';
     const del=document.createElement('button'); del.className='mini gray'; del.textContent='🗑️';
-    del.onclick=()=>{ arr.splice(i,1); rec.photos=arr; saveData(); openGallery(day); };
-    body.append(img,del);
+    del.onclick=()=>{ arr.splice(i,1); rec.photos=arr; saveData(); updatePhotoCount(day); openGallery(day); };
+    wrap.append(img,del); body.append(wrap);
   });
   $('#galTitle').textContent=L.dlgDay+' '+String(day).padStart(2,'0');
   galDlg.showModal();
@@ -532,8 +491,9 @@ function buildShareText(){
   for(let d=1; d<=dcount; d++){
     const r=getRec(d);
     const mins = (r.from&&r.to)? Math.max(0, toMin(r.to)-toMin(r.from)-(parseInt(r.pause||0)||0)) : 0;
-    if(r.from||r.to||r.project||r.notes){
-      out+=`${String(d).padStart(2,'0')}: ${r.from||'--:--'}–${r.to||'--:--'} (${r.pause||0} ${L.min})  ${L.daily}: ${(mins/60).toFixed(2)}  ${r.project||''}\n`;
+    if(r.from||r.to||r.project||r.notes|| (r.photos&&r.photos.length)){
+      const photos = (r.photos?.length||0) > 0 ? ` [📷×${r.photos.length}]` : '';
+      out+=`${String(d).padStart(2,'0')}: ${r.from||'--:--'}–${r.to||'--:--'} (${r.pause||0} ${L.min})  ${L.daily}: ${(mins/60).toFixed(2)}  ${r.project||''}${photos}\n`;
     }
   }
   out+=`\n${L.monthsum}: ${$('#sumHours').textContent} h`;
@@ -613,10 +573,9 @@ function applySignView(){
   $('#signSection').style.display=(cfg.sign?.empImg||cfg.sign?.supImg)?'block':'none';
 }
 
-// ===== Helpers =====
+// ===== Boot =====
 function applyAll(){ applyLogo(); applyLang(); applyMonthName(); render(); applySignView(); }
 applyAll();
-
 })();
 </script>
 </body>
