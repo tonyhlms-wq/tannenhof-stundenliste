@@ -2,120 +2,133 @@
 <html lang="sv">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Thüringer Tannenhof – Tidstabell</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Thüringer Tannenhof – Tidtabell</title>
 <style>
+  /* ======= Färger/tema (enkelt, snabbt) ======= */
   :root{
-    --primary:#195c37; /* byts av tema/egna färger */
-    --primary-2:#0f3e26;
+    --primary:#1b5e37;
+    --primary-2:#0f3d24;
     --card:#eaf5ef;
-    --ink:#0d261a;
+    --ink:#0e2418;
     --ok:#116149;
-    --danger:#b3261e;
+    --danger:#bb2b2b;
   }
   [data-theme="camo"]{
-    --primary:#2e4732;
-    --primary-2:#1e2f22;
+    --primary:#334a36;
+    --primary-2:#243427;
     --card:#e7efe9;
-    --ink:#162219;
+    --ink:#132017;
     --ok:#355c3e;
   }
-  html,body{margin:0;background:#f7faf8;color:var(--ink);font:16px system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-  .top{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--primary),var(--primary-2));color:#fff;padding:10px 12px;display:flex;align-items:center;gap:12px}
+
+  /* ======= Bas ======= */
+  html,body{margin:0;background:#f7faf8;color:var(--ink);
+    font:16px system-ui,-apple-system,Segoe UI,Roboto,Arial; touch-action: pan-x pan-y;}
+  .top{position:sticky;top:0;z-index:20;color:#fff;
+    background:linear-gradient(180deg,var(--primary),var(--primary-2));
+    padding:10px 12px;display:flex;align-items:center;gap:12px}
   .brand{display:flex;align-items:center;gap:10px;min-width:0}
-  .brand .logo{width:28px;height:28px;border-radius:6px;background:#fff url('') center/cover no-repeat;box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
+  .logo{width:28px;height:28px;border-radius:6px;background:#fff;box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
   .brand h1{font-size:16px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .toolbar{margin-left:auto;display:flex;gap:10px}
-  .btn{background:#fff;color:#111;border-radius:14px;padding:10px 14px;font-weight:700;border:none;box-shadow:0 6px 18px rgba(0,0,0,.15);display:inline-flex;gap:8px;align-items:center}
+  .btn{background:#fff;color:#111;border-radius:14px;padding:10px 14px;font-weight:700;border:none;
+       box-shadow:0 6px 18px rgba(0,0,0,.15);display:inline-flex;gap:8px;align-items:center}
   .btn.dark{background:#111;color:#fff}
+
   .wrap{padding:12px}
+
+  /* ======= Summa-kort ======= */
   .panel{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
   .sumrow{display:flex;align-items:center;justify-content:space-between}
-  .table{margin-top:14px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-  .thead,.row{display:grid;grid-template-columns:72px 1fr 1fr 110px 74px;gap:12px;align-items:center}
-  .thead{position:sticky;top:64px;background:#e6f2ea;border-bottom:2px solid #d8e8df;z-index:5;padding:10px 12px;font-weight:800}
+  .chip{background:#fff;border-radius:12px;padding:6px 10px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-weight:800}
+
+  /* ======= EDIT-banderoll (visar vilken ruta) ======= */
+  .editbar{position:sticky;top:56px;z-index:19;background:#fff;
+    border-left:4px solid var(--ok);padding:8px 12px;margin:10px 0;border-radius:10px;
+    box-shadow:0 6px 16px rgba(0,0,0,.06);display:none}
+  .editbar.show{display:block}
+
+  /* ======= Tabell – nu med horisontell scroll ======= */
+  .hscroll{overflow:auto; -webkit-overflow-scrolling:touch; background:#fff;border-radius:16px;
+           box-shadow:0 8px 24px rgba(0,0,0,.06)}
+  .grid{min-width:900px;}  /* gör att man kan dra i sidled på mobil */
+  .head,.row{display:grid;grid-template-columns:72px 120px 120px 120px 1fr 110px 110px;
+             gap:12px;align-items:center}
+  .head{position:sticky;top:106px;background:#e6f2ea;border-bottom:2px solid #d8e8df;z-index:18;
+        padding:10px 12px;font-weight:800}
   .row{padding:10px 12px;border-bottom:1px solid #eef3f0}
-  .cell{background:#f0f6f2;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;min-height:44px}
+  .cell{background:#f0f6f2;border-radius:14px;padding:10px 12px;min-height:44px;display:flex;gap:8px;align-items:center}
   .day{justify-content:center;font-weight:800;background:#eaf5ef}
-  .time{cursor:pointer}
-  .time input{all:unset;width:64px;text-align:center;font-variant-numeric:tabular-nums}
+  .proj{min-width:160px}
   .total{font-weight:800;background:#eff6f2}
-  .act{display:flex;gap:10px}
-  .iconbtn{width:48px;height:48px;border-radius:14px;background:var(--primary);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.18);border:none}
+  .act{display:flex;gap:10px;justify-content:flex-end}
+  .iconbtn{width:48px;height:48px;border-radius:14px;background:var(--primary);display:grid;place-items:center;border:none;
+           box-shadow:0 6px 16px rgba(0,0,0,.18)}
   .iconbtn svg{fill:#fff}
-  .chip{background:#fff;border-radius:12px;padding:6px 10px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+
+  /* Inputs */
+  input[type="time"],input.tlist{all:unset;background:#fff;border:1px solid #dbe6df;border-radius:10px;
+                                 padding:8px 10px;min-width:82px;text-align:center;
+                                 font-variant-numeric:tabular-nums}
+  .editing{outline:3px solid var(--ok);outline-offset:2px;background:#fff}
+
+  /* flytande inställning */
   .floating{position:fixed;left:18px;bottom:18px;z-index:30}
-  .settings{width:64px;height:64px;border-radius:18px;background:var(--primary);display:grid;place-items:center;box-shadow:0 10px 24px rgba(0,0,0,.28);border:none}
-  .padBottom{height:110px} /* så sista raden inte döljs */
-  /* dialog */
+  .settings{width:64px;height:64px;border-radius:18px;background:var(--primary);display:grid;place-items:center;border:none;
+            box-shadow:0 10px 24px rgba(0,0,0,.28)}
+
+  .padBottom{height:110px} /* sista raden syns alltid */
   dialog{border:none;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.35);padding:0}
   .dlg{padding:18px;min-width:300px;background:#fff;border-radius:18px}
-  .dlg h2{margin:0 0 10px 0}
-  .grid{display:grid;gap:10px}
-  label .hint{opacity:.7;font-size:12px}
-  select,input[type="text"],input[type="range"],input[type="color"]{width:100%;padding:10px;border-radius:12px;border:1px solid #dbe6df;background:#f8fbf9}
-  .rowhead{display:flex;align-items:center;gap:10px}
-  .wm{position:fixed;right:18px;bottom:86px;opacity:.3;pointer-events:none;z-index:0;mix-blend-mode:multiply}
-  .wm img{max-width:280px;max-height:180px;opacity:var(--wmalpha,0.3);filter:grayscale(25%)}
-  .today{outline:3px solid var(--ok)}
-  /* projekt-knapp */
-  .proj{cursor:text}
-  .proj .pin{font-size:18px}
-  /* meny till kamera */
-  .menu{padding:8px 6px}
-  .menu button{display:block;width:100%;text-align:left;padding:12px;border:none;background:#fff}
-  .menu button+button{border-top:1px solid #eef3f0}
+  select,input[type="text"],input[type="range"],input[type="color"]{width:100%;padding:10px;border-radius:12px;
+    border:1px solid #dbe6df;background:#f8fbf9}
+  .gridForm{display:grid;gap:10px}
 </style>
 </head>
 <body data-theme="green">
+  <!-- Topp -->
   <div class="top">
     <div class="brand">
       <div class="logo" id="brandLogo"></div>
-      <h1 id="brandTitle">Thüringer Tannenhof – Tidstabell</h1>
+      <h1 id="brandTitle">Thüringer Tannenhof – Tidtabell</h1>
     </div>
     <div class="toolbar">
-      <button class="btn" id="shareBtn">🎂 Dela / Skicka</button>
-      <button class="btn dark" id="pdfBtn">🖨️ PDF</button>
+      <button class="btn" id="shareBtn">Dela / Skicka</button>
+      <button class="btn dark" id="pdfBtn">PDF</button>
     </div>
   </div>
 
   <div class="wrap">
     <div class="panel">
       <div class="sumrow">
-        <div class="rowhead"><span>⏳</span><div id="sumTitle">Totalt –</div></div>
-        <div class="chip"><span id="sumHours">0.00</span></div>
+        <div><strong>Totalt –</strong></div>
+        <div class="chip" id="sumHours">0.00</div>
       </div>
     </div>
 
-    <div class="table" id="table">
-      <div class="thead" id="thead">
-        <div id="thDay">Dag</div>
-        <div id="thFrom">Från</div>
-        <div id="thTo">Till</div>
-        <div id="thBreak">☕ Paus</div>
-        <div>Totalt</div>
+    <!-- Visar vilken ruta som är aktiv -->
+    <div class="editbar" id="editbar">Redigerar: –</div>
+
+    <!-- TABELL – kan dras i sidled -->
+    <div class="hscroll">
+      <div class="grid">
+        <div class="head">
+          <div>Dag</div><div>Från</div><div>Till</div><div>Paus</div><div>Projekt/plats</div><div>Totalt</div><div>Aktion</div>
+        </div>
+        <div id="rows"></div>
       </div>
-      <div id="rows"></div>
     </div>
     <div class="padBottom"></div>
   </div>
 
-  <!-- vattenstämpel -->
-  <div class="wm" id="wm"><img id="wmImg" alt=""></div>
+  <!-- Flytande inställnings-knapp -->
+  <div class="floating"><button class="settings" id="openSettings" aria-label="Inställningar">⚙️</button></div>
 
-  <!-- inställningar -->
-  <div class="floating">
-    <button class="settings" id="openSettings" aria-label="Inställningar">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 13a7.7 7.7 0 0 0 .05-2l2-1.55a.5.5 0 0 0 .1-.68l-1.9-3.29a.5.5 0 0 0-.64-.2l-2.35.95a7.8 7.8 0 0 0-1.73-1l-.35-2.54a.5.5 0 0 0-.5-.43h-3.8a.5.5 0 0 0-.5.43l-.35 2.54a7.8 7.8 0 0 0-1.73 1L5 3.28a.5.5 0 0 0-.64.2L2.46 6.77a.5.5 0 0 0 .1.68L4.6 9a7.7 7.7 0 0 0 0 2l-2.04 1.55a.5.5 0 0 0-.1.68l1.9 3.29c.13.22.4.3.64.2l2.35-.95c.53.4 1.1.74 1.73 1l.35 2.54c.04.24.25.43.5.43h3.8c.25 0 .46-.19.5-.43l.35-2.54c.63-.26 1.2-.6 1.73-1l2.35.95c.24.1.51.02.64-.2l1.9-3.29a.5.5 0 0 0-.1-.68L19.4 13Z"/></svg>
-    </button>
-  </div>
-
+  <!-- Inställningar -->
   <dialog id="settingsDlg">
-    <form class="dlg grid" method="dialog">
+    <form class="dlg gridForm" method="dialog">
       <h2>Inställningar</h2>
-      <label>Företagsnamn
-        <input id="inpCo" type="text" placeholder="THÜRINGER TANNENHOF" />
-      </label>
       <label>Språk
         <select id="inpLang">
           <option value="sv">Svenska</option>
@@ -129,26 +142,11 @@
           <option value="list15">Lista (15 min)</option>
         </select>
       </label>
-      <label>Vattenstämpel (logga)
-        <input id="inpWm" type="file" accept="image/*" />
-        <div class="hint">Lägg egen logga (PNG/JPG). Knappen nedan justerar styrkan.</div>
-      </label>
-      <label>Opacitet vattenstämpel: <span id="wmPct">70%</span>
-        <input id="inpWmAlpha" type="range" min="0" max="100" value="70" />
-      </label>
       <label>Tema
         <select id="inpTheme">
           <option value="green">Grönt (standard)</option>
           <option value="camo">Militär kamouflage</option>
-          <option value="custom">Egna färger</option>
         </select>
-      </label>
-      <label id="customColorRow" style="display:none">Primärfärg (egna)
-        <input id="inpCustom" type="color" value="#195c37" />
-      </label>
-      <label>Text på projekt-knappen
-        <input id="inpProjSv" type="text" placeholder="Projekt/plats" />
-        <div class="hint">Översätts automatiskt, men du kan skriva egen text.</div>
       </label>
       <menu style="display:flex;gap:10px;justify-content:flex-end;margin:8px 0 0 0">
         <button value="cancel">Stäng</button>
@@ -157,325 +155,175 @@
     </form>
   </dialog>
 
-  <!-- Kamera/Foto meny -->
-  <dialog id="photoDlg">
-    <div class="dlg">
-      <h2>Foto</h2>
-      <div class="menu">
-        <button id="doCamera">📷 Ta foto</button>
-        <button id="doGallery">🖼️ Välj från galleri</button>
-        <button id="doView">🧐 Visa senaste foto</button>
-      </div>
-      <menu style="display:flex;justify-content:flex-end"><button id="closePhoto">Stäng</button></menu>
-    </div>
-  </dialog>
-  <input id="fileCamera" type="file" accept="image/*" capture="environment" style="display:none" />
-  <input id="fileGallery" type="file" accept="image/*" style="display:none" />
-
 <script>
-/* =========================================================
-   PERMANENT LAGRING (versionssäker)
-   ========================================================= */
-const APP_VERSION = "1.0.0";
-const STORE_KEY   = "tt_timesheet_store";
+/* ==========================
+   Enkel bestående lagring
+   ========================== */
+const STORE="tt_timesheet_v2";
+const S=load()||def();
 
-const Persist = {
-  load(){
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw){
-      const wrap = JSON.parse(raw);
-      return migrateIfNeeded(wrap).data;
-    }
-    // Bakåtkompat.
-    const legacy = localStorage.getItem("tt_state");
-    if(legacy){
-      const data = JSON.parse(legacy);
-      return migrateIfNeeded({version:"0.9.0", data}).data;
-    }
-    return defaultState();
-  },
-  save(data){
-    localStorage.setItem(STORE_KEY, JSON.stringify({version:APP_VERSION, data}));
-  }
-};
-
-function defaultState(){
-  const rows={};
-  for(let d=1; d<=31; d++) rows[d]={from:"", to:"", brk:"00:00", proj:"", photo:null, total:"0:00"};
-  return {
-    lang:"sv",
-    picker:"system",
-    theme:"green",
-    customColor:"#195c37",
-    company:"THÜRINGER TANNENHOF",
-    projText:{sv:"Projekt/plats",de:"Projekt/Ort",en:"Project/site"},
-    wmData:null, wmOpacity:70,
-    rows
-  };
+function def(){
+  const rows={}; for(let d=1; d<=31; d++) rows[d]={from:"",to:"",brk:"00:00",proj:"",total:"0:00"};
+  return {lang:"sv",picker:"system",theme:"green",rows};
 }
-function semverLt(a,b){const pa=a.split(".").map(Number),pb=b.split(".").map(Number);for(let i=0;i<3;i++){if((pa[i]||0)!==(pb[i]||0))return (pa[i]||0)<(pb[i]||0)}return false}
-function migrateIfNeeded(w){let {version,data}=w;
-  if(semverLt(version,"1.0.0")){
-    data.theme ||= "green";
-    data.customColor ||= "#195c37";
-    data.company ||= "THÜRINGER TANNENHOF";
-    data.projText ||= {sv:"Projekt/plats",de:"Projekt/Ort",en:"Project/site"};
-    Object.values(data.rows||{}).forEach(r=>{ if(!r.brk) r.brk="00:00"; if(!r.total) r.total="0:00"; });
-    version="1.0.0";
-  }
-  return {version,data};
-}
+function save(){ localStorage.setItem(STORE, JSON.stringify(S)); }
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||""); }catch{ return null; } }
 
-/* =========================================================
-   TEXT / SPRÅK
-   ========================================================= */
-const TXT={
-  sv:{title:"Thüringer Tannenhof – Tidstabell", sum:"Totalt –", day:"Dag", from:"Från", to:"Till", break:"Paus", proj:"Projekt/plats"},
-  de:{title:"Tannenhofs Zeittabelle", sum:"Gesamt –", day:"Tag", from:"Von", to:"Bis", break:"Pause", proj:"Projekt/Ort"},
-  en:{title:"Thuringer Tannenhof – Timesheet", sum:"Total –", day:"Day", from:"From", to:"To", break:"Break", proj:"Project/site"}
-};
+/* ==========================
+   Hjälp
+   ========================== */
+const $ = (q)=>document.querySelector(q);
+const rowsEl = $("#rows"), sumEl=$("#sumHours"), editbar=$("#editbar");
 
-/* =========================================================
-   DOM + STATE
-   ========================================================= */
-let S = Persist.load();
+function toMin(s){ if(!s||s==="--:--") return 0; const [h,m]=s.split(":").map(Number); return h*60+m; }
+function HHMM(m){ const h=Math.floor(m/60), mm=m%60; return `${String(h).padStart(1,"0")}:${String(mm).padStart(2,"0")}`; }
+function calcRow(d){ const r=S.rows[d], a=toMin(r.from), b=toMin(r.to), c=toMin(r.brk); const t=Math.max(0,b-a-c); r.total=HHMM(t); return t; }
+function calcSum(){ let s=0; for(let d=1; d<=31; d++) s+=calcRow(d); sumEl.textContent=(s/60).toFixed(2); }
 
-const el = {
-  brandLogo: $("#brandLogo"),
-  brandTitle: $("#brandTitle"),
-  sumTitle: $("#sumTitle"),
-  sumHours: $("#sumHours"),
-  rows: $("#rows"),
-  thead: $("#thead"),
-  wm: $("#wm"),
-  wmImg: $("#wmImg"),
-  settingsDlg: $("#settingsDlg"),
-  photoDlg: $("#photoDlg"),
-  fileCamera: $("#fileCamera"),
-  fileGallery: $("#fileGallery"),
-
-  // settings inputs
-  inpCo: $("#inpCo"),
-  inpLang: $("#inpLang"),
-  inpPicker: $("#inpPicker"),
-  inpWm: $("#inpWm"),
-  inpWmAlpha: $("#inpWmAlpha"),
-  wmPct: $("#wmPct"),
-  inpTheme: $("#inpTheme"),
-  inpCustom: $("#inpCustom"),
-  customColorRow: $("#customColorRow"),
-  inpProjSv: $("#inpProjSv")
-};
-function $(q){return document.querySelector(q)}
-
-/* =========================================================
-   BYGG TABELLEN
-   ========================================================= */
 function build(){
-  // språk
-  const t = TXT[S.lang] || TXT.sv;
-  document.title = t.title;
-  el.brandTitle.textContent = t.title;
-  el.sumTitle.textContent = `${t.sum}`;
-  $("#thDay").textContent = t.day;
-  $("#thFrom").innerHTML = `⏰ ${t.from}`;
-  $("#thTo").innerHTML = `⏰ ${t.to}`;
-  $("#thBreak").innerHTML = `☕ ${t.break}`;
-
-  // tema
-  document.body.dataset.theme = (S.theme==="custom" ? "green" : S.theme);
-  if(S.theme==="custom"){
-    document.documentElement.style.setProperty('--primary', S.customColor);
-    document.documentElement.style.setProperty('--primary-2', S.customColor);
-  }
-
-  // brand text och vattenstämpel
-  el.inpCo.value = S.company || "";
-  // vattenstämpel
-  if(S.wmData){ el.wmImg.src = S.wmData; } else { el.wmImg.removeAttribute("src"); }
-  setWmOpacity(S.wmOpacity);
-
-  // rensa rader
-  el.rows.innerHTML = "";
-
-  const today = new Date();
-  const isThisMonth = true; // tabellen visar alltid aktuell månad i din app
-  const todayDate = today.getDate();
-
+  document.body.dataset.theme=S.theme;
+  rowsEl.innerHTML="";
   for(let d=1; d<=31; d++){
-    const r = S.rows[d] || (S.rows[d]={from:"",to:"",brk:"00:00",proj:"",photo:null,total:"0:00"});
+    const r=S.rows[d]||{from:"",to:"",brk:"00:00",proj:"",total:"0:00"};
 
-    const row = document.createElement("div");
-    row.className = "row";
-    if(isThisMonth && d===todayDate) row.classList.add("today");
+    const row=document.createElement("div"); row.className="row";
 
     // Dag
-    const cDay = div("cell day", String(d).padStart(2,"0"));
+    const cDay=div("cell day",String(d).padStart(2,"0"));
 
-    // Från / Till
-    const cFrom = timeCell(d, "from", r.from);
-    const cTo   = timeCell(d, "to",   r.to);
+    // Från/Till/Paus
+    const cFrom=timeCell(d,"from",r.from,"Från");
+    const cTo=timeCell(d,"to",r.to,"Till");
+    const cBrk=timeCell(d,"brk",r.brk,"Paus", true);
 
-    // Paus
-    const cBreak = document.createElement("div");
-    cBreak.className="cell time";
-    const br = document.createElement("input");
-    br.type = (S.picker==="system") ? "time" : "text";
-    if(S.picker==="system"){ br.step=900; br.value = r.brk ?? "00:00"; }
-    else { br.readOnly=true; br.value=r.brk ?? "00:00"; br.addEventListener('click',()=>chooseFromList(br,[...list15()],'00:00', (v)=>setBreak(d,v))); }
-    br.addEventListener("change", ()=> setBreak(d, br.value));
-    cBreak.append(br);
+    // Projekt
+    const cProj=div("cell proj","");
+    const pInp=document.createElement("input");
+    pInp.type="text"; pInp.placeholder=labelText("proj");
+    pInp.value=r.proj||"";
+    pInp.oninput=()=>{ S.rows[d].proj=pInp.value; save(); };
+    pInp.onfocus=()=>onStartEdit(d,"Projekt/plats",pInp.parentElement);
+    pInp.onblur =()=>onEndEdit();
+    cProj.append(pInp);
 
     // Total
-    const cTotal = div("cell total", toHHMM(totalMinutes(d)));
+    const cTot=div("cell total", r.total||"0:00");
 
-    // Actions (projekt + kamera)
-    const cAct = document.createElement("div"); cAct.className="act";
-    const editBtn = iconBtn(pencilSvg(), ()=>editProject(d));
-    const camBtn  = iconBtn(cameraSvg(), ()=>openPhotoMenu(d));
-    cAct.append(editBtn, camBtn);
+    // Aktioner
+    const cAct=document.createElement("div"); cAct.className="act";
+    const clear=iconBtn(trashSvg(), ()=>{ S.rows[d]={from:"",to:"",brk:"00:00",proj:"",total:"0:00"}; save(); refreshRow(d); });
+    cAct.append(clear);
 
-    row.append(cDay,cFrom,cTo,cBreak,cTotal);
-    // projekt-knapp som cell (ersätt gärna med egen knapp-rad om du vill)
-    const projCell = div("cell proj", "");
-    projCell.innerHTML = `<span class="pin">📍</span><span id="ptext-${d}">${(S.projText?.[S.lang]||t.proj)}</span>`;
-    // lägg mellan Dag och From? I din layout låg den separat, men vi håller det som knapprad nedanför:
-    const row2 = document.createElement("div");
-    row2.className="row"; row2.style.borderBottom="1px solid #eef3f0";
-    row2.append(div("cell"), projCell, div("cell"), div("cell"), cAct);
-
-    el.rows.append(row, row2);
+    row.append(cDay,cFrom,cTo,cBrk,cProj,cTot,cAct);
+    rowsEl.append(row);
   }
-  updateSum();
+  calcSum();
 }
-function div(cls,txt){const e=document.createElement("div"); e.className=cls; if(txt!=null)e.textContent=txt; return e;}
-function iconBtn(svg, fn){const b=document.createElement("button"); b.className="iconbtn"; b.innerHTML=svg; b.addEventListener("click",fn); return b;}
-function pencilSvg(){return `<svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm18.71-11.04c.39-.39.39-1.02 0-1.41l-2.5-2.5a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67Z"/></svg>`}
-function cameraSvg(){return `<svg width="22" height="22" viewBox="0 0 24 24"><path d="M9 3l-1.8 2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/></svg>`}
 
-/* ====== tidcell med systemklocka eller lista ====== */
-function timeCell(day, key, val){
-  const c = document.createElement("div"); c.className="cell time";
-  const inp = document.createElement("input");
+/* cellbyggare */
+function div(cls,txt){ const e=document.createElement("div"); e.className=cls; if(txt!=null)e.textContent=txt; return e; }
+function iconBtn(svg,fn){ const b=document.createElement("button"); b.className="iconbtn"; b.innerHTML=svg; b.onclick=fn; return b;}
+function trashSvg(){return `<svg width="22" height="22" viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 6h2v8h-2V9Zm4 0h2v8h-2V9ZM6 9h2v8H6V9Z"/></svg>`}
+
+/* tidscell: systemklocka eller lista */
+function timeCell(day,key,value,label,isBreak=false){
+  const wrap=div("cell","");
+  const inp=document.createElement("input");
   if(S.picker==="system"){
-    inp.type="time"; inp.step=300; inp.value = val||"";
-    inp.addEventListener("change", ()=> setTime(day,key,inp.value));
+    inp.type="time"; inp.step=isBreak?900:300;
   }else{
-    inp.type="text"; inp.readOnly=true; inp.value = val||"--:--";
-    inp.addEventListener("click", ()=> chooseFromList(inp, [...listTime()], "--:--", (v)=>setTime(day,key,v)));
+    inp.type="text"; inp.className="tlist"; inp.readOnly=true;
   }
-  c.append(inp);
-  return c;
+  inp.value=value|| (S.picker==="system" ? "" : "--:--");
+
+  // fokusmarkering + banderoll
+  inp.onfocus=()=>onStartEdit(day,label,wrap);
+  inp.onblur =()=>onEndEdit();
+
+  // logik för val
+  if(S.picker==="system"){
+    inp.onchange=()=>{ setTime(day,key,inp.value); };
+  }else{
+    inp.onclick=()=>chooseFromList(inp,key,day,isBreak);
+  }
+  wrap.append(inp);
+  return wrap;
 }
-function listTime(){
-  const a=[]; for(let h=0; h<24; h++){ for(let m=0;m<60;m+=15){ a.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`); } }
-  return a;
+
+function onStartEdit(day,label,cell){
+  editbar.textContent=`Redigerar: Dag ${day} – ${label}`;
+  editbar.classList.add("show");
+  cell.classList.add("editing");
+  cell.scrollIntoView({block:"center",inline:"nearest",behavior:"smooth"});
 }
-function list15(){
-  const a=[]; for(let h=0; h<12; h++){ for(let m=0;m<60;m+=15){ a.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`); } }
-  return a;
+function onEndEdit(){
+  editbar.classList.remove("show");
+  document.querySelectorAll(".editing").forEach(el=>el.classList.remove("editing"));
 }
-function chooseFromList(target, options, empty, onPick){
-  const dlg = document.createElement("dialog");
-  dlg.innerHTML = `<div class="dlg" style="max-height:70vh;overflow:auto"><h2>Välj</h2></div>`;
-  const box = dlg.firstChild;
-  options.forEach(v=>{
+
+function setTime(d,key,val){
+  S.rows[d][key]=val;
+  save(); refreshRow(d);
+}
+
+function chooseFromList(inp,key,day,isBreak){
+  const list=[]; const step=isBreak?15:15;
+  for(let h=0; h<24; h++){
+    for(let m=0; m<60; m+=step){
+      list.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+    }
+  }
+  const dlg=document.createElement("dialog");
+  dlg.innerHTML=`<div class="dlg" style="max-height:70vh;overflow:auto"><h3>Välj tid</h3></div>`;
+  const box=dlg.firstChild;
+  list.forEach(v=>{
     const b=document.createElement("button");
-    b.textContent=v; b.style.display="block"; b.style.width="100%"; b.style.padding="10px"; b.style.border="none"; b.style.background="#fff"; b.addEventListener("click",()=>{ onPick(v); dlg.close(); dlg.remove();});
+    b.textContent=v; b.style.display="block"; b.style.width="100%"; b.style.padding="10px";
+    b.style.border="none"; b.style.background="#fff";
+    b.onclick=()=>{ inp.value=v; setTime(day,key,v); dlg.close(); dlg.remove(); };
     box.append(b);
   });
   const foot=document.createElement("menu"); foot.style.display="flex"; foot.style.justifyContent="flex-end";
-  const close=document.createElement("button"); close.textContent="Stäng"; close.addEventListener("click",()=>{dlg.close(); dlg.remove();});
+  const close=document.createElement("button"); close.textContent="Stäng"; close.onclick=()=>{dlg.close(); dlg.remove();};
   foot.append(close); box.append(foot);
   document.body.append(dlg); dlg.showModal();
 }
 
-/* ====== set-funktioner + total ====== */
-function toMin(s){ if(!s||s==="--:--") return 0; const [h,m]=s.split(":").map(Number); return h*60+m; }
-function toHHMM(mins){ const h=Math.floor(mins/60), m=mins%60; return `${String(h).padStart(1,"0")}:${String(m).padStart(2,"0")}`; }
-function totalMinutes(d){
-  const r=S.rows[d]; const a=toMin(r.from), b=toMin(r.to), br=toMin(r.brk||"0:00");
-  const t=Math.max(0, b-a-br); r.total = toHHMM(t); return t;
-}
-function updateRowTotal(d){ const idx=(d-1)*2; const row = el.rows.children[idx]; if(!row) return;
-  const totalCell = row.querySelector(".total"); totalCell.textContent = toHHMM(totalMinutes(d)); Persist.save(S); updateSum();
-}
-function updateSum(){ let sum=0; for(let d=1; d<=31; d++) sum+= totalMinutes(d); el.sumHours.textContent = (sum/60).toFixed(2); }
+/* uppdatera en rad snabbt */
+function refreshRow(d){
+  const idx=d-1;
+  const row=rowsEl.children[idx]; if(!row) return;
+  const r=S.rows[d];
 
-function setTime(d,key,val){ S.rows[d][key]=val; updateRowTotal(d); }
-function setBreak(d,val){ S.rows[d].brk = val||"00:00"; updateRowTotal(d); }
+  // inputs i ordning: from,to,break,proj
+  const inputs=row.querySelectorAll("input");
+  if(inputs[0]) inputs[0].value = S.picker==="system" ? (r.from||"") : (r.from||"--:--");
+  if(inputs[1]) inputs[1].value = S.picker==="system" ? (r.to||"")   : (r.to||"--:--");
+  if(inputs[2]) inputs[2].value = S.picker==="system" ? (r.brk||"00:00") : (r.brk||"00:00");
+  if(inputs[3]) inputs[3].value = r.proj||"";
 
-/* ====== Projekt ====== */
-function editProject(d){
-  const t = TXT[S.lang] || TXT.sv;
-  const cur = S.rows[d].proj || "";
-  const v = prompt(`${t.proj}`, cur);
-  if(v!=null){ S.rows[d].proj=v; Persist.save(S); const pt = $("#ptext-"+d); if(pt) pt.textContent=v || (S.projText?.[S.lang]||t.proj); }
+  // total
+  row.querySelector(".total").textContent = HHMM(calcRow(d));
+  calcSum();
 }
 
-/* ====== Foto ====== */
-let currentPhotoDay=null;
-function openPhotoMenu(d){ currentPhotoDay=d; el.photoDlg.showModal(); }
-$("#doCamera").addEventListener("click", ()=>{ el.fileCamera.click(); });
-$("#doGallery").addEventListener("click", ()=>{ el.fileGallery.click(); });
-$("#doView").addEventListener("click", ()=>{
-  const r=S.rows[currentPhotoDay]; if(r?.photo){ const w=window.open(); w.document.write(`<img src="${r.photo}" style="max-width:100%">`); }
-});
-$("#closePhoto").addEventListener("click", ()=> el.photoDlg.close());
-el.fileCamera.addEventListener("change", handlePhoto);
-el.fileGallery.addEventListener("change", handlePhoto);
-
-function handlePhoto(ev){
-  const f = ev.target.files?.[0]; if(!f) return;
-  const rd=new FileReader();
-  rd.onload = ()=>{ if(currentPhotoDay!=null){ S.rows[currentPhotoDay].photo = rd.result; Persist.save(S); } el.photoDlg.close(); ev.target.value=""; };
-  rd.readAsDataURL(f);
+/* Språk – bara rubriker / placeholders (enkelt) */
+function labelText(k){
+  const t={sv:{proj:"Projekt/plats"},de:{proj:"Projekt/Ort"},en:{proj:"Project/site"}};
+  return (t[S.lang]||t.sv)[k];
 }
 
-/* ====== Inställningar ====== */
-$("#openSettings").addEventListener("click", ()=>{
-  el.inpCo.value = S.company||"";
-  el.inpLang.value = S.lang;
-  el.inpPicker.value = S.picker;
-  el.inpWmAlpha.value = S.wmOpacity; el.wmPct.textContent = S.wmOpacity+"%";
-  el.inpTheme.value = S.theme;
-  el.customColorRow.style.display = (S.theme==="custom")?"block":"none";
-  el.inpCustom.value = S.customColor||"#195c37";
-  el.inpProjSv.value = S.projText?.sv || "Projekt/plats";
-  el.settingsDlg.showModal();
-});
-el.inpTheme.addEventListener("change", ()=>{
-  el.customColorRow.style.display = (el.inpTheme.value==="custom")?"block":"none";
-});
-el.inpWm.addEventListener("change", (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  const rd=new FileReader();
-  rd.onload=()=>{ S.wmData=rd.result; Persist.save(S); el.wmImg.src=rd.result; };
-  rd.readAsDataURL(f);
-});
-el.inpWmAlpha.addEventListener("input", ()=>{ el.wmPct.textContent = el.inpWmAlpha.value+"%"; setWmOpacity(+el.inpWmAlpha.value); });
-$("#saveBtn").addEventListener("click", ()=>{
-  S.company = el.inpCo.value.trim() || "THÜRINGER TANNENHOF";
-  S.lang    = el.inpLang.value;
-  S.picker  = el.inpPicker.value;
-  S.theme   = el.inpTheme.value;
-  S.customColor = el.inpCustom.value;
-  S.projText.sv = el.inpProjSv.value.trim() || "Projekt/plats";
-  Persist.save(S);
-  el.settingsDlg.close();
-  applyBrand();
-  build();
-});
+/* ===== Inställningar ===== */
+$("#openSettings").onclick=()=>{ $("#inpLang").value=S.lang; $("#inpPicker").value=S.picker; $("#inpTheme").value=S.theme; $("#settingsDlg").showModal(); };
+$("#saveBtn").onclick=()=>{
+  S.lang=$("#inpLang").value; S.picker=$("#inpPicker").value; S.theme=$("#inpTheme").value;
+  save(); $("#settingsDlg").close(); build();
+};
 
-function setWmOpacity(p){ S.wmOpacity = p; document.documentElement.style.setProperty('--wmalpha', (p/100).toString()); Persist.save(S); }
-function applyBrand(){ el.brandLogo.style.backgroundImage = S.wmData?`url(${S.wmData})`:""; }
+/* Stubbar för delning/pdf */
+$("#shareBtn").onclick=()=>alert("Dela/Skicka – export kan kopplas senare.");
+$("#pdfBtn").onclick =()=>alert("PDF – kan kopplas senare.");
 
-/* ====== Delning / PDF (stubbar) ====== */
-$("#shareBtn").addEventListener("click", ()=> alert("Dela/Skicka – implementera enligt dina behov (export JSON/PDF)."));
-$("#pdfBtn").addEventListener("click", ()=> alert("PDF – här kan du koppla in html2pdf senare."));
-
-/* ====== Init ====== */
-applyBrand();
 build();
 </script>
 </body>
