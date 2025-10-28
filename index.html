@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Thüringer Tannenhof – Stundennachweis / Tidrapport</title>
+<title>Thüringer Tannenhof – Tidrapport</title>
 <style>
   :root{
     --bg:#f3fbf6; --ink:#0f2c1b; --muted:#5b6d66;
@@ -76,6 +76,8 @@
     .sigmeta{font-size:12px; color:#333}
   }
   #signSection{display:none}
+  /* felband */
+  #errband{position:fixed;inset:auto 0 0 0;background:#bb3a3a;color:#fff;padding:8px 12px;font-weight:800;z-index:9999;display:none}
 </style>
 </head>
 <body>
@@ -121,7 +123,7 @@
     <div class="foot"><span id="footLabel">Månadssumma</span><span id="footSum">0.00</span></div>
   </section>
 
-  <!-- Signaturer (visas även i print) -->
+  <!-- Signaturvisning för PDF -->
   <section id="signSection" class="sheet" style="background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:10px 12px; margin-top:12px;">
     <div class="sigbox">
       <div class="siglabel" id="sigEmpLabel">Anställd</div>
@@ -143,7 +145,7 @@
 
 <!-- Settings -->
 <dialog id="settingsDlg">
-  <div class="dlg-h"><div id="dlgSettingsTitle">Inställningar</div><button class="btn" onclick="settingsDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="dlgSettingsTitle">Inställningar</div><button class="btn" id="stClose">Stäng</button></div>
   <div class="dlg-b">
     <div class="grid two">
       <div>
@@ -180,7 +182,7 @@
 
 <!-- Kamera/galleri -->
 <dialog id="camDlg">
-  <div class="dlg-h"><div id="camTitle">Foton för dag</div><button class="btn" onclick="camDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="camTitle">Foton för dag</div><button class="btn" id="camClose">Stäng</button></div>
   <div class="dlg-b">
     <div class="grid">
       <button class="btn" id="takePhoto">📸 Ta foto med kamera</button>
@@ -192,7 +194,7 @@
 
 <!-- Projekt & anteckningar -->
 <dialog id="editDlg">
-  <div class="dlg-h"><div id="editDlgTitle">Dag</div><button class="btn" onclick="editDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="editDlgTitle">Dag</div><button class="btn" id="edClose">Stäng</button></div>
   <div class="dlg-b">
     <div class="grid">
       <div>
@@ -210,13 +212,13 @@
 
 <!-- Galleri -->
 <dialog id="galDlg">
-  <div class="dlg-h"><div id="galTitle">Bilder</div><button class="btn" onclick="galDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="galTitle">Bilder</div><button class="btn" id="galClose">Stäng</button></div>
   <div class="dlg-b" id="galBody"></div>
 </dialog>
 
 <!-- Signaturer -->
 <dialog id="signDlg">
-  <div class="dlg-h"><div id="signTitle">Signaturer</div><button class="btn" onclick="signDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="signTitle">Signaturer</div><button class="btn" id="sgClose">Stäng</button></div>
   <div class="dlg-b">
     <div class="grid two">
       <div>
@@ -246,7 +248,7 @@
 
 <!-- Dela -->
 <dialog id="shareDlg">
-  <div class="dlg-h"><div id="shareTitle">Dela / Skicka</div><button class="btn" onclick="shareDlg.close()">Stäng</button></div>
+  <div class="dlg-h"><div id="shareTitle">Dela / Skicka</div><button class="btn" id="shClose">Stäng</button></div>
   <div class="dlg-b">
     <div class="grid">
       <button class="btn" id="doWebShare">🔗 Systemets dela</button>
@@ -258,8 +260,16 @@
   </div>
 </dialog>
 
+<div id="errband"></div>
+
 <script>
 (()=>{
+// ---- mini felband
+window.addEventListener('error', e=>{
+  const b=document.getElementById('errband');
+  b.textContent='Fel: '+(e.message||'okänt'); b.style.display='block';
+});
+
 // ===== i18n =====
 const T={
  sv:{title:'Thüringer Tannenhof – Tidrapport', total:'Totalt –', day:'Dag', from:'Från', to:'Till', pause:'Paus', daily:'Total', action:'Aktion',
@@ -304,9 +314,18 @@ const T={
 };
 
 // ===== Storage / state =====
-const VER='tt_core_v1_1';
+const VER='tt_core_v1_1_1';
 const $=q=>document.querySelector(q);
 const rowsEl=$('#rows');
+
+// Dialog-referenser (FIX)
+const settingsDlg = $('#settingsDlg');
+const camDlg = $('#camDlg');
+const editDlg = $('#editDlg');
+const galDlg = $('#galDlg');
+const signDlg = $('#signDlg');
+const shareDlg = $('#shareDlg');
+
 let cfg=loadCfg();
 let month=cfg.month||currentYM();
 let data=loadData();
@@ -319,7 +338,7 @@ function saveCfg(){localStorage.setItem(VER+'-cfg',JSON.stringify(cfg));}
 function loadData(){try{return JSON.parse(localStorage.getItem(VER+'-data')||'')}catch{return {}}}
 function saveData(){localStorage.setItem(VER+'-data',JSON.stringify(data));}
 
-// Default logo (tre granar)
+// Default logo
 const defaultLogo='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" fill="#ffffff"/><g transform="translate(10,10)" fill="#177043"><polygon points="50,0 0,80 100,80"/><polygon points="90,20 40,100 140,100"/><polygon points="70,60 30,130 110,130"/></g></svg>`);
 
 // ===== UI apply =====
@@ -402,7 +421,7 @@ function calc(){
     }
     sum += Math.max(0,mins);
     const box=$(`#dtotal-${d}`); if(box) box.textContent=fmt(Math.max(0,mins));
-    updatePhotoCount(d); // ← håll badge uppdaterad även vid rerender
+    updatePhotoCount(d);
   }
   const hrs=(sum/60).toFixed(2);
   $('#sumHours').textContent=hrs;
@@ -424,10 +443,12 @@ function openEdit(day){
   editDlg.showModal();
 }
 $('#saveNote').onclick=()=>{ const r=getRec(editDay); r.project=$('#projInput').value; r.notes=$('#notesInput').value; saveData(); editDlg.close(); };
+$('#edClose').onclick=()=>editDlg.close();
 
 // ===== Photos =====
 let camDay=1;
 function openCam(day){ camDay=day; $('#camTitle').textContent=L.camTitle+' '+String(day).padStart(2,'0'); camDlg.showModal(); }
+$('#camClose').onclick=()=>camDlg.close();
 $('#takePhoto').onclick=()=>pickFile(true);
 $('#pickPhoto').onclick=()=>pickFile(false);
 $('#viewPhoto').onclick=()=>{ camDlg.close(); openGallery(camDay); };
@@ -459,18 +480,20 @@ function toBase64Compressed(file,maxSide){
 }
 function openGallery(day){
   const body=$('#galBody'); body.innerHTML='';
-  const rec=getRec(day); const arr=rec.photos||[];
-  if(arr.length===0){ body.textContent='—'; galDlg.showModal(); return; }
-  arr.forEach((p,i)=>{
+  const rec=getRec(day); const arr=rec.photos||{};
+  const list = Array.isArray(arr)?arr:[];
+  if(list.length===0){ body.textContent='—'; galDlg.showModal(); return; }
+  list.forEach((p,i)=>{
     const wrap=document.createElement('div'); wrap.style.margin='8px 0';
     const img=new Image(); img.src=p.data; img.style.maxWidth='100%'; img.style.borderRadius='12px';
     const del=document.createElement('button'); del.className='mini gray'; del.textContent='🗑️';
-    del.onclick=()=>{ arr.splice(i,1); rec.photos=arr; saveData(); updatePhotoCount(day); openGallery(day); };
+    del.onclick=()=>{ list.splice(i,1); rec.photos=list; saveData(); updatePhotoCount(day); openGallery(day); };
     wrap.append(img,del); body.append(wrap);
   });
   $('#galTitle').textContent=L.dlgDay+' '+String(day).padStart(2,'0');
   galDlg.showModal();
 }
+$('#galClose').onclick=()=>galDlg.close();
 
 // ===== Month nav =====
 function setMonth(ym){ month=ym; cfg.month=ym; saveCfg(); render(); applyMonthName(); }
@@ -479,11 +502,13 @@ $('#nextM').onclick=()=>{ const [y,m]=month.split('-').map(Number); const d=new 
 
 // ===== Settings =====
 $('#openSettings').onclick=()=>{ $('#langSel').value=cfg.lang||'sv'; $('#wmRange').value=(cfg.wm??12); $('#addrInput').value=cfg.addr||''; settingsDlg.showModal(); };
+$('#stClose').onclick=()=>settingsDlg.close();
 $('#logoFile').addEventListener('change', async e=>{ const f=e.target.files?.[0]; if(!f) return; cfg.logo=await toBase64Compressed(f,1024); saveCfg(); applyLogo(); });
 $('#saveCfg').onclick=()=>{ cfg.lang=$('#langSel').value; cfg.wm=parseInt($('#wmRange').value||12); cfg.addr=$('#addrInput').value||''; saveCfg(); applyLang(); settingsDlg.close(); };
 
 // ===== Share & PDF =====
 $('#shareOpen').onclick=()=>{ shareDlg.showModal(); };
+$('#shClose').onclick=()=>shareDlg.close();
 
 function buildShareText(){
   let out=L.title+'\n';
@@ -523,6 +548,7 @@ $('#pdfBtn').onclick=()=>{ // watermark + address + print
 
 // ===== Signatures =====
 $('#signOpen').onclick=()=>{ loadSigToUI(); signDlg.showModal(); };
+$('#sgClose').onclick=()=>signDlg.close();
 function enableDraw(canvas){
   let down=false, last=null, ctx=canvas.getContext('2d'); ctx.lineWidth=2;
   function pos(e){ const r=canvas.getBoundingClientRect(); const pt=(e.touches?e.touches[0]:e); return {x:pt.clientX-r.left,y:pt.clientY-r.top}; }
