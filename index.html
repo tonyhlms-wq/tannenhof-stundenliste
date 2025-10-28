@@ -1,343 +1,481 @@
 <!doctype html>
 <html lang="sv">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Thüringer Tannenhof – Tidsrapport</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tannenhof Pro v1.0 – Tidsrapport</title>
 <link rel="icon" href="favicon.ico">
 <style>
-  :root{
-    --green:#165a34;           /* header/gran-grön */
-    --green-2:#1c7342;         /* mörkare knappar */
-    --pill:#eaf4ee;            /* ljusgrön pillbakgrund */
-    --ink:#0b2b19;             /* mörkgrön text */
-    --muted:#7a8a80;
-    --white:#fff;
-    --shadow: 0 6px 18px rgba(0,0,0,.08);
-    --radius:18px;
-  }
-  html,body{margin:0;background:#f4f9f5;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  /* Header */
-  header{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,var(--green),#1a6a3e);
-          color:#fff;box-shadow:var(--shadow)}
-  .wrap{max-width:1000px;margin:0 auto;padding:12px 14px}
-  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:10px;min-width:0}
-  .logo{width:36px;height:36px;border-radius:10px;background:#e3efe8 url('tnh-tree-192.png') center/70% no-repeat}
-  h1{font-size:18px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .actions{margin-left:auto;display:flex;gap:10px}
-  .btn{border:0;border-radius:16px;padding:10px 14px;background:#fff;color:#123;box-shadow:var(--shadow);font-weight:600}
-  .btn.dark{background:#0f2318;color:#fff}
-  /* Controls */
-  .controls{max-width:1000px;margin:14px auto;padding:0 14px}
-  .panel{background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .tot{background:var(--pill);padding:10px 14px;border-radius:14px;font-weight:700;display:flex;gap:8px;align-items:center}
-  .navbtn{background:var(--green-2);color:#fff;border:0;border-radius:14px;width:46px;height:44px;font-size:18px;box-shadow:var(--shadow)}
-  .ghost{background:#fff;color:#123}
-  .chip{background:var(--pill);padding:10px 14px;border-radius:14px}
-  /* Table */
-  .table{max-width:1000px;margin:10px auto 120px;padding:0 14px}
-  .thead,.tr{display:grid;grid-template-columns:64px 1fr 1fr 90px 160px 140px 90px 70px;gap:10px;align-items:center}
-  .thead{position:sticky;top:70px;background:linear-gradient(180deg,#f4f9f5,rgba(244,249,245,.7));backdrop-filter:blur(3px);
-         padding:10px 10px;border-radius:12px;margin-bottom:8px;z-index:2}
-  .tr{background:#fff;border-radius:16px;padding:10px 10px;margin:8px 0;box-shadow:var(--shadow);position:relative}
-  .day{font-weight:800;text-align:center}
-  .pill{background:var(--pill);border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px}
-  input[type="time"], input[type="number"]{width:100%;border:0;background:transparent;font-size:16px;text-align:center;outline:none}
-  input[type="number"]{appearance:textfield}
-  .smallbtn{background:var(--green-2);color:#fff;border:0;border-radius:12px;padding:10px 12px;font-weight:600;box-shadow:var(--shadow)}
-  .neutral{background:var(--pill);color:#123}
-  .right{justify-self:end;font-weight:800}
-  /* Floating gear */
-  .gear{position:fixed;left:18px;bottom:18px;background:var(--green-2);color:#fff;width:64px;height:64px;border-radius:20px;
-        display:grid;place-items:center;box-shadow:var(--shadow);z-index:40}
-  .menu{position:fixed;left:18px;bottom:92px;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:10px;display:none;z-index:40}
-  .menu button{display:block;width:220px;text-align:left;background:#fff;border:0;padding:10px 12px;border-radius:10px}
-  .menu button:hover{background:#f0f5f2}
-  /* Watermark */
-  .wm{position:fixed;right:18px;bottom:16px;opacity:.16;user-select:none;pointer-events:none;font-weight:900;line-height:1.1;text-align:right}
-  /* Debug panel */
-  #debug{position:fixed;left:10px;right:10px;bottom:10px;background:var(--green);color:#e5f3ea;border-radius:12px;
-         box-shadow:var(--shadow);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;z-index:50}
-  #debug header{background:transparent;box-shadow:none;padding:8px 10px}
-  #debug .head{display:flex;align-items:center;gap:10px}
-  #log{max-height:140px;overflow:auto;padding:8px 10px;background:#0e3a23;border-radius:0 0 12px 12px}
-  .hide{display:none}
-  /* Print */
-  @media print {
-    .actions,.controls .panel button,.gear,.menu,#debug{display:none !important}
-    header{box-shadow:none}
-    .thead{top:0}
-    body{background:#fff}
-  }
+:root{
+  --brand:#175D36;          /* Thüringer-grön */
+  --ink:#0b2b19;
+  --bg:#eef5f0;
+  --card:#ffffff;
+  --pill:#e7f2ec;
+  --ring:#cfe6d8;
+  --muted:#567466;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+button{cursor:pointer}
+
+/* Header */
+.top{position:sticky;top:0;z-index:20;background:var(--brand);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.top-inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 14px}
+.badge{width:36px;height:36px;border-radius:10px;background:#e9f3ee;overflow:hidden;display:grid;place-items:center}
+.badge img{width:100%;height:100%;object-fit:cover}
+.title{font-weight:800;letter-spacing:.2px}
+.spacer{flex:1}
+.btn{border:0;border-radius:14px;padding:10px 14px;font-weight:800;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.btn.white{background:#fff;color:#0b2b19}
+.btn.dark{background:#0e2318;color:#fff}
+
+/* Wrap + summary */
+.wrap{max-width:1200px;margin:16px auto;padding:0 12px}
+.summary{background:var(--card);border-radius:18px;padding:12px;display:flex;gap:10px;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.total{background:var(--pill);border-radius:12px;padding:10px 16px;font-weight:800;min-width:150px;text-align:center}
+.chip{background:#fff;border:2px solid var(--ring);border-radius:12px;padding:10px 12px;font-weight:800}
+.month{margin:18px 6px 8px;font-size:26px;font-weight:900;color:#1b2f22}
+
+/* Grid-tabell – fasta kolumnbredder */
+.table{display:grid;gap:10px}
+.thead,.row{
+  display:grid;align-items:center;background:#fff;border-radius:18px;padding:8px 10px;
+  grid-template-columns: 64px 100px 100px 80px 1fr 120px 140px 80px; /* Dag | Från | Till | Paus | Projekt | Anteckn | Foto | Sum */
+  box-shadow:0 2px 10px rgba(0,0,0,.05)
+}
+.thead{position:sticky;top:64px;z-index:5;background:rgba(255,255,255,.95);backdrop-filter:blur(6px)}
+.c{display:flex;align-items:center;gap:8px}
+.daypill{width:44px;height:44px;border-radius:12px;background:var(--pill);display:grid;place-items:center;font-weight:900}
+input[type="time"],input[type="number"],input[type="text"]{
+  width:100%;height:44px;border:0;border-radius:12px;background:#f1f6f3;padding:0 10px;font-weight:800;color:#1b2f22;
+  outline:2px solid transparent
+}
+input[type="time"]{font-variant-numeric:tabular-nums}
+input:focus{outline-color:var(--ring);background:#fff}
+.pillbtn{width:100%;height:44px;border-radius:12px;border:0;background:var(--pill);font-weight:800;color:#1b2f22}
+.pillbtn.primary{background:color-mix(in srgb, var(--brand) 83%, white);color:#fff}
+.sum{font-weight:900;text-align:right;padding-right:6px}
+
+/* Flytande inställningar (vänster, ej ivägen) */
+.fab{position:fixed;left:16px;bottom:96px;width:64px;height:64px;border-radius:18px;background:var(--brand);
+     box-shadow:0 8px 22px rgba(0,0,0,.25);display:grid;place-items:center;color:#fff;font-size:28px;z-index:40}
+.sheet{position:fixed;left:16px;bottom:168px;background:#fff;border-radius:16px;padding:10px;box-shadow:0 10px 28px rgba(0,0,0,.25);
+       display:none;flex-direction:column;gap:8px;z-index:50;min-width:280px}
+.sheet.open{display:flex}
+.sheet button,.sheet label{all:unset;display:block;background:#f4faf6;padding:10px 12px;border-radius:12px;font-weight:700;margin:0;cursor:pointer}
+.sheet input[type="range"]{width:100%}
+.sheet .warn{background:#ffecec;color:#7a1111}
+
+/* Debug */
+.debug{position:fixed;left:12px;right:12px;bottom:12px;background:var(--brand);color:#e9f5ee;border-radius:16px;padding:10px;z-index:30;display:none}
+.debug.open{display:block}
+.debug h3{margin:0 0 8px 0;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.debug pre{margin:0;max-height:140px;overflow:auto;background:#0f2a1e;color:#c8f1dc;padding:10px;border-radius:10px}
+
+/* Watermark */
+.watermark{position:fixed;right:18px;bottom:18px;opacity:.7;z-index:1;pointer-events:none}
+.watermark img{width:220px;height:auto;object-fit:contain;filter:grayscale(10%) contrast(90%)}
+
+/* Kamera-aktionsmeny (per rad) */
+.actionsheet{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:88px;background:#fff;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.25);
+  display:none;flex-direction:column;gap:8px;z-index:60;min-width:260px;padding:10px
+}
+.actionsheet.open{display:flex}
+.actionsheet button{all:unset;background:#f4faf6;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+
+/* Foto-galleri-modal */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:70
+}
+.modal.open{display:flex}
+.modal-card{background:#fff;border-radius:16px;max-width:92vw;max-height:86vh;overflow:auto;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.grid img{width:100%;height:120px;object-fit:cover;border-radius:10px}
+
+/* Signatur (små knappar → stor canvas) */
+.signatures{max-width:1200px;margin:0 auto 140px;padding:10px;display:flex;gap:10px;justify-content:flex-end}
+.signbtn{border:2px dashed var(--ring);background:#fff;border-radius:12px;padding:10px 12px;font-weight:800}
+.sig-modal .canvas{width:90vw;max-width:720px;height:50vh;background:#fff;border:2px solid var(--ring);border-radius:12px}
+
+/* Print */
+@media print{
+  .fab,.sheet,.debug,.actionsheet,.modal{display:none !important}
+  .top{box-shadow:none}
+  body{background:#fff}
+  .thead{top:0}
+}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="wrap row">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <h1>Thüringer Tannenhof – Tidsrapport</h1>
-    </div>
-    <div class="actions">
-      <button class="btn" id="shareBtn">🏔️ Dela / Skicka</button>
-      <button class="btn dark" id="pdfBtn">🖨️ PDF</button>
+  <!-- HEADER -->
+  <div class="top">
+    <div class="top-inner">
+      <div class="badge"><img id="headerLogo" alt=""></div>
+      <div class="title">Thüringer Tannenhof – Tidsrapport</div>
+      <div class="spacer"></div>
+      <button class="btn white" id="shareBtn">Dela / Skicka</button>
+      <button class="btn dark" id="pdfBtn">PDF</button>
     </div>
   </div>
-</header>
 
-<section class="controls">
-  <div class="panel">
-    <div class="tot">⏳ <span>Totalt – </span><b id="grandTotal">0.00</b></div>
-    <button class="navbtn" id="prevBtn">«</button>
-    <button class="navbtn" id="nextBtn">»</button>
-    <div class="chip">Månad: <b id="monthLabel">—</b></div>
-    <button class="btn ghost" id="clearMonth">Rensa denna månad</button>
+  <div class="wrap">
+    <div class="summary">
+      <div class="total">Totalt – <span id="totalHours">0.00</span></div>
+      <button class="chip" id="prevMonth">«</button>
+      <button class="chip" id="nextMonth">»</button>
+      <div class="spacer"></div>
+      <button class="btn" id="clearMonth">Rensa denna månad</button>
+    </div>
+
+    <div class="month" id="monthTitle"></div>
+
+    <div class="table">
+      <div class="thead">
+        <div class="c">Dag</div>
+        <div class="c">Från</div>
+        <div class="c">Till</div>
+        <div class="c">Paus</div>
+        <div class="c">Projekt/plats</div>
+        <div class="c">Anteckning</div>
+        <div class="c">Foto</div>
+        <div class="c" style="justify-content:end;">Sum</div>
+      </div>
+      <div id="rows"></div>
+    </div>
   </div>
-</section>
 
-<section class="table">
-  <div class="thead">
-    <div>📅 Dag</div>
-    <div>⏰ Från</div>
-    <div>⏰ Till</div>
-    <div>☕ Paus</div>
-    <div>📍 Projekt/plats</div>
-    <div>📝 Anteckning</div>
-    <div>📷 Foto</div>
-    <div class="right">Sum</div>
+  <!-- Signaturknappar -->
+  <div class="signatures">
+    <button class="signbtn" id="sigEmpBtn">✍️ Signera Medarbetare</button>
+    <button class="signbtn" id="sigBossBtn">✍️ Signera Chef</button>
   </div>
-  <div id="rows"></div>
-</section>
 
-<!-- Floating gear -->
-<button class="gear" id="gear">⚙️</button>
-<div class="menu" id="gearMenu">
-  <button id="exportBtn">Exportera (JSON)</button>
-  <button id="importBtn">Importera (JSON)</button>
-  <button id="wipeAll">Rensa ALLT (alla månader)</button>
-</div>
-<input type="file" id="importFile" accept="application/json" class="hide">
+  <!-- INSTÄLLNINGAR (vänster, ovanför sista rader) -->
+  <div class="fab" id="fab" title="Inställningar">⚙️</div>
+  <div class="sheet" id="sheet">
+    <label id="pickLogo">Välj logga (PNG/JPG)
+      <input id="logoInput" type="file" accept="image/*" style="display:none">
+    </label>
+    <button id="pickBrand">Välj företagsgrön (HEX)</button>
+    <div style="background:#f7fbf8;padding:10px 12px;border-radius:12px">
+      <div style="font-weight:800;margin-bottom:6px">Vattenstämpel</div>
+      <label style="display:flex;align-items:center;gap:10px">
+        Synlig <input type="checkbox" id="wmToggle" style="transform:scale(1.2)">
+      </label>
+      <div style="margin-top:8px;font-weight:700">Genomskinlighet: <span id="wmVal">70%</span></div>
+      <input type="range" id="wmRange" min="0" max="100" value="70">
+    </div>
+    <button id="toggleDebug">Visa/Dölj felsökning</button>
+    <button class="warn" id="resetAll">Rensa ALLT (alla månader)</button>
+  </div>
 
-<!-- Watermark -->
-<div class="wm">
-  <div style="font-size:18px;">SEIT 1990</div>
-  <div style="font-size:36px;letter-spacing:1px">THÜRINGER</div>
-  <div style="font-size:36px;letter-spacing:1px">TANNENHOF</div>
-</div>
+  <!-- FOTO-AKTIONSMENY -->
+  <div class="actionsheet" id="camSheet">
+    <button data-act="view">👀 Titta</button>
+    <button data-act="gallery">🖼️ Galleri</button>
+    <button data-act="camera">📷 Kamera</button>
+  </div>
 
-<!-- Debug panel -->
-<div id="debug">
-  <header class="wrap">
-    <div class="head">
-      <b>Felsökning</b>
-      <div class="actions" style="margin-left:auto">
-        <button class="btn" id="fold">Fäll in</button>
-        <button class="btn" id="clearLog">Rensa</button>
+  <!-- FOTO-GALLERI -->
+  <div class="modal" id="galleryModal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">Dagens foton</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn" id="closeGallery">Stäng</button>
+          <button class="btn" id="clearGallery">Rensa foton</button>
+        </div>
+      </div>
+      <div class="grid" id="galleryGrid"></div>
+    </div>
+  </div>
+
+  <!-- SIGNATURMODAL -->
+  <div class="modal sig-modal" id="sigModal">
+    <div class="modal-card">
+      <h3 id="sigTitle" style="margin-top:0">Signera</h3>
+      <canvas id="sigCanvas" class="canvas"></canvas>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+        <button class="btn" id="sigClear">Rensa</button>
+        <button class="btn" id="sigCancel">Avbryt</button>
+        <button class="btn dark" id="sigSave">Spara</button>
       </div>
     </div>
-  </header>
-  <div id="log"></div>
-</div>
+  </div>
+
+  <!-- DEBUG -->
+  <div class="debug" id="debug">
+    <h3>Felsökning
+      <span>
+        <button class="btn" id="foldDbg" style="padding:6px 10px;font-size:12px">Fäll in</button>
+        <button class="btn" id="clearDbg" style="padding:6px 10px;font-size:12px">Rensa</button>
+      </span>
+    </h3>
+    <pre id="dbgLog"></pre>
+  </div>
+
+  <!-- WATERMARK -->
+  <div class="watermark" id="wm"><img id="wmImg" alt=""></div>
 
 <script>
-(()=>{
+(function(){
+  const $=s=>document.querySelector(s);
+  const LS=(k)=>`tnh:${k}`;
+  const log=(...a)=>{ const s='['+new Date().toLocaleTimeString()+'] '+a.join(' ')+'\\n'; const el=$('#dbgLog'); el.textContent+=s; el.scrollTop=el.scrollHeight; };
 
-  /* ---------- Helpers ---------- */
-  const $ = sel => document.querySelector(sel);
-  const log = (m)=>{ const t=new Date().toTimeString().slice(0,8); const el=$("#log");
-    el.innerText += `[${t}] ${m}\n`; el.scrollTop = el.scrollHeight; };
+  let current=new Date(); current.setDate(1);
 
-  const pad = n => String(n).padStart(2,'0');
-  const fmt = n => (Math.round(n*100)/100).toFixed(2);
-  const monthName = (y,m)=> new Date(y,m-1,1).toLocaleDateString('sv-SE',{month:'long',year:'numeric'});
+  const daysIn=(y,m)=> new Date(y,m+1,0).getDate();
+  const fmtMonth=(d)=> d.toLocaleDateString('sv-SE',{year:'numeric',month:'long'});
 
-  const keyFor = (y,m)=> `tnh:${y}-${pad(m)}`;
-  const daysIn = (y,m)=> new Date(y,m,0).getDate();
+  function keyMonth(y,m){ return LS(`${y}-${String(m+1).padStart(2,'0')}`); }
+  function loadMonth(y,m){ const raw=localStorage.getItem(keyMonth(y,m)); return raw?JSON.parse(raw):null; }
+  function saveMonth(y,m,data){ localStorage.setItem(keyMonth(y,m), JSON.stringify(data)); }
 
-  function parseTime(v){
-    if(!v||!v.includes(':')) return null;
-    const [H,M]=v.split(':').map(Number);
-    return H*60+M;
-  }
-  function minutesToHours(min){
-    return min<=0?0:min/60;
-  }
-
-  /* ---------- State ---------- */
-  const state = {
-    y: new Date().getFullYear(),
-    m: new Date().getMonth()+1,
-    rows: [] // {d, from, to, pause, project, note, hasPhoto, sum}
-  };
-
-  function loadMonth(y,m){
-    state.y=y; state.m=m;
-    const k = keyFor(y,m);
-    const raw = localStorage.getItem(k);
-    const N = daysIn(y,m);
-    state.rows = Array.from({length:N}, (_,i)=>({
-      d:i+1, from:"", to:"", pause:0, project:"", note:"", hasPhoto:false, sum:0
-    }));
-    if(raw){
-      try{
-        const data = JSON.parse(raw);
-        data.rows?.forEach((r,i)=>{ if(state.rows[i]) state.rows[i]=Object.assign(state.rows[i], r); });
-        log(`Loaded ${k} (${state.rows.length} rader).`);
-      }catch(e){ log(`Fel vid parse av ${k}: ${e}`); }
-    }else{
-      log(`Ny månad – förifyller ${N} dagar för ${monthName(y,m)}.`);
+  function build(){
+    const y=current.getFullYear(), m=current.getMonth();
+    $('#monthTitle').textContent=fmtMonth(current);
+    const n=daysIn(y,m);
+    const data=loadMonth(y,m)||Array.from({length:n},()=>({from:'',to:'',pause:0,proj:'',note:'',photos:[],sum:0}));
+    const rows=$('#rows'); rows.innerHTML='';
+    for(let i=0;i<n;i++){
+      const r=data[i];
+      const row=document.createElement('div'); row.className='row'; row.dataset.i=i;
+      row.innerHTML=`
+        <div class="c"><div class="daypill">${i+1}</div></div>
+        <div class="c"><input type="time" value="${r.from||''}" data-k="from"></div>
+        <div class="c"><input type="time" value="${r.to||''}" data-k="to"></div>
+        <div class="c"><input type="number" min="0" step="5" value="${r.pause||0}" data-k="pause"></div>
+        <div class="c"><input type="text" placeholder="Projekt/plats" value="${r.proj||''}" data-k="proj"></div>
+        <div class="c"><button class="pillbtn" data-act="note">📝 Anteckning</button></div>
+        <div class="c"><button class="pillbtn primary" data-act="photo">📷 Foto</button></div>
+        <div class="c sum" id="sum-${i}">${(r.sum||0).toFixed(2)}</div>
+      `;
+      rows.appendChild(row);
     }
-    $("#monthLabel").innerText = monthName(y,m);
-    renderRows();
-    calcAll();
-    save();
+    calcAndSave();
+    log('Laddade', y+'-'+String(m+1).padStart(2,'0'), '(',n,'rader)');
   }
 
-  function save(){
-    const k = keyFor(state.y,state.m);
-    localStorage.setItem(k, JSON.stringify({y:state.y,m:state.m, rows:state.rows}));
+  function diffHours(a,b){
+    if(!a||!b) return 0;
+    const [ah,am]=a.split(':').map(Number), [bh,bm]=b.split(':').map(Number);
+    let x=bh+bm/60-(ah+am/60); if(x<0) x+=24; return Math.max(0,x);
   }
-
-  /* ---------- Rendering ---------- */
-  function rowTemplate(r){
-    return `
-    <div class="tr" data-day="${r.d}">
-      <div class="day">${r.d}</div>
-      <div class="pill"><input type="time" value="${r.from||''}" inputmode="numeric" /></div>
-      <div class="pill"><input type="time" value="${r.to||''}" inputmode="numeric" /></div>
-      <div class="pill"><input type="number" min="0" step="5" value="${r.pause||0}" /></div>
-      <button class="smallbtn neutral proj">${r.project?("📍 "+escapeHtml(r.project)):"📍 Projekt/plats"}</button>
-      <button class="smallbtn neutral note">${r.note?("📝 "+escapeHtml(short(r.note))):"📝 Anteckning"}</button>
-      <button class="smallbtn cam">${r.hasPhoto?"📷 Sparad":"📷 Foto"}</button>
-      <div class="right sum">${fmt(r.sum)}</div>
-      <input class="hide file" type="file" accept="image/*;capture=camera">
-    </div>`;
-  }
-
-  function renderRows(){
-    const cont=$("#rows");
-    cont.innerHTML = state.rows.map(rowTemplate).join("");
-  }
-
-  function escapeHtml(s){ return s.replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
-  function short(s){ return s.length>18? s.slice(0,18)+"…" : s; }
-
-  /* ---------- Calc ---------- */
-  function calcRow(i){
-    const r = state.rows[i];
-    const a = parseTime(r.from);
-    const b = parseTime(r.to);
-    let h = 0;
-    if(a!=null && b!=null){
-      let diff = b - a;
-      if(diff<0) diff += 24*60;        // över midnatt
-      diff -= (Number(r.pause)||0);
-      h = minutesToHours(diff);
-    }
-    r.sum = Math.max(0,h);
-    return r.sum;
-  }
-  function calcAll(){
-    let tot=0;
-    state.rows.forEach((_,i)=> tot += calcRow(i));
-    $("#grandTotal").innerText = fmt(tot);
-    // uppdatera UI-summor
-    document.querySelectorAll(".tr").forEach((row,i)=>{
-      row.querySelector(".sum").innerText = fmt(state.rows[i].sum);
+  function calcAndSave(){
+    const y=current.getFullYear(), m=current.getMonth();
+    const n=daysIn(y,m);
+    const data=loadMonth(y,m)||Array.from({length:n},()=>({from:'',to:'',pause:0,proj:'',note:'',photos:[],sum:0}));
+    let total=0;
+    [...$('#rows').children].forEach((row,i)=>{
+      const inputs=row.querySelectorAll('input');
+      inputs.forEach(inp=>{
+        const k=inp.dataset.k;
+        data[i][k]= (inp.type==='number')? Number(inp.value||0) : (inp.value||'');
+      });
+      const h= diffHours(data[i].from, data[i].to) - (data[i].pause||0)/60;
+      data[i].sum = Math.max(0, Number(h.toFixed(2)));
+      $('#sum-'+i).textContent = data[i].sum.toFixed(2);
+      total += data[i].sum;
     });
+    $('#totalHours').textContent = total.toFixed(2);
+    saveMonth(y,m,data);
   }
 
-  /* ---------- Events ---------- */
-  $("#rows").addEventListener("input",(e)=>{
-    const row = e.target.closest(".tr"); if(!row) return;
-    const i = Number(row.dataset.day)-1;
-    const [fromEl,toEl,pauseEl] = row.querySelectorAll("input");
-    state.rows[i].from = fromEl.value;
-    state.rows[i].to   = toEl.value;
-    state.rows[i].pause = Number(pauseEl.value||0);
-    calcRow(i); calcAll(); save();
-  });
+  // --- Events i tabellen
+  $('#rows').addEventListener('input', (e)=>{ if(e.target.matches('input')) calcAndSave(); });
+  let camRowIndex=null;
 
-  $("#rows").addEventListener("click",(e)=>{
-    const row = e.target.closest(".tr"); if(!row) return;
-    const i = Number(row.dataset.day)-1;
-    if(e.target.classList.contains("proj")){
-      const v = prompt("Projekt/plats:", state.rows[i].project||"");
-      if(v!=null){ state.rows[i].project=v; row.querySelector(".proj").textContent = v?("📍 "+v):"📍 Projekt/plats"; save(); }
+  $('#rows').addEventListener('click',(e)=>{
+    const row=e.target.closest('.row'); if(!row) return;
+    const i=Number(row.dataset.i);
+    const y=current.getFullYear(), m=current.getMonth();
+    const data=loadMonth(y,m)||[];
+    if(e.target.dataset.act==='note'){
+      const v=prompt('Anteckning för dag '+(i+1), data[i]?.note||'') ?? '';
+      (data[i] ||= {from:'',to:'',pause:0,proj:'',note:'',photos:[],sum:0}).note = v;
+      saveMonth(y,m,data); log('Note sparad rad', i+1);
     }
-    if(e.target.classList.contains("note")){
-      const v = prompt("Anteckning:", state.rows[i].note||"");
-      if(v!=null){ state.rows[i].note=v; row.querySelector(".note").textContent = v?("📝 "+short(v)):"📝 Anteckning"; save(); }
-    }
-    if(e.target.classList.contains("cam")){
-      row.querySelector(".file").click();
+    if(e.target.dataset.act==='photo'){
+      camRowIndex=i;
+      openCamSheet();
     }
   });
 
-  $("#rows").addEventListener("change", async (e)=>{
-    if(e.target.classList.contains("file")){
-      const row = e.target.closest(".tr"); const i = Number(row.dataset.day)-1;
-      const file = e.target.files?.[0];
-      if(!file){ return; }
-      try{
-        // Vi lagrar bara en flagga (ej bilden) för att spara utrymme
-        state.rows[i].hasPhoto = true;
-        row.querySelector(".cam").textContent = "📷 Sparad";
-        save(); log(`Foto markerat för dag ${i+1} (lagrar ej binärfil i localStorage).`);
-      }catch(err){ log("Fel vid foto: "+err); }
+  // --- Kamera-aktionsmeny
+  const camSheet=$('#camSheet');
+  function openCamSheet(){ camSheet.classList.add('open'); }
+  function closeCamSheet(){ camSheet.classList.remove('open'); }
+
+  // Hjälpinputs för Galleri vs Kamera
+  const fileGallery=document.createElement('input');
+  fileGallery.type='file'; fileGallery.accept='image/*'; // öppnar galleri
+  const fileCamera=document.createElement('input');
+  fileCamera.type='file'; fileCamera.accept='image/*'; fileCamera.capture='environment'; // öppnar kameran
+
+  fileGallery.onchange=()=>handlePicked(fileGallery.files);
+  fileCamera.onchange=()=>handlePicked(fileCamera.files);
+
+  async function handlePicked(files){
+    if(!files||!files.length||camRowIndex==null) return;
+    const y=current.getFullYear(), m=current.getMonth();
+    const data=loadMonth(y,m)||[];
+    for(const f of files){
+      const b64 = await toDataURL(f);
+      (data[camRowIndex].photos ||= []).push(b64);
+    }
+    saveMonth(y,m,data);
+    log('Foto tillagd rad', camRowIndex+1, 'antal:', files.length);
+    camRowIndex=null; closeCamSheet();
+  }
+  function toDataURL(file){
+    return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); });
+  }
+
+  camSheet.addEventListener('click',(e)=>{
+    if(!e.target.matches('button')) return;
+    const act=e.target.dataset.act;
+    if(camRowIndex==null){ closeCamSheet(); return; }
+    const y=current.getFullYear(), m=current.getMonth();
+    const data=loadMonth(y,m)||[];
+    if(act==='view'){
+      const photos=(data[camRowIndex]?.photos)||[];
+      const grid=$('#galleryGrid'); grid.innerHTML='';
+      photos.forEach((p,idx)=>{
+        const img=document.createElement('img'); img.src=p; img.title='Foto '+(idx+1);
+        grid.appendChild(img);
+      });
+      $('#galleryModal').classList.add('open');
+      closeCamSheet();
+    }else if(act==='gallery'){
+      fileGallery.click();
+    }else if(act==='camera'){
+      fileCamera.click();
     }
   });
 
-  $("#prevBtn").onclick=()=>{ const d=new Date(state.y,state.m-2,1); loadMonth(d.getFullYear(), d.getMonth()+1); log(`Bytte till ${monthName(state.y,state.m)}.`); };
-  $("#nextBtn").onclick=()=>{ const d=new Date(state.y,state.m,1);   loadMonth(d.getFullYear(), d.getMonth()+1); log(`Bytte till ${monthName(state.y,state.m)}.`); };
-  $("#clearMonth").onclick=()=>{ if(confirm("Rensa alla rader denna månad?")){ localStorage.removeItem(keyFor(state.y,state.m)); loadMonth(state.y,state.m); log("Rensade denna månad."); } };
-
-  // Gear menu
-  const menu=$("#gearMenu"); $("#gear").onclick=()=>{ menu.style.display = (menu.style.display==='block'?'none':'block'); };
-  document.addEventListener("click",(e)=>{ if(!e.target.closest('.gear') && !e.target.closest('#gearMenu')) menu.style.display='none'; });
-
-  $("#exportBtn").onclick=()=>{
-    const all = {...localStorage};
-    const blob = new Blob([JSON.stringify(all,null,2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tannenhof-tidsdata.json'; a.click();
-    log("Export gjord.");
+  // Galleri-modal
+  $('#closeGallery').onclick=()=> $('#galleryModal').classList.remove('open');
+  $('#clearGallery').onclick=()=>{
+    if(camRowIndex==null){ $('#galleryModal').classList.remove('open'); return; }
+    const y=current.getFullYear(), m=current.getMonth();
+    const data=loadMonth(y,m)||[];
+    if(confirm('Rensa alla foton för denna dag?')){
+      (data[camRowIndex].photos ||= []).length=0;
+      saveMonth(y,m,data);
+      $('#galleryGrid').innerHTML='';
+      log('Rensade foton för rad', camRowIndex+1);
+    }
   };
-  $("#importBtn").onclick=()=> $("#importFile").click();
-  $("#importFile").addEventListener("change", async (e)=>{
-    const f = e.target.files?.[0]; if(!f) return;
-    const text = await f.text();
+
+  // Månadsknappar
+  $('#prevMonth').onclick=()=>{ current.setMonth(current.getMonth()-1); build(); };
+  $('#nextMonth').onclick=()=>{ current.setMonth(current.getMonth()+1); build(); };
+  $('#clearMonth').onclick=()=>{
+    if(!confirm('Rensa denna månads data?')) return;
+    localStorage.removeItem(keyMonth(current.getFullYear(),current.getMonth()));
+    build();
+  };
+
+  // Inställningar
+  $('#fab').onclick=()=> $('#sheet').classList.toggle('open');
+  $('#pickBrand').onclick=()=>{
+    const cur=getComputedStyle(document.documentElement).getPropertyValue('--brand').trim();
+    const hex=prompt('HEX för företagsgrön (t.ex. #175D36):', cur||'#175D36');
+    if(hex && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)){
+      document.documentElement.style.setProperty('--brand', hex.trim());
+      localStorage.setItem(LS('brand'), hex.trim());
+      log('Bytte brand till', hex.trim());
+    }else if(hex){ alert('Ogiltig HEX.'); }
+  };
+  $('#pickLogo').onclick=()=> $('#logoInput').click();
+  $('#logoInput').onchange=()=>{
+    const f=$('#logoInput').files?.[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=()=>{
+      const b64=r.result;
+      localStorage.setItem(LS('logo'), b64);
+      $('#headerLogo').src=b64; $('#wmImg').src=b64;
+      log('Uppdaterade logga.');
+    };
+    r.readAsDataURL(f);
+  };
+
+  const wmToggle=$('#wmToggle'), wmRange=$('#wmRange'), wmVal=$('#wmVal'), wm=$('#wm');
+  function applyWM(){
+    const on = localStorage.getItem(LS('wm'))!=='off';
+    wmToggle.checked = on;
+    wm.style.display = on? 'block':'none';
+    const pct = Number(localStorage.getItem(LS('wmOpacity'))||'70');
+    wmRange.value=String(pct); wmVal.textContent=pct+'%';
+    $('#wm').style.opacity = pct/100;
+  }
+  wmToggle.onchange=()=>{ localStorage.setItem(LS('wm'), wmToggle.checked?'on':'off'); applyWM(); };
+  wmRange.oninput=()=>{ localStorage.setItem(LS('wmOpacity'), wmRange.value); applyWM(); };
+
+  // Debug
+  const dbg=$('#debug');
+  $('#toggleDebug').onclick=()=>{ const on=dbg.classList.toggle('open'); localStorage.setItem(LS('dbg'), on?'on':'off'); };
+  $('#foldDbg').onclick=()=>{ dbg.classList.remove('open'); localStorage.setItem(LS('dbg'),'off'); };
+  $('#clearDbg').onclick=()=> $('#dbgLog').textContent='';
+
+  // Share / PDF
+  $('#shareBtn').onclick=async ()=>{
     try{
-      const obj = JSON.parse(text);
-      Object.keys(obj).forEach(k=> localStorage.setItem(k, obj[k]));
-      log("Import klar. Laddar om aktuell månad.");
-      loadMonth(state.y,state.m);
-    }catch(err){ log("Fel vid import: "+err); }
-  });
-  $("#wipeAll").onclick=()=>{
-    if(confirm("Rensa ALLT (alla månader)?")){ Object.keys(localStorage).forEach(k=>{ if(k.startsWith('tnh:')) localStorage.removeItem(k); });
-      log("Allt rensat."); loadMonth(state.y,state.m); }
+      if(navigator.share){ await navigator.share({title:document.title,url:location.href}); log('Delade via Web Share'); }
+      else { await navigator.clipboard.writeText(location.href); alert('Länk kopierad.'); log('Kopierade länk'); }
+    }catch{ log('Delning avbruten'); }
+  };
+  $('#pdfBtn').onclick=()=>{ window.print(); };
+
+  // Signaturer
+  let sigTarget='emp'; // 'emp' | 'boss'
+  const sigModal=$('#sigModal'), canvas=$('#sigCanvas'); let ctx, drawing=false, last={x:0,y:0};
+  function resizeCanvas(){
+    const dpr=window.devicePixelRatio||1; const r=canvas.getBoundingClientRect();
+    canvas.width=r.width*dpr; canvas.height=r.height*dpr;
+    ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr); ctx.lineWidth=3; ctx.lineCap='round'; ctx.strokeStyle='#111';
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,r.width,r.height);
+  }
+  window.addEventListener('resize', ()=>{ if(sigModal.classList.contains('open')) resizeCanvas(); });
+  function openSig(which){
+    sigTarget=which; $('#sigTitle').textContent = which==='emp'?'Signera – Medarbetare':'Signera – Chef';
+    sigModal.classList.add('open'); setTimeout(resizeCanvas,0);
+  }
+  function closeSig(){ sigModal.classList.remove('open'); }
+  function pos(e){ const r=canvas.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y}; }
+  function start(e){ drawing=true; last=pos(e); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault(); }
+  function end(){ drawing=false; }
+  canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
+  canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',end);
+
+  $('#sigEmpBtn').onclick=()=> openSig('emp');
+  $('#sigBossBtn').onclick=()=> openSig('boss');
+  $('#sigClear').onclick=()=> resizeCanvas();
+  $('#sigCancel').onclick=()=> closeSig();
+  $('#sigSave').onclick=()=>{
+    const dataUrl=canvas.toDataURL();
+    localStorage.setItem(LS(sigTarget==='emp'?'signEmp':'signBoss'), dataUrl);
+    closeSig(); log('Sign sparad', sigTarget);
   };
 
-  // Debug controls
-  $("#fold").onclick=()=>{ const logEl=$("#log"); logEl.classList.toggle('hide'); $("#fold").textContent = logEl.classList.contains('hide') ? "Fäll ut" : "Fäll in"; };
-  $("#clearLog").onclick=()=> $("#log").textContent="";
-
-  // Share & PDF
-  $("#shareBtn").onclick=async ()=>{
-    try{
-      const url=location.href;
-      if(navigator.share){ await navigator.share({title:document.title,text:"Tidsrapport",url}); log("Delning ok."); }
-      else { await navigator.clipboard.writeText(url); alert("Länk kopierad."); log("Delning: kopierad länk."); }
-    }catch{ log("Delning avbruten."); }
-  };
-  $("#pdfBtn").onclick=()=>{ log("Skapar PDF…"); window.print(); log("PDF klar."); };
-
-  // Init
-  const now = new Date();
-  loadMonth(now.getFullYear(), now.getMonth()+1);
-  log(`App start OK. Månad: ${state.y}-${pad(state.m)}`);
+  // Boot
+  (function init(){
+    // brand
+    const brand=localStorage.getItem(LS('brand')); if(brand){ document.documentElement.style.setProperty('--brand', brand); }
+    // logo
+    const logo=localStorage.getItem(LS('logo'));
+    if(logo){ $('#headerLogo').src=logo; $('#wmImg').src=logo; }
+    applyWM();
+    if(localStorage.getItem(LS('dbg'))==='on') $('#debug').classList.add('open');
+    build();
+    // ge extra underspalt så FAB inte täcker sista rader
+    document.body.style.paddingBottom='140px';
+    log('App start OK. Månad:', current.toISOString().slice(0,7));
+  })();
 
 })();
 </script>
