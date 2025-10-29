@@ -1,454 +1,297 @@
 <!doctype html>
 <html lang="sv">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Thüringer Tannenhof – Tidsrapport</title>
 <style>
-  :root{
-    --brand:#1f5634;          /* Företagsgrön – ändras via Inställningar */
-    --ink:#0f172a;
-    --bg:#eef6f1;
-    --card:#ffffff;
-    --muted:#6b7280;
-    --radius:18px;
-  }
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,Segoe UI,Roboto,Helvetica,Arial;}
-  .shell{max-width:980px;margin:0 auto;padding:12px;}
-  /* Header */
-  .appbar{position:sticky;top:0;z-index:40;background:var(--brand);color:#fff;border-bottom-left-radius:0;border-bottom-right-radius:0}
-  .appbar .inner{display:flex;align-items:center;gap:12px;padding:12px}
-  .brandmark{width:36px;height:36px;border-radius:999px;background:#e6f1eb;color:var(--brand);display:grid;place-items:center;font-weight:800}
-  .title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .actions{margin-left:auto;display:flex;gap:10px}
-  .btn{appearance:none;border:0;border-radius:14px;padding:10px 16px;font-weight:700;background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);display:inline-flex;align-items:center;gap:8px}
-  .btn--dark{background:#163c29;color:#fff}
-  .btn:active{transform:translateY(1px)}
-  /* Cards / toolbar */
-  .toolbar{display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:12px;background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,.06);align-items:center}
-  .pill{background:#f2f6f4;border-radius:12px;padding:10px 12px;font-weight:700;display:flex;align-items:center;gap:10px}
-  .navbtn{width:42px;height:42px;border-radius:12px;border:0;background:#e9f1ed;font-weight:800}
-  .danger{background:#fff3f3;color:#b91c1c}
-  /* Table */
-  .sheet{margin-top:16px;background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden}
-  .thead,.row{display:grid;grid-template-columns:56px 1fr 1fr 86px 110px 64px;gap:10px;align-items:center}
-  .thead{position:sticky;top:72px;background:#f7fbf9;padding:10px 12px;border-bottom:1px solid #edf2ef;font-weight:800}
-  .row{padding:12px;border-bottom:1px dashed #e6efe9}
-  .day{font-weight:800;color:var(--brand);text-align:center}
-  .row.today{outline:2px solid #cfe6db;outline-offset:-2px;background:#f8fcfa}
-  input,select,textarea{width:100%;box-sizing:border-box;border:1.5px solid #e5ebe7;border-radius:12px;padding:10px 12px;font:inherit;background:#fff}
-  input[type="number"]{text-align:right}
-  .tinybtn{width:44px;height:44px;border-radius:12px;border:0;background:var(--brand);color:#fff;font-weight:800}
-  .tinybtn.note{background:#173d2a}
-  .tinybtn.cam{background:#1f5634}
-  .tot{font-weight:800}
-  /* Floating settings */
-  .fab{position:fixed;left:16px;bottom:16px;background:var(--brand);color:#fff;width:64px;height:64px;border-radius:20px;border:0;display:grid;place-items:center;font-size:22px;box-shadow:0 8px 30px rgba(31,86,52,.35);z-index:60}
-  .panel{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 -16px 30px rgba(0,0,0,.2);padding:16px 16px 28px;max-height:80vh;overflow:auto;display:none}
-  .panel.show{display:block}
-  .panel h3{margin:6px 0 8px}
-  .opt{display:grid;gap:8px;margin:10px 0 16px}
-  .rowbtns{display:flex;gap:10px}
-  .chip{padding:8px 12px;border-radius:999px;background:#f0f5f2;border:1px solid #e5eee9;cursor:pointer}
-  .preset{display:flex;gap:8px;flex-wrap:wrap}
-  /* Modals */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:90;align-items:center;justify-content:center;padding:14px}
-  .modal.show{display:flex}
-  .dialog{background:#fff;border-radius:18px;max-width:720px;width:100%;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .dialog h2{margin:4px 4px 10px}
-  .sigpad{background:#fff;border:2px dashed #e3e9e5;border-radius:16px}
-  .actions-end{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
-  /* Watermark */
-  .wm{position:fixed;right:18px;bottom:18px;opacity:.4;pointer-events:none;z-index:1;max-width:40vw;filter:grayscale(.1)}
-  .wm img{max-width:230px;opacity:inherit}
-  /* Hide number spinners on Android */
-  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+:root {
+  --brand:#1f5634;
+  --bg:#eef6f1;
+  --text:#0f172a;
+}
+body {
+  margin:0;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+header {
+  background:var(--brand);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+header .left {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+#brandmark {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#fff;
+  color:var(--brand);
+  font-weight:bold;
+  display:grid;
+  place-items:center;
+  background-size:cover;
+  background-position:center;
+}
+header button {
+  background:#fff;
+  border:0;
+  border-radius:12px;
+  padding:10px 16px;
+  font-weight:700;
+  color:#111;
+  width:120px;
+}
+main {
+  padding:12px;
+  max-width:950px;
+  margin:auto;
+}
+.toolbar {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+  padding:10px;
+  margin-bottom:10px;
+}
+.toolbar .block {
+  background:#f5f8f6;
+  border-radius:8px;
+  padding:8px 12px;
+  font-weight:600;
+}
+.sheet {
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+  overflow:hidden;
+}
+.thead, .row {
+  display:grid;
+  grid-template-columns:60px 1fr 1fr 70px 110px 60px;
+  align-items:center;
+  gap:6px;
+}
+.thead {
+  background:#f2f7f4;
+  font-weight:700;
+  padding:10px;
+}
+.row {
+  padding:10px;
+  border-top:1px solid #e0e7e3;
+}
+.row.today {
+  outline:2px solid #cde6d5;
+  background:#f9fefb;
+}
+input[type="time"], input[type="number"] {
+  width:100%;
+  padding:6px;
+  box-sizing:border-box;
+  border:1px solid #d6ded9;
+  border-radius:6px;
+  font-size:15px;
+}
+.tinybtn {
+  background:var(--brand);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  width:42px;
+  height:42px;
+}
+.fab {
+  position:fixed;
+  left:18px;
+  bottom:18px;
+  background:var(--brand);
+  color:#fff;
+  width:60px;
+  height:60px;
+  border:0;
+  border-radius:18px;
+  font-size:22px;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+.panel {
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  background:#fff;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  padding:16px;
+  box-shadow:0 -10px 30px rgba(0,0,0,.3);
+  display:none;
+  z-index:50;
+}
+.panel.show {display:block;}
+.panel .theme-btns button {
+  border:0;
+  border-radius:8px;
+  padding:8px 14px;
+  margin:4px;
+  color:#fff;
+  font-weight:700;
+}
+.theme-green {background:#1f5634;}
+.theme-light {background:#ddd;color:#111;}
+.theme-dark {background:#222;}
+.wm {
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  opacity:.4;
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
-<header class="appbar">
-  <div class="inner shell">
-    <div id="brandmark" class="brandmark" title="Välj logga i Inställningar">TN</div>
-    <div class="title">Thüringer Tannenhof – Tidsrapport</div>
-    <div class="actions">
-      <button class="btn" id="shareBtn">Dela / Skicka</button>
-      <button class="btn btn--dark" id="pdfBtn">PDF</button>
-    </div>
+<header>
+  <div class="left">
+    <div id="brandmark">TN</div>
+    <div><strong>Thüringer Tannenhof –</strong> Tidsrapport</div>
+  </div>
+  <div class="right">
+    <button id="shareBtn">Dela / Skicka</button>
+    <button id="pdfBtn">PDF</button>
   </div>
 </header>
 
-<main class="shell">
-  <section class="toolbar">
-    <div class="pill"><span>⏳</span><span>Totalt – <span id="sum" class="tot">0.00</span></span></div>
-    <div class="pill">Månad: <span id="monthLabel" style="font-weight:800;margin-left:6px"></span></div>
-    <button class="navbtn" id="prevM">«</button>
-    <button class="navbtn" id="nextM">»</button>
-    <button class="navbtn danger" id="clearMonth" title="Rensa denna månad">🗑</button>
-  </section>
+<main>
+  <div class="toolbar">
+    <div class="block">⏳ Totalt: <span id="total">0.00</span></div>
+    <div class="block">Månad: <span id="month"></span></div>
+    <button id="prev">«</button>
+    <button id="next">»</button>
+    <button id="clear">🗑</button>
+  </div>
 
-  <section class="sheet" aria-label="Tidsblad">
+  <div class="sheet">
     <div class="thead">
-      <div class="day">Dag</div>
-      <div>Från</div>
-      <div>Till</div>
-      <div>Paus</div>
-      <div>Projekt/anteckning</div>
-      <div>Foto</div>
+      <div>Dag</div><div>Från</div><div>Till</div><div>Paus</div><div>Anteckn.</div><div>Foto</div>
     </div>
     <div id="rows"></div>
-    <div style="display:flex;gap:12px;justify-content:center;padding:14px">
-      <button class="btn" id="empSignBtn">✍️ Signera Medarbetare</button>
-      <button class="btn" id="mgrSignBtn">✍️ Signera Chef</button>
-    </div>
-  </section>
+  </div>
 </main>
 
-<!-- Floating settings -->
-<button class="fab" id="fab">⚙️</button>
+<button class="fab" id="gear">⚙️</button>
+
 <div class="panel" id="settings">
   <h3>Inställningar</h3>
-  <div class="opt">
-    <label>Välj logga (PNG/JPG)</label>
-    <input type="file" id="logoFile" accept="image/png,image/jpeg" />
+  <label>Välj logga</label>
+  <input type="file" id="logo" accept="image/*"><br>
+  <label>Vattenstämpel</label>
+  <input type="checkbox" id="wmOn" checked> Synlig<br>
+  <label>Genomskinlighet</label>
+  <input type="range" id="wmAlpha" min="0" max="100" value="40"><span id="alphaVal">40%</span>
+  <h4>Färgtema</h4>
+  <div class="theme-btns">
+    <button class="theme-green" data-t="green">🌲 Grön</button>
+    <button class="theme-light" data-t="light">☀️ Ljus</button>
+    <button class="theme-dark" data-t="dark">🌑 Mörk</button>
   </div>
-  <div class="opt">
-    <label>Företagsgrön (HEX)</label>
-    <input id="brandHex" value="#1f5634" />
-    <div class="preset">
-      <span class="chip" data-col="#1f5634">#1f5634</span>
-      <span class="chip" data-col="#17462a">#17462a</span>
-      <span class="chip" data-col="#0f3a20">#0f3a20</span>
-      <span class="chip" data-col="#2b6a3f">#2b6a3f</span>
-    </div>
-  </div>
-  <div class="opt">
-    <label><input type="checkbox" id="wmOn" checked> Vattenstämpel synlig</label>
-    <label>Genomskinlighet: <span id="wmPct">40%</span></label>
-    <input type="range" id="wmAlpha" min="0" max="100" step="1" value="40" />
-  </div>
-  <div class="rowbtns">
-    <button class="btn" id="toggleDebug">Visa/Dölj felsökning</button>
-    <button class="btn" id="exportBtn">Exportera (JSON)</button>
-    <button class="btn" id="importBtn">Importera (JSON)</button>
-  </div>
-  <div class="rowbtns">
-    <button class="btn danger" id="wipeAll">Rensa ALLT (alla månader)</button>
-    <button class="btn" id="closeSettings">Stäng</button>
-  </div>
+  <button id="closeSet">Stäng</button>
 </div>
 
-<!-- Signature modal -->
-<div class="modal" id="sigModal" aria-hidden="true">
-  <div class="dialog">
-    <h2 id="sigTitle">Signera</h2>
-    <canvas id="sigCanvas" class="sigpad" width="680" height="300"></canvas>
-    <div class="rowbtns" style="margin-top:8px">
-      <button class="btn" id="sigLockBtn">🔒 Börja signera</button>
-      <button class="btn" id="sigClear">Rensa</button>
-      <button class="btn" id="sigSave">Spara</button>
-      <button class="btn" id="sigClose">Stäng</button>
-    </div>
-  </div>
-</div>
-
-<!-- Photo manager modal -->
-<div class="modal" id="photoModal" aria-hidden="true">
-  <div class="dialog">
-    <h2 id="photoTitle">Foton för dag</h2>
-    <div id="photoGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px"></div>
-    <div class="rowbtns">
-      <button class="btn" id="phView">Visa / Hantera</button>
-      <button class="btn" id="phPick">Välj från galleri</button>
-      <button class="btn" id="phShot">Ta foto</button>
-      <button class="btn" id="phClose">Stäng</button>
-    </div>
-    <!-- Hidden inputs for gallery/camera -->
-    <input type="file" id="pickInput" accept="image/*" style="display:none" />
-    <input type="file" id="shotInput" accept="image/*" capture="environment" style="display:none" />
-  </div>
-</div>
-
-<!-- Watermark -->
-<div class="wm" id="wm"><img id="wmImg" alt="watermark" /></div>
+<div class="wm"><img id="wmImg" width="200"></div>
 
 <script>
-/* ---------- State helpers ---------- */
-const $ = sel => document.querySelector(sel);
-const rowsEl = $('#rows');
-const sumEl = $('#sum');
-const monthLabel = $('#monthLabel');
-const brandmark = $('#brandmark');
-let current = new Date();
-current.setDate(1);
+const $=s=>document.querySelector(s);
+let d=new Date();d.setDate(1);
+function key(){return 'tid-'+d.getFullYear()+'-'+(d.getMonth()+1);}
+function load(){return JSON.parse(localStorage.getItem(key())||'{}');}
+function save(o){localStorage.setItem(key(),JSON.stringify(o));}
 
-const KEY = mkey();
-function mkey(d=current){ return `tt-v1-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}` }
-function loadMonth(d=current){ const raw = localStorage.getItem(mkey(d)); return raw? JSON.parse(raw): {} }
-function saveMonth(d=current, data){ localStorage.setItem(mkey(d), JSON.stringify(data)); }
-
-/* ---------- Build rows ---------- */
-function daysInMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
-
-function build(){
-  monthLabel.textContent = current.toLocaleDateString('sv-SE', {month:'long', year:'numeric'});
-  const data = loadMonth();
-  const n = daysInMonth(current);
-  const todayCheck = new Date();
-  rowsEl.innerHTML = '';
-  for(let day=1; day<=n; day++){
-    const row = document.createElement('div');
-    row.className = 'row';
-    const isToday = todayCheck.getFullYear()===current.getFullYear() && todayCheck.getMonth()===current.getMonth() && todayCheck.getDate()===day;
-    if(isToday) row.classList.add('today');
-    const rec = data[day] || {};
-    row.innerHTML = `
-      <div class="day">${day}</div>
-      <div><input type="time" inputmode="numeric" id="f-${day}" value="${rec.from||''}" /></div>
-      <div><input type="time" inputmode="numeric" id="t-${day}" value="${rec.to||''}" /></div>
-      <div><input type="number" min="0" step="1" id="p-${day}" value="${rec.pause||0}" /></div>
-      <div style="display:flex;gap:8px">
-        <button class="tinybtn note" id="n-${day}" title="Anteckning">📝</button>
-        <button class="tinybtn cam" id="c-${day}" title="Foto">📷</button>
-      </div>
-      <div style="text-align:center"><span id="cnt-${day}" class="pill" style="padding:6px 10px;background:#f2f6f4;font-weight:700">${(rec.photos?.length||0)}</span></div>
-    `;
-    rowsEl.appendChild(row);
-    // listeners
-    row.querySelector(`#f-${day}`).addEventListener('change', e=>saveField(day,'from',e.target.value));
-    row.querySelector(`#t-${day}`).addEventListener('change', e=>saveField(day,'to',e.target.value));
-    row.querySelector(`#p-${day}`).addEventListener('change', e=>saveField(day,'pause',parseInt(e.target.value||0)));
-    row.querySelector(`#n-${day}`).addEventListener('click', ()=>editNote(day));
-    row.querySelector(`#c-${day}`).addEventListener('click', ()=>openPhotos(day));
+function days(){return new Date(d.getFullYear(),d.getMonth()+1,0).getDate();}
+function fill(){
+  $('#month').textContent=d.toLocaleDateString('sv-SE',{month:'long',year:'numeric'});
+  const today=new Date();
+  const data=load();
+  const cont=$('#rows');cont.innerHTML='';
+  for(let i=1;i<=days();i++){
+    const r=document.createElement('div');
+    r.className='row';
+    if(i===today.getDate()&&today.getMonth()===d.getMonth()&&today.getFullYear()===d.getFullYear())r.classList.add('today');
+    const rec=data[i]||{};
+    r.innerHTML=`<div>${i}</div>
+    <div><input type="time" id="f${i}" value="${rec.f||''}"></div>
+    <div><input type="time" id="t${i}" value="${rec.t||''}"></div>
+    <div><input type="number" id="p${i}" value="${rec.p||0}"></div>
+    <div><button class="tinybtn" id="n${i}">📝</button></div>
+    <div><button class="tinybtn" id="c${i}">📷</button></div>`;
+    cont.append(r);
+    r.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>upd(i)));
   }
-  calcTotal();
+  calc();
 }
-
-/* ---------- Save helpers ---------- */
-function saveField(day,key,val){
-  const data = loadMonth();
-  data[day] = data[day] || {};
-  data[day][key] = val;
-  saveMonth(current, data);
-  calcTotal();
+function upd(i){
+  const data=load();
+  data[i]={f:$('#f'+i).value,t:$('#t'+i).value,p:$('#p'+i).value};
+  save(data);calc();
 }
-
-function editNote(day){
-  const data = loadMonth();
-  const txt = prompt('Anteckning (projekt/plats):', data[day]?.note || '');
-  if(txt===null) return;
-  data[day] = data[day] || {};
-  data[day].note = txt;
-  saveMonth(current, data);
-}
-
-function calcTotal(){
-  const data = loadMonth();
-  let minutes = 0;
-  for(const [d,rec] of Object.entries(data)){
-    if(!rec.from || !rec.to) continue;
-    const [fh,fm] = rec.from.split(':').map(Number);
-    const [th,tm] = rec.to.split(':').map(Number);
-    let m = (th*60+tm) - (fh*60+fm) - (parseInt(rec.pause||0));
-    if (m<0) m=0;
-    minutes += m;
-  }
-  sumEl.textContent = (minutes/60).toFixed(2);
-}
-
-/* ---------- Month nav / clear ---------- */
-$('#prevM').onclick = ()=>{ current.setMonth(current.getMonth()-1); build(); };
-$('#nextM').onclick = ()=>{ current.setMonth(current.getMonth()+1); build(); };
-$('#clearMonth').onclick = ()=>{
-  if(confirm('Rensa den här månadens blad?')){ localStorage.removeItem(mkey()); build(); }
-};
-
-/* ---------- Share / PDF (stub) ---------- */
-$('#shareBtn').onclick = async ()=>{
-  const payload = {month:monthLabel.textContent,total:sumEl.textContent,data:loadMonth()};
-  const text = `Tidsrapport ${monthLabel.textContent}\nTotalt: ${sumEl.textContent} h\n\n${location.href}`;
-  try{
-    if(navigator.share){
-      await navigator.share({title:`Tidsrapport ${monthLabel.textContent}`, text});
-    }else{
-      alert('Dela / Skicka – implementeras med Web Share / e-post enligt vad du vill ha.');
+function calc(){
+  const data=load();let min=0;
+  for(const v of Object.values(data)){
+    if(v.f&&v.t){
+      const [fh,fm]=v.f.split(':').map(Number);
+      const [th,tm]=v.t.split(':').map(Number);
+      let diff=(th*60+tm)-(fh*60+fm)-(+v.p||0);
+      if(diff>0)min+=diff;
     }
-  }catch(e){ alert('Delning avbröts.'); }
-};
-$('#pdfBtn').onclick = ()=>{
-  /* En riktig PDF kräver ett lib. Tills vidare använder vi print-dialogen. */
-  window.print();
-};
-
-/* ---------- Settings panel ---------- */
-const panel = $('#settings');
-$('#fab').onclick = ()=> panel.classList.add('show');
-$('#closeSettings').onclick = ()=> panel.classList.remove('show');
-
-$('#brandHex').addEventListener('change', e=>{
-  const col = e.target.value.trim();
-  document.documentElement.style.setProperty('--brand', col);
-  localStorage.setItem('tt-brand', col);
-});
-document.querySelectorAll('.chip').forEach(ch=> ch.onclick=()=>{ $('#brandHex').value = ch.dataset.col; $('#brandHex').dispatchEvent(new Event('change')); });
-
-/* Watermark control */
-const wm = $('#wm'); const wmImg = $('#wmImg');
-const wmOn = $('#wmOn'); const wmAlpha = $('#wmAlpha'); const wmPct = $('#wmPct');
-function applyWM(){
-  wm.style.display = wmOn.checked ? 'block' : 'none';
-  wm.style.opacity = String(parseInt(wmAlpha.value)/100);
-  wmPct.textContent = wmAlpha.value + '%';
-  localStorage.setItem('tt-wm-on', wmOn.checked?'1':'0');
-  localStorage.setItem('tt-wm-alpha', wmAlpha.value);
+  }
+  $('#total').textContent=(min/60).toFixed(2);
 }
-wmOn.onchange = applyWM; wmAlpha.oninput = applyWM;
+$('#prev').onclick=()=>{d.setMonth(d.getMonth()-1);fill();}
+$('#next').onclick=()=>{d.setMonth(d.getMonth()+1);fill();}
+$('#clear').onclick=()=>{if(confirm('Rensa månad?')){localStorage.removeItem(key());fill();}}
+$('#gear').onclick=()=>$('#settings').classList.add('show');
+$('#closeSet').onclick=()=>$('#settings').classList.remove('show');
+$('#shareBtn').onclick=()=>alert('Dela / Skicka – implementeras med Web Share eller e-post');
+$('#pdfBtn').onclick=()=>window.print();
 
-/* Logo -> header chip + watermark */
-$('#logoFile').addEventListener('change', async (e)=>{
-  const file = e.target.files?.[0]; if(!file) return;
-  const b64 = await fileToDataURL(file);
-  localStorage.setItem('tt-logo', b64);
-  setLogo(b64);
-});
-function setLogo(b64){
-  wmImg.src = b64;
-  brandmark.style.background = '#ffffff';
-  brandmark.style.color = 'transparent';
-  brandmark.style.backgroundImage = `url(${b64})`;
-  brandmark.style.backgroundSize = 'cover';
-}
-
-/* Export / Import / Wipe */
-$('#exportBtn').onclick = ()=>{
-  const bundle = {brand: getComputedStyle(document.documentElement).getPropertyValue('--brand').trim(),
-    wmOn: wmOn.checked, wmAlpha: wmAlpha.value, logo: localStorage.getItem('tt-logo')||null,
-    months: Object.keys(localStorage).filter(k=>k.startsWith('tt-v1-')).reduce((o,k)=>(o[k]=JSON.parse(localStorage.getItem(k)),o),{})};
-  const blob = new Blob([JSON.stringify(bundle)],{type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='tidsrapport-export.json'; a.click();
-};
-$('#importBtn').onclick = ()=>{
-  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
-  inp.onchange = async ()=>{
-    const f = inp.files?.[0]; if(!f) return;
-    const j = JSON.parse(await f.text());
-    if(j.brand) { $('#brandHex').value=j.brand; $('#brandHex').dispatchEvent(new Event('change')); }
-    if('wmOn' in j){ wmOn.checked = !!j.wmOn; }
-    if(j.wmAlpha){ wmAlpha.value=j.wmAlpha; }
-    applyWM();
-    if(j.logo){ localStorage.setItem('tt-logo', j.logo); setLogo(j.logo); }
-    if(j.months){ for(const [k,v] of Object.entries(j.months)) localStorage.setItem(k, JSON.stringify(v)); }
-    build();
-  };
-  inp.click();
-};
-$('#wipeAll').onclick = ()=>{
-  if(!confirm('Rensa alla månader och inställningar?')) return;
-  Object.keys(localStorage).forEach(k=>{ if(k.startsWith('tt-')) localStorage.removeItem(k); });
-  location.reload();
-};
-
-/* ---------- Signature ---------- */
-let sigTarget = 'emp'; // emp | mgr
-const sigModal = $('#sigModal'); const sigCanvas = $('#sigCanvas'); const ctx = sigCanvas.getContext('2d');
-let drawing=false, unlocked=false, last=null;
-function sigOpen(which){
-  sigTarget = which;
-  $('#sigTitle').textContent = which==='emp'?'Signera – Medarbetare':'Signera – Chef';
-  unlocked=false; $('#sigLockBtn').textContent='🔒 Börja signera';
-  ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
-  sigModal.classList.add('show');
-}
-function sigClose(){ sigModal.classList.remove('show'); }
-function sigSave(){
-  const data = loadMonth();
-  const key = sigTarget==='emp'?'sigEmp':'sigMgr';
-  data[key] = sigCanvas.toDataURL('image/png');
-  saveMonth(current, data);
-  sigClose();
-}
-function sigClear(){ ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); }
-$('#empSignBtn').onclick = ()=>sigOpen('emp');
-$('#mgrSignBtn').onclick = ()=>sigOpen('mgr');
-$('#sigClose').onclick = sigClose;
-$('#sigSave').onclick = sigSave;
-$('#sigClear').onclick = sigClear;
-$('#sigLockBtn').onclick = ()=>{ unlocked=!unlocked; $('#sigLockBtn').textContent = unlocked?'🖊️ Lås ritning':'🔒 Börja signera'; };
-
-function getPos(e){
-  const r = sigCanvas.getBoundingClientRect();
-  const t = (e.touches? e.touches[0]: e);
-  return {x: t.clientX - r.left, y: t.clientY - r.top};
-}
-function startDraw(e){ if(!unlocked) return; drawing=true; last=getPos(e); e.preventDefault();}
-function moveDraw(e){ if(!drawing || !unlocked) return; const p=getPos(e); ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.strokeStyle='#111'; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault();}
-function endDraw(){ drawing=false; }
-sigCanvas.addEventListener('mousedown', startDraw);
-sigCanvas.addEventListener('mousemove', moveDraw);
-sigCanvas.addEventListener('mouseup', endDraw);
-sigCanvas.addEventListener('mouseleave', endDraw);
-sigCanvas.addEventListener('touchstart', startDraw, {passive:false});
-sigCanvas.addEventListener('touchmove', moveDraw, {passive:false});
-sigCanvas.addEventListener('touchend', endDraw);
-
-/* ---------- Photos ---------- */
-let photoDay=1;
-const photoModal = $('#photoModal');
-function openPhotos(day){
-  photoDay = day;
-  $('#photoTitle').textContent = `Foton för dag ${day}`;
-  renderPhotoGrid();
-  photoModal.classList.add('show');
-}
-$('#phClose').onclick = ()=> photoModal.classList.remove('show');
-$('#phView').onclick = ()=> renderPhotoGrid(true);
-$('#phPick').onclick = ()=> $('#pickInput').click();
-$('#phShot').onclick = ()=> $('#shotInput').click();
-$('#pickInput').addEventListener('change', async e=>{
-  const f = e.target.files?.[0]; if(!f) return;
-  const b64 = await fileToDataURL(f); addPhoto(b64);
-});
-$('#shotInput').addEventListener('change', async e=>{
-  const f = e.target.files?.[0]; if(!f) return;
-  const b64 = await fileToDataURL(f); addPhoto(b64);
+/* Tema */
+document.querySelectorAll('.theme-btns button').forEach(b=>b.onclick=()=>{
+  const t=b.dataset.t;
+  if(t==='green'){document.documentElement.style.setProperty('--brand','#1f5634');document.documentElement.style.setProperty('--bg','#eef6f1');document.documentElement.style.setProperty('--text','#0f172a');}
+  if(t==='light'){document.documentElement.style.setProperty('--brand','#c0d9c3');document.documentElement.style.setProperty('--bg','#fafafa');document.documentElement.style.setProperty('--text','#111');}
+  if(t==='dark'){document.documentElement.style.setProperty('--brand','#0a0a0a');document.documentElement.style.setProperty('--bg','#1a1a1a');document.documentElement.style.setProperty('--text','#eee');}
 });
 
-function addPhoto(b64){
-  const data = loadMonth();
-  data[photoDay] = data[photoDay] || {};
-  data[photoDay].photos = data[photoDay].photos || [];
-  data[photoDay].photos.push(b64);
-  saveMonth(current, data);
-  $('#cnt-'+photoDay).textContent = data[photoDay].photos.length;
-  renderPhotoGrid();
-}
-function renderPhotoGrid(scrollInto=false){
-  const data = loadMonth();
-  const list = data[photoDay]?.photos || [];
-  const grid = $('#photoGrid');
-  grid.innerHTML = '';
-  if(!list.length){ grid.innerHTML = '<div style="color:var(--muted)">Inga foton ännu.</div>'; return; }
-  list.forEach((src,idx)=>{
-    const wrap = document.createElement('div'); wrap.style.position='relative';
-    const img = document.createElement('img'); img.src = src; img.style.width='120px'; img.style.height='90px'; img.style.objectFit='cover'; img.style.borderRadius='10px'; img.style.border='1px solid #e5ebe7';
-    const del = document.createElement('button'); del.textContent='✖'; del.style.position='absolute'; del.style.top='-8px'; del.style.right='-8px'; del.style.border='0'; del.style.borderRadius='999px'; del.style.width='28px'; del.style.height='28px'; del.style.background='#b91c1c'; del.style.color='#fff'; del.style.fontWeight='800';
-    del.onclick = ()=>{ list.splice(idx,1); data[photoDay].photos=list; saveMonth(current,data); $('#cnt-'+photoDay).textContent = list.length; renderPhotoGrid(); };
-    wrap.appendChild(img); wrap.appendChild(del); grid.appendChild(wrap);
-  });
-  if(scrollInto) grid.scrollIntoView({behavior:'smooth', block:'center'});
-}
+/* Logga & watermark */
+$('#logo').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  const b=await toB64(f);
+  localStorage.setItem('logo',b);
+  $('#brandmark').style.backgroundImage=`url(${b})`;
+  $('#brandmark').style.color='transparent';
+  $('#wmImg').src=b;
+};
+function toB64(f){return new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(f);});}
+$('#wmOn').onchange=()=>{$('.wm').style.display=$('#wmOn').checked?'block':'none';}
+$('#wmAlpha').oninput=()=>{$('#wmImg').style.opacity=$('#wmAlpha').value/100;$('#alphaVal').textContent=$('#wmAlpha').value+'%';}
 
-/* ---------- Utils ---------- */
-async function fileToDataURL(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-
-/* ---------- Boot ---------- */
-(function boot(){
-  // restore brand + logo + wm
-  const storedBrand = localStorage.getItem('tt-brand'); if(storedBrand){ document.documentElement.style.setProperty('--brand', storedBrand); $('#brandHex').value=storedBrand; }
-  const logo = localStorage.getItem('tt-logo'); if(logo) setLogo(logo);
-  const wOn = localStorage.getItem('tt-wm-on'); if(wOn!==null) $('#wmOn').checked = wOn==='1';
-  const wAl = localStorage.getItem('tt-wm-alpha'); if(wAl) $('#wmAlpha').value=wAl;
-  applyWM();
-  build();
+/* restore logo/wm */
+(function(){
+ const b=localStorage.getItem('logo');if(b){$('#brandmark').style.backgroundImage=`url(${b})`;$('#brandmark').style.color='transparent';$('#wmImg').src=b;}
+ fill();
 })();
 </script>
 </body>
