@@ -1,498 +1,624 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Thüringer Tannenhof – Tidsrapport</title>
 <style>
 :root{
-  --brand:#175D36;               /* Thüringer-grön */
-  --brand-2:#0f3e25;
-  --ink:#0b110d;
-  --bg:#eef6f1;
-  --surface:#ffffff;
-  --muted:#6a7a72;
+  --brand:#1f5634;         /* Byts i Inställningar */
+  --brand-900:#173f27;
+  --brand-700:#1b4b2e;
+  --brand-50:#eef5f0;
+  --ink:#0f1a14;
+  --muted:#6b7a71;
+  --bg:#f3f7f4;
+  --card:#ffffff;
+  --line:#e2ebe5;
+  --focus:#0a7a5d;
   --radius:16px;
+  --shadow:0 8px 24px rgba(0,0,0,.08);
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-header{
-  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.8rem;
-  padding:.7rem .9rem;background:var(--brand);color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.18)
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color:var(--ink);
+  background:var(--bg);
 }
-#topLogo{height:40px;width:auto;border-radius:8px;background:#fff;padding:3px}
-h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.2px}
-.header-actions{margin-left:auto;display:flex;gap:.4rem;align-items:center}
-.badge{background:rgba(255,255,255,.16);padding:.35rem .55rem;border-radius:12px}
-.wrap{padding:.9rem}
-.toolbar{display:grid;gap:.6rem;grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(min-width:900px){ .toolbar{grid-template-columns:repeat(4,minmax(0,1fr))} }
-.card{background:#fff;padding:.8rem;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.08)}
-.row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
-.row label{font-size:12px;color:var(--muted)}
-select,input[type="month"],input[type="color"],input[type="range"]{padding:.55rem .6rem;border-radius:12px;border:1px solid #e1e8e4;background:#f8fbf9;min-width:0}
-input[type="text"],input[type="number"],input[type="time"]{padding:.45rem .5rem;border-radius:10px;border:1px solid #e1e8e4;background:#fff;min-width:0}
-.iconbtn,.smallbtn{appearance:none;border:0;cursor:pointer;border-radius:12px;padding:.45rem .7rem;background:#eef3ef}
-.iconbtn.primary{background:var(--brand);color:#fff}
-.table-wrap{margin-top:.9rem;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.08)}
-table{width:1100px;border-collapse:separate;border-spacing:0}
-th,td{padding:.7rem .6rem;text-align:center}
-thead th{position:sticky;top:0;background:#f5faf7;border-bottom:2px solid #e7efe9;z-index:5}
-tbody tr{border-bottom:1px solid #eef2ef}
-.daycell{font-weight:800;color:var(--brand)}
-.today{outline:3px solid rgba(23,93,54,.35);background:#eaf4ee}
-.cell{display:flex;align-items:center;gap:.4rem;justify-content:center}
-.sum{font-weight:800}
-.footerbar{margin-top:.9rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
-#printBtn{background:var(--brand);color:#fff}
-#debug{position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;padding:4px 6px;font:11px/1.2 monospace;z-index:40;display:none;justify-content:space-between;gap:.5rem}
-#debug button{background:#333;border:0;color:#eee;border-radius:6px;padding:2px 6px;cursor:pointer}
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35);z-index:50;padding:16px}
-.sheet{width:min(96vw,720px);background:#fff;border-radius:16px;padding:12px}
-.sheet header{position:relative;top:auto;background:#fff;color:#111;border-bottom:1px solid #eee;border-radius:16px 16px 0 0;box-shadow:none}
-.sheet h3{margin:.2rem 0}
-.sheet .content{padding:12px}
-.sheet footer{display:flex;justify-content:flex-end;gap:.5rem;padding:8px}
-.canvas-wrap{border:1px solid #e3e7e5;border-radius:12px;overflow:hidden;background:#fff}
-#wmImg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(60vmin,520px);opacity:.4;pointer-events:none;z-index:0;display:none}
-.theme-camo{--brand:#556b2f}
-.theme-dark{--brand:#2f2f2f;--bg:#e9ebec}
-.theme-custom{--brand:var(--customBrand,#175D36)}
-.note-pill{max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px dashed #d9e3dd;border-radius:10px;padding:.25rem .45rem}
-.photo-count{font-size:12px;color:#444;background:#eef3ef;border-radius:10px;padding:.15rem .4rem}
+
+/* Top bar */
+.header{
+  position:sticky; top:0; z-index:20;
+  background:linear-gradient(180deg,var(--brand),var(--brand-900));
+  color:#fff;
+  padding:10px env(safe-area-inset-left) 10px env(safe-area-inset-right);
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.header-inner{
+  display:flex; align-items:center; gap:12px; max-width:980px; margin:0 auto;
+}
+.logo-badge{
+  width:36px; height:36px; border-radius:999px; overflow:hidden;
+  display:grid; place-items:center; background:#eaf3ee; color:var(--brand);
+  font-weight:700;
+}
+.logo-badge img{width:100%; height:100%; object-fit:cover}
+.header-title{flex:1; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.header-actions{display:flex; gap:10px}
+.btn{
+  appearance:none; border:0; cursor:pointer;
+  border-radius:14px; padding:10px 16px; font-weight:700;
+  background:#fff; color:var(--ink); box-shadow:var(--shadow);
+}
+.btn-dark{ background:rgba(0,0,0,.25); color:#fff}
+
+/* Summary bar */
+.summary{
+  max-width:980px; margin:14px auto 8px; display:grid; grid-template-columns:1fr 1fr auto; gap:12px;
+  padding:0 12px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px;
+}
+.shadowless{box-shadow:none; background:transparent; padding:0}
+.hint{color:var(--muted); font-size:12px}
+.nav-arrows{display:flex; gap:8px}
+.iconbtn{
+  width:44px; height:44px; border-radius:12px; border:0; background:var(--brand-50); color:var(--brand); font-weight:900; cursor:pointer;
+}
+.iconbtn:active{transform:translateY(1px)}
+
+/* Table / day list */
+.sheet{
+  max-width:980px; margin:0 auto 120px; padding:0 12px;
+}
+.row{
+  background:var(--card);
+  border-radius:14px;
+  margin:8px 0;
+  padding:10px 10px 6px;
+  position:relative;
+  box-shadow:var(--shadow);
+}
+.row .dayline{
+  position:absolute; inset:auto 10px 0 10px; height:1px; background:var(--line);
+  border-radius:1px;
+}
+.row-inner{
+  display:grid; grid-template-columns:54px 1fr 1fr 76px 120px; gap:10px; align-items:center;
+}
+.col-day{font-weight:800; color:var(--brand)}
+.input, select{
+  width:100%; height:44px; border:1px solid var(--line); border-radius:12px; padding:0 12px; font-size:16px; background:#fff;
+}
+.select-wrap{position:relative}
+.select-wrap:after{content:"▾"; position:absolute; right:12px; top:10px; color:var(--muted)}
+.btn-ghost{
+  height:44px; border-radius:12px; border:1px dashed var(--line); background:#fff; cursor:pointer;
+}
+.btn-photo{background:var(--brand); color:#fff; border:0}
+.small{font-size:12px}
+.today{ outline:2px solid rgba(10,122,93,.2); box-shadow:0 0 0 5px rgba(10,122,93,.05) inset}
+.row.today .col-day{color:var(--focus)}
+
+/* Footer action area */
+.footer-actions{
+  position:sticky; bottom:0; z-index:10; padding:12px;
+  margin-top:24px; background:linear-gradient(180deg,rgba(243,247,244,0), var(--bg) 28%, var(--bg));
+}
+.sign-row{ display:flex; gap:12px; max-width:980px; margin:0 auto; }
+.sign-btn{
+  flex:1; height:44px; border-radius:999px; border:1px dashed var(--line); background:#fff;
+  display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; cursor:pointer; box-shadow:var(--shadow);
+}
+
+/* Settings FAB */
+.fab{
+  position:fixed; left:16px; bottom:calc(16px + env(safe-area-inset-bottom));
+  width:64px; height:64px; border-radius:18px; background:var(--brand); color:#fff; border:0; cursor:pointer;
+  box-shadow:0 14px 30px rgba(0,0,0,.22);
+  display:grid; place-items:center; z-index:50;
+}
+
+/* Drawer */
+.drawer{
+  position:fixed; left:0; right:0; bottom:-100%; background:#fff; border-radius:20px 20px 0 0;
+  box-shadow:0 -18px 40px rgba(0,0,0,.28); padding:18px 16px 22px; transition:bottom .25s ease; z-index:60;
+}
+.drawer.open{bottom:0}
+.drawer h3{margin:0 0 10px}
+.group{margin:12px 0}
+.label{font-weight:700; margin:8px 0 6px}
+.switch{display:flex; align-items:center; gap:8px}
+.range{width:100%}
+
+/* Photo menu */
+.menu{position:absolute; background:#fff; border-radius:12px; box-shadow:var(--shadow); overflow:hidden}
+.menu button{display:block; width:100%; text-align:left; padding:12px 14px; border:0; background:#fff; cursor:pointer}
+.menu button + button{border-top:1px solid var(--line)}
+
+/* Modal for signature */
+.modal{
+  position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.5); z-index:80;
+}
+.modal.open{display:grid}
+.modal-card{
+  width:min(720px,92vw); background:#fff; border-radius:16px; padding:12px; box-shadow:var(--shadow)
+}
+.canvas-wrap{background:#f9fbfa; border:1px solid var(--line); border-radius:12px; height:320px; display:grid; place-items:center}
+.canvas-wrap canvas{ width:100%; height:100%}
+.modal-actions{display:flex; justify-content:space-between; gap:8px; margin-top:10px}
+.modal-actions .btn{flex:1}
+
+/* Watermark */
+.watermark{
+  position:fixed; right:14px; bottom:calc(58px + env(safe-area-inset-bottom)); opacity:.4; z-index:0;
+  pointer-events:none; user-select:none;
+  filter:grayscale(.15);
+}
+.watermark img{ width:min(42vw,270px); opacity:inherit; }
+
+/* Debug pill */
+.debug{
+  position:fixed; right:10px; bottom:calc(12px + env(safe-area-inset-bottom));
+  background:#000; color:#9ff1cb; padding:8px 10px; border-radius:12px; font:12px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  display:none; max-width:58vw; white-space:pre-wrap
+}
+
+/* Responsive shrink on small screens */
+@media (max-width:720px){
+  .row-inner{ grid-template-columns:52px 1fr 1fr 70px 54px; }
+  .summary{grid-template-columns:1fr 1fr auto}
+  .btn{padding:10px 14px}
+}
 </style>
 </head>
 <body>
-<header>
-  <img id="topLogo" alt="Logo" src="">
-  <h1 id="title">Thüringer Tannenhof – Tidsrapport</h1>
-  <div class="header-actions">
-    <span class="badge" id="monthBadge"></span>
-    <button class="iconbtn" id="gearBtn">⚙️</button>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-badge" id="logoBadge">TN</div>
+    <div class="header-title">Thüringer Tannenhof – Tidsrapport</div>
+    <div class="header-actions">
+      <button class="btn" id="shareBtn">Dela / Skicka</button>
+      <button class="btn btn-dark" id="pdfBtn">PDF</button>
+    </div>
   </div>
 </header>
 
-<img id="wmImg" alt="">
-
-<div class="wrap">
-  <!-- INSTÄLLNINGAR -->
-  <div class="toolbar">
-    <div class="card">
-      <div class="row">
-        <label id="lblLang">Språk</label>
-        <select id="langSel"><option value="sv">Svenska</option><option value="de">Deutsch</option><option value="en">English</option></select>
-      </div>
-      <div class="row">
-        <label id="lblTheme">Tema</label>
-        <select id="themeSel"><option value="brand">Grön</option><option value="camo">Kamouflage</option><option value="dark">Mörkgrå</option><option value="custom">Egen färg…</option></select>
-        <input type="color" id="customColor" value="#175D36" class="hidden">
-      </div>
-      <div class="row">
-        <label id="lblLogo">Företagslogga</label>
-        <input type="file" id="logoInput" accept="image/*">
-        <button class="smallbtn" id="clearLogoBtn">Rensa</button>
-      </div>
-      <div class="row">
-        <label id="lblWM">Vattenstämpel</label>
-        <input type="file" id="wmInput" accept="image/*">
-        <input type="range" id="wmOpacity" min="0" max="100" value="40"><span id="wmVal">40%</span>
-        <button class="smallbtn" id="wmToggle">Av/På</button>
-      </div>
-      <div class="row">
-        <label id="lblMonth">Månad</label>
-        <input type="month" id="monthPick"><button class="smallbtn" id="regenBtn">Skapa/uppdatera dagar</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <label id="lblSave">Lagring</label>
-        <button class="smallbtn" id="saveBtn">Spara</button>
-        <button class="smallbtn" id="loadBtn">Ladda</button>
-        <button class="smallbtn" id="clearBtn">Rensa månad</button>
-      </div>
-      <div class="row">
-        <label id="lblShare">Dela</label>
-        <button class="smallbtn" id="waBtn">WhatsApp</button>
-        <button class="smallbtn" id="mailBtn">E-post</button>
-        <button class="smallbtn primary" id="printBtn">PDF/Skriv ut</button>
-      </div>
-      <div class="row">
-        <label>Debug</label>
-        <button class="smallbtn" id="dbgToggle">Visa/Göm</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <label id="lblSig">Signatur</label>
-        <button class="smallbtn" id="sigEmpBtn">✍️ Medarbetare</button>
-        <button class="smallbtn" id="sigBossBtn">✍️ Chef</button>
-      </div>
-      <div class="row">
-        <canvas id="sigEmpPrev" width="160" height="50" class="canvas-wrap"></canvas>
-        <canvas id="sigBossPrev" width="160" height="50" class="canvas-wrap"></canvas>
-      </div>
-    </div>
-
-    <div class="card">
-      <div><strong id="lblTotals">Totalsumma denna månad:</strong></div>
-      <div class="row">
-        <div class="badge"><span id="totalHours">0:00</span> h</div>
-        <div class="badge" id="longestDay">Längsta dag: 0:00</div>
-      </div>
-      <hr>
-      <div class="row"><small id="lblHint">Tips: tryck på 📝 för stor anteckning och 📷 för foto-val.</small></div>
-    </div>
+<section class="summary">
+  <div class="card">
+    <div class="hint">Totalt</div>
+    <div id="totaltH">0.00</div>
   </div>
-
-  <!-- TABELL -->
-  <div class="table-wrap">
-    <table id="tbl">
-      <thead>
-        <tr>
-          <th id="thDay">Dag</th><th id="thFrom">Från</th><th id="thTo">Till</th><th id="thBreak">Paus (min)</th>
-          <th id="thProj">Projekt</th><th id="thNote">Anteckning</th><th id="thPhoto">Foto</th><th id="thSum">Summa</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-      <tfoot><tr><td colspan="7" style="text-align:right;font-weight:800">Total</td><td class="sum" id="tfootTotal">0:00</td></tr></tfoot>
-    </table>
+  <div class="card">
+    <div class="hint">Månad</div>
+    <div id="monthTitle">oktober 2025</div>
   </div>
+  <div class="card nav-arrows shadowless">
+    <button class="iconbtn" id="prevM">«</button>
+    <button class="iconbtn" id="nextM">»</button>
+    <button class="btn" id="clearMonth">Rensa denna månad</button>
+  </div>
+</section>
 
-  <div class="footerbar">
-    <button class="iconbtn" id="scrollToday">Hoppa till idag</button>
+<main class="sheet" id="sheet"></main>
+
+<div class="footer-actions">
+  <div class="sign-row">
+    <button class="sign-btn" id="signEmp">✍️ Signera Medarbetare</button>
+    <button class="sign-btn" id="signBoss">✍️ Signera Chef</button>
   </div>
 </div>
 
-<!-- Modal: Anteckning -->
-<div class="modal" id="noteModal">
-  <div class="sheet">
-    <header><h3 id="noteTitle">Anteckning</h3></header>
-    <div class="content"><textarea id="noteText" rows="8" style="width:100%;padding:.6rem;border:1px solid #e1e8e4;border-radius:12px"></textarea></div>
-    <footer><button class="iconbtn" id="noteCancel">Avbryt</button><button class="iconbtn primary" id="noteSave">Spara</button></footer>
-  </div>
-</div>
+<!-- Settings FAB -->
+<button class="fab" id="fab" title="Inställningar">⚙️</button>
 
-<!-- Modal: Foto -->
-<div class="modal" id="photoModal">
-  <div class="sheet">
-    <header><h3 id="photoTitle">Foto</h3></header>
-    <div class="content">
-      <div class="row">
-        <button class="iconbtn" id="phTake">📷 Ta foto</button>
-        <button class="iconbtn" id="phPick">🖼️ Välj från galleri</button>
-        <button class="iconbtn" id="phView">👀 Visa sparade</button>
-        <input type="file" id="phCapture" accept="image/*" capture="environment" class="hidden">
-        <input type="file" id="phGallery" accept="image/*" class="hidden">
-      </div>
-      <div id="photoList" class="row"></div>
-    </div>
-    <footer><button class="iconbtn" id="photoClose">Stäng</button></footer>
+<!-- Settings Drawer -->
+<aside class="drawer" id="drawer">
+  <h3>Inställningar</h3>
+  <div class="group">
+    <div class="label">Välj logga (PNG/JPG)</div>
+    <input type="file" id="logoFile" accept="image/png,image/jpeg" />
   </div>
-</div>
+  <div class="group">
+    <div class="label">Företagsgrön (HEX)</div>
+    <input class="input" id="brandHex" placeholder="#1f5634" />
+  </div>
+  <div class="group">
+    <div class="label">Vattenstämpel</div>
+    <label class="switch"><input type="checkbox" id="wmToggle" checked /> Synlig</label>
+    <div class="label">Genomskinlighet: <span id="wmVal">40%</span></div>
+    <input class="range" id="wmRange" type="range" min="0" max="100" step="1" value="40" />
+  </div>
+  <div class="group">
+    <button class="btn" id="debugToggle">Visa/Dölj felsökning</button>
+  </div>
+  <div class="group">
+    <button class="btn" id="exportJson">Exportera (JSON)</button>
+    <button class="btn" id="importJson">Importera (JSON)</button>
+  </div>
+  <div class="group">
+    <button class="btn" style="background:#ffe9e9" id="clearAll">Rensa ALLT (alla månader)</button>
+  </div>
+  <div class="group">
+    <button class="btn" id="closeDrawer">Stäng</button>
+  </div>
+</aside>
 
-<!-- Modal: Signatur -->
-<div class="modal" id="sigModal">
-  <div class="sheet">
-    <header><h3 id="sigTitle">Signatur</h3></header>
-    <div class="content"><div class="canvas-wrap"><canvas id="sigCanvas" width="680" height="220"></canvas></div></div>
-    <footer>
-      <button class="iconbtn" id="sigClear">Rensa</button>
-      <button class="iconbtn" id="sigCancel">Avbryt</button>
-      <button class="iconbtn primary" id="sigSave">Spara</button>
-    </footer>
-  </div>
+<!-- Watermark -->
+<div class="watermark" id="wmWrap" aria-hidden="true">
+  <img id="wmImg" src="" alt="watermark" />
 </div>
 
 <!-- Debug -->
-<div id="debug"><span id="dbgText">debug</span><button id="dbgClear">X</button></div>
+<pre class="debug" id="debugBox"></pre>
+
+<!-- Signature modals -->
+<div class="modal" id="sigModalEmp">
+  <div class="modal-card">
+    <h3>Signera – Medarbetare</h3>
+    <div class="canvas-wrap"><canvas id="sigCanvasEmp"></canvas></div>
+    <div class="modal-actions">
+      <button class="btn" id="sigEmpClear">Rensa</button>
+      <button class="btn" id="sigEmpSave">Spara</button>
+      <button class="btn" id="sigEmpClose">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="sigModalBoss">
+  <div class="modal-card">
+    <h3>Signera – Chef</h3>
+    <div class="canvas-wrap"><canvas id="sigCanvasBoss"></canvas></div>
+    <div class="modal-actions">
+      <button class="btn" id="sigBossClear">Rensa</button>
+      <button class="btn" id="sigBossSave">Spara</button>
+      <button class="btn" id="sigBossClose">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden inputs for photo flow -->
+<input id="pickGallery" type="file" accept="image/*" style="display:none" />
+<input id="takePhoto" type="file" accept="image/*" capture="environment" style="display:none" />
 
 <script>
-/* ========== i18n ========== */
-const I18N={
-  sv:{title:"Thüringer Tannenhof – Tidsrapport",Lang:"Språk",Theme:"Tema","Company logo":"Företagslogga",Watermark:"Vattenstämpel",Month:"Månad",Storage:"Lagring",Share:"Dela",Signature:"Signatur",Totals:"Totalsumma denna månad:",Tip:"Tips: tryck på 📝 för stor anteckning och 📷 för foto-val.",Day:"Dag",From:"Från",To:"Till",Break:"Paus (min)",Project:"Projekt",Note:"Anteckning",Photo:"Foto",Sum:"Summa",Save:"Spara",Load:"Ladda",ClearMonth:"Rensa månad",PDF:"PDF/Skriv ut",WhatsApp:"WhatsApp",Email:"E-post",Emp:"Medarbetare",Boss:"Chef",Cancel:"Avbryt",ViewSaved:"Visa sparade",TakePhoto:"Ta foto",PickPhoto:"Välj från galleri",WatermarkOnOff:"Av/På",CreateDays:"Skapa/uppdatera dagar","JumpToday":"Hoppa till idag",Longest:"Längsta dag:",Settings:"Inställningar"},
-  de:{title:"Thüringer Tannenhof – Stundennachweis",Lang:"Sprache",Theme:"Thema","Company logo":"Firmenlogo",Watermark:"Wasserzeichen",Month:"Monat",Storage:"Speichern",Share:"Teilen",Signature:"Unterschrift",Totals:"Monatssumme:",Tip:"Tipp: 📝 für große Notiz, 📷 für Foto-Auswahl.",Day:"Tag",From:"Von",To:"Bis",Break:"Pause (Min.)",Project:"Projekt",Note:"Notiz",Photo:"Foto",Sum:"Summe",Save:"Speichern",Load:"Laden",ClearMonth:"Monat leeren",PDF:"PDF/Drucken",WhatsApp:"WhatsApp",Email:"E-Mail",Emp:"Mitarbeiter",Boss:"Chef",Cancel:"Abbrechen",ViewSaved:"Gespeicherte zeigen",TakePhoto:"Foto aufnehmen",PickPhoto:"Aus Galerie wählen",WatermarkOnOff:"An/Aus",CreateDays:"Tage erzeugen/aktualisieren","JumpToday":"Zu Heute springen",Longest:"Längster Tag:",Settings:"Einstellungen"},
-  en:{title:"Thüringer Tannenhof – Timesheet",Lang:"Language",Theme:"Theme","Company logo":"Company logo",Watermark:"Watermark",Month:"Month",Storage:"Storage",Share:"Share",Signature:"Signature",Totals:"Monthly total:",Tip:"Tip: tap 📝 for big note, 📷 for photo options.",Day:"Day",From:"From",To:"To",Break:"Break (min)",Project:"Project",Note:"Note",Photo:"Photo",Sum:"Total",Save:"Save",Load:"Load",ClearMonth:"Clear month",PDF:"PDF/Print",WhatsApp:"WhatsApp",Email:"Email",Emp:"Employee",Boss:"Manager",Cancel:"Cancel",ViewSaved:"View saved",TakePhoto:"Take photo",PickPhoto:"Pick from gallery",WatermarkOnOff:"On/Off",CreateDays:"Generate/update days","JumpToday":"Jump to today",Longest:"Longest day:",Settings:"Settings"}
+/* ------------------ State ------------------ */
+const S = {
+  year: new Date().getFullYear(),
+  month: new Date().getMonth(), // 0-11
+  data: {},      // { '2025-10': { d1:{from:'08:00',to:'16:00',break:0, note:'', photos:[...]} } }
+  brand: '#1f5634',
+  logoDataUrl: null,
+  watermark: { visible:true, opacity:0.4, dataUrl:null },
+  debug:false
 };
-let LANG='sv';
-const $=(sel,fn)=>{const el=document.querySelector(sel); if(el&&fn) fn(el); return el;}
-function t(k){return I18N[LANG][k]||k;}
-function applyLang(){
-  document.title=t('title');
-  $('h1',el=>el.textContent=t('title'));
-  $('#lblLang',el=>el.textContent=t('Lang'));
-  $('#lblTheme',el=>el.textContent=t('Theme'));
-  $('#lblLogo',el=>el.textContent=t('Company logo'));
-  $('#lblWM',el=>el.textContent=t('Watermark'));
-  $('#lblMonth',el=>el.textContent=t('Month'));
-  $('#lblSave',el=>el.textContent=t('Storage'));
-  $('#lblShare',el=>el.textContent=t('Share'));
-  $('#lblSig',el=>el.textContent=t('Signature'));
-  $('#lblTotals',el=>el.textContent=t('Totals'));
-  $('#lblHint',el=>el.textContent=t('Tip'));
-  $('#thDay',el=>el.textContent=t('Day'));
-  $('#thFrom',el=>el.textContent=t('From'));
-  $('#thTo',el=>el.textContent=t('To'));
-  $('#thBreak',el=>el.textContent=t('Break'));
-  $('#thProj',el=>el.textContent=t('Project'));
-  $('#thNote',el=>el.textContent=t('Note'));
-  $('#thPhoto',el=>el.textContent=t('Photo'));
-  $('#thSum',el=>el.textContent=t('Sum'));
-  $('#regenBtn',el=>el.textContent=t('CreateDays'));
-  $('#saveBtn',el=>el.textContent=t('Save'));
-  $('#loadBtn',el=>el.textContent=t('Load'));
-  $('#clearBtn',el=>el.textContent=t('ClearMonth'));
-  $('#printBtn',el=>el.textContent=t('PDF'));
-  $('#waBtn',el=>el.textContent=t('WhatsApp'));
-  $('#mailBtn',el=>el.textContent=t('Email'));
-  $('#sigEmpBtn',el=>el.textContent='✍️ '+t('Emp'));
-  $('#sigBossBtn',el=>el.textContent='✍️ '+t('Boss'));
-  $('#photoTitle',el=>el.textContent=t('Photo'));
-  $('#photoClose',el=>el.textContent=t('Cancel'));
-  $('#phTake',el=>el.textContent='📷 '+t('TakePhoto'));
-  $('#phPick',el=>el.textContent='🖼️ '+t('PickPhoto'));
-  $('#phView',el=>el.textContent='👀 '+t('ViewSaved'));
-  $('#wmToggle',el=>el.textContent=t('WatermarkOnOff'));
-  $('#scrollToday',el=>el.textContent=t('JumpToday'));
-  $('#longestDay',el=>el.textContent=t('Longest')+' 0:00');
+const $ = s=>document.querySelector(s);
+
+/* ------------------ Util ------------------ */
+const pad=n=>String(n).padStart(2,'0');
+const ymKey=(y,m)=>`${y}-${pad(m+1)}`;
+const today = new Date();
+
+/* ------------------ Load saved ------------------ */
+(function loadSaved(){
+  try{
+    const save = JSON.parse(localStorage.getItem('tt_timesheet_v3')||'{}');
+    Object.assign(S, save, {debug:false});
+  }catch(e){}
+})();
+
+/* ------------------ Apply brand ------------------ */
+function applyBrand(hex){
+  if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)) return;
+  S.brand = hex;
+  document.documentElement.style.setProperty('--brand', hex);
+  $('#brandHex').value = hex;
 }
 
-/* ========== Debug ========== */
-function dbg(msg){const el=$('#dbgText'); if(el){ el.textContent=msg; }}
-$('#dbgClear').addEventListener('click',()=>dbg(''));
-$('#dbgToggle').addEventListener('click',()=>{ const d=$('#debug'); d.style.display = (d.style.display==='none'?'flex':'none'); });
-
-/* ========== Tema ========== */
-function setTheme(val){
-  document.body.classList.remove('theme-camo','theme-dark','theme-custom');
-  if(val==='camo') document.body.classList.add('theme-camo');
-  else if(val==='dark') document.body.classList.add('theme-dark');
-  else if(val==='custom') document.body.classList.add('theme-custom');
-  // uppdatera headerfärg
-  const cs=getComputedStyle(document.body).getPropertyValue('--brand').trim()||'#175D36';
-  document.querySelector('header').style.background=cs;
-}
-$('#themeSel').addEventListener('change',e=>{
-  const v=e.target.value;
-  $('#customColor').classList.toggle('hidden', v!=='custom');
-  if(v==='custom') document.body.style.setProperty('--customBrand',$('#customColor').value);
-  setTheme(v);
-  saveAuto();
-});
-$('#customColor').addEventListener('input',e=>{ document.body.style.setProperty('--customBrand',e.target.value); setTheme('custom'); saveAuto(); });
-
-/* ========== Vattenstämpel & Logga ========== */
-const wmImg=$('#wmImg');
-function setWmOpacity(v){ wmImg.style.opacity=(v/100); $('#wmVal').textContent=v+'%'; }
-$('#wmOpacity').addEventListener('input',e=>{ setWmOpacity(e.target.value); saveAuto(); });
-$('#wmToggle').addEventListener('click',()=>{ wmImg.style.display = (wmImg.style.display==='none'?'block':'none'); saveAuto(); });
-$('#wmInput').addEventListener('change',e=>{
-  const f=e.target.files?.[0]; if(!f)return;
-  const r=new FileReader(); r.onload=()=>{ wmImg.src=r.result; wmImg.style.display='block'; saveAuto(); }; r.readAsDataURL(f);
-});
-function setLogo(src){ $('#topLogo').src = src||''; }
-$('#logoInput').addEventListener('change',e=>{
-  const f=e.target.files?.[0]; if(!f)return;
-  const r=new FileReader(); r.onload=()=>{ setLogo(r.result); saveAuto(); }; r.readAsDataURL(f);
-});
-$('#clearLogoBtn').addEventListener('click',()=>{ setLogo(''); saveAuto(); });
-
-/* ========== Månad & Tabell ========== */
-const tbody=$('#tbody');
-let monthVal=new Date(); // vald månads 1:a
-function daysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
-function pad(n){return (n<10?'0':'')+n;}
-function timeToMin(v){ if(!v) return 0; const [h,m]=v.split(':').map(Number); return h*60+m; }
-function minToHHMM(min){ min=Math.max(0,min)|0; const h=Math.floor(min/60), m=min%60; return `${h}:${pad(m)}`; }
-function buildRow(d){
-  const tr=document.createElement('tr'); tr.dataset.day=d;
-  const now=new Date();
-  const isToday = (d===now.getDate() && monthVal.getMonth()===now.getMonth() && monthVal.getFullYear()===now.getFullYear());
-  if(isToday) tr.classList.add('today');
-  tr.innerHTML=`
-    <td class="daycell">${d}</td>
-    <td class="cell"><input type="time" class="from"></td>
-    <td class="cell"><input type="time" class="to"></td>
-    <td class="cell"><input type="number" class="break" min="0" step="5" style="width:72px"></td>
-    <td class="cell"><input type="text" class="proj" placeholder="${t('Project')}"></td>
-    <td class="cell"><button class="smallbtn noteBtn">📝</button><span class="note-pill" data-note=""></span></td>
-    <td class="cell"><button class="smallbtn photoBtn">📷</button><span class="photo-count">0</span></td>
-    <td class="sum">0:00</td>`;
-  tr.querySelector('.from').addEventListener('input',recalc);
-  tr.querySelector('.to').addEventListener('input',recalc);
-  tr.querySelector('.break').addEventListener('input',recalc);
-  tr.querySelector('.noteBtn').addEventListener('click',()=>openNote(d));
-  tr.querySelector('.photoBtn').addEventListener('click',()=>openPhoto(d));
-  tr.querySelector('.proj').addEventListener('input',saveAuto);
-  return tr;
-}
-function regen(){
-  const y=monthVal.getFullYear(), m=monthVal.getMonth(), n=daysInMonth(y,m);
-  tbody.innerHTML='';
-  for(let d=1; d<=n; d++) tbody.appendChild(buildRow(d));
-  $('#monthBadge').textContent=`${y}-${pad(m+1)} (${n}d)`;
-  loadAuto();
-  recalc();
-}
-$('#regenBtn').addEventListener('click',regen);
-
-/* ========== Anteckning modal ========== */
-let noteDay=null;
-function openNote(day){
-  noteDay=day;
-  $('#noteTitle').textContent = `${t('Note')} – ${day}`;
-  const pill=tbody.querySelector(`tr[data-day="${day}"] .note-pill`);
-  $('#noteText').value = pill?.dataset.note || '';
-  $('#noteModal').style.display='flex';
-}
-$('#noteCancel').addEventListener('click',()=>$('#noteModal').style.display='none');
-$('#noteSave').addEventListener('click',()=>{
-  const v=$('#noteText').value||'';
-  const pill=tbody.querySelector(`tr[data-day="${noteDay}"] .note-pill`);
-  if(pill){ pill.dataset.note=v; pill.textContent=v||''; }
-  $('#noteModal').style.display='none';
-  saveAuto();
-});
-
-/* ========== Foto modal ========== */
-let photoDay=null;
-const photoMap=new Map(); // day -> [dataURLs]
-function openPhoto(day){ photoDay=day; renderPhotoList(day); $('#photoModal').style.display='flex'; }
-function renderPhotoList(day){
-  const list=$('#photoList'); list.innerHTML='';
-  (photoMap.get(day)||[]).forEach(src=>{
-    const img=new Image(); img.src=src; img.style.height='60px'; img.style.borderRadius='8px';
-    const a=document.createElement('a'); a.href=src; a.target='_blank'; a.appendChild(img);
-    list.appendChild(a);
-  });
-}
-$('#photoClose').addEventListener('click',()=>$('#photoModal').style.display='none');
-$('#phTake').addEventListener('click',()=>$('#phCapture').click());
-$('#phPick').addEventListener('click',()=>$('#phGallery').click());
-$('#phView').addEventListener('click',()=>renderPhotoList(photoDay));
-function addPhotoFromFile(file){
-  const r=new FileReader(); r.onload=()=>{
-    const arr=photoMap.get(photoDay)||[]; arr.push(r.result); photoMap.set(photoDay,arr);
-    const badge=tbody.querySelector(`tr[data-day="${photoDay}"] .photo-count`); if(badge) badge.textContent=arr.length;
-    renderPhotoList(photoDay); saveAuto();
-  }; r.readAsDataURL(file);
-}
-$('#phCapture').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) addPhotoFromFile(f); });
-$('#phGallery').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) addPhotoFromFile(f); });
-
-/* ========== Signatur ========== */
-let sigTarget='emp';
-const sigCanvas=$('#sigCanvas'), sctx=sigCanvas.getContext('2d');
-sctx.lineWidth=2; sctx.lineJoin='round'; sctx.lineCap='round'; sctx.strokeStyle='#111';
-let drawing=false,last=null;
-function pxy(e){ const r=sigCanvas.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y};}
-function sStart(e){drawing=true; last=pxy(e); e.preventDefault();}
-function sMove(e){ if(!drawing) return; const p=pxy(e); sctx.beginPath(); sctx.moveTo(last.x,last.y); sctx.lineTo(p.x,p.y); sctx.stroke(); last=p; e.preventDefault();}
-function sEnd(){drawing=false;}
-sigCanvas.addEventListener('mousedown',sStart); sigCanvas.addEventListener('mousemove',sMove); window.addEventListener('mouseup',sEnd);
-sigCanvas.addEventListener('touchstart',sStart,{passive:false}); sigCanvas.addEventListener('touchmove',sMove,{passive:false}); window.addEventListener('touchend',sEnd);
-$('#sigClear').addEventListener('click',()=>{ sctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); });
-$('#sigCancel').addEventListener('click',()=>$('#sigModal').style.display='none');
-$('#sigSave').addEventListener('click',()=>{
-  const url=sigCanvas.toDataURL('image/png');
-  drawPreview(sigTarget==='emp'?'#sigEmpPrev':'#sigBossPrev',url);
-  $('#sigModal').style.display='none'; saveAuto();
-});
-function drawPreview(sel,src){
-  const c=$(sel), ctx=c.getContext('2d');
-  ctx.clearRect(0,0,c.width,c.height);
-  const img=new Image(); img.onload=()=>{ const R=Math.min(c.width/img.width,c.height/img.height); const w=img.width*R,h=img.height*R; ctx.drawImage(img,(c.width-w)/2,(c.height-h)/2,w,h); }; img.src=src;
-}
-$('#sigEmpBtn').addEventListener('click',()=>{sigTarget='emp'; $('#sigTitle').textContent='✍️ '+t('Emp'); $('#sigModal').style.display='flex';});
-$('#sigBossBtn').addEventListener('click',()=>{sigTarget='boss'; $('#sigTitle').textContent='✍️ '+t('Boss'); $('#sigModal').style.display='flex';});
-
-/* ========== Beräkningar ========== */
-function recalc(){
-  let total=0,longest=0;
-  tbody.querySelectorAll('tr').forEach(tr=>{
-    const from=tr.querySelector('.from').value, to=tr.querySelector('.to').value, br=parseInt(tr.querySelector('.break').value||0,10);
-    const mins=Math.max(0, timeToMin(to)-timeToMin(from)-br);
-    tr.querySelector('.sum').textContent=minToHHMM(mins);
-    total+=mins; if(mins>longest) longest=mins;
-  });
-  $('#tfootTotal').textContent=minToHHMM(total);
-  $('#totalHours').textContent=minToHHMM(total);
-  $('#longestDay').textContent=t('Longest')+' '+minToHHMM(longest);
-  saveAuto();
-}
-tbody.addEventListener('input',e=>{
-  if(e.target.classList.contains('from')||e.target.classList.contains('to')||e.target.classList.contains('break')) recalc();
-});
-
-/* ========== Lagring ========== */
-function key(){ const y=monthVal.getFullYear(), m=monthVal.getMonth(); return `ttimes_${y}_${m+1}`; }
-function saveAuto(){
-  const y=monthVal.getFullYear(), m=monthVal.getMonth(), n=new Date(y,m+1,0).getDate();
-  const data={meta:{y,m,lang:LANG,theme:$('#themeSel').value,custom:$('#customColor').value,wm:($('#wmImg').style.display!=='none'),wmOpacity:$('#wmOpacity').value,wmSrc:$('#wmImg').src||'',logoSrc:$('#topLogo').src||''},days:[],photos:{}};
-  for(let d=1; d<=n; d++){
-    const tr=tbody.querySelector(`tr[data-day="${d}"]`); if(!tr){data.days.push(null);continue;}
-    data.days.push({from:tr.querySelector('.from').value||'',to:tr.querySelector('.to').value||'',brk:tr.querySelector('.break').value||'',proj:tr.querySelector('.proj').value||'',note:tr.querySelector('.note-pill').dataset.note||'',sum:tr.querySelector('.sum').textContent||'0:00'});
-    const arr=photoMap.get(d)||[]; if(arr.length) data.photos[d]=arr;
+/* ------------------ Header logo ------------------ */
+function refreshLogo(){
+  const badge = $('#logoBadge');
+  badge.innerHTML = '';
+  if(S.logoDataUrl){
+    const img = new Image(); img.src = S.logoDataUrl; badge.appendChild(img);
+  }else{
+    badge.textContent = 'TN';
   }
-  localStorage.setItem(key(),JSON.stringify(data)); dbg('Sparat '+key());
+  // Watermark image fallback to logo if provided
+  const wmImg = $('#wmImg');
+  if(S.watermark.dataUrl){ wmImg.src = S.watermark.dataUrl; }
+  else if(S.logoDataUrl){ wmImg.src = S.logoDataUrl; }
+  else { wmImg.src = ''; }
 }
-function loadAuto(){
-  const raw=localStorage.getItem(key()); if(!raw){ dbg('Inget sparat för '+key()); return;}
-  const data=JSON.parse(raw);
-  LANG=data.meta?.lang||LANG; $('#langSel').value=LANG; applyLang();
-  const th=data.meta?.theme||'brand'; $('#themeSel').value=th; (th==='custom')&&document.body.style.setProperty('--customBrand',data.meta?.custom||'#175D36'); setTheme(th);
-  if(data.meta?.logoSrc) setLogo(data.meta.logoSrc);
-  if(data.meta?.wmSrc){ $('#wmImg').src=data.meta.wmSrc; $('#wmImg').style.display=data.meta.wm?'block':'none'; }
-  setWmOpacity(data.meta?.wmOpacity||40); $('#wmOpacity').value=data.meta?.wmOpacity||40;
-  // dagar
-  if(Array.isArray(data.days)){
-    data.days.forEach((d,i)=>{ const day=i+1; const tr=tbody.querySelector(`tr[data-day="${day}"]`); if(!d||!tr) return;
-      tr.querySelector('.from').value=d.from||''; tr.querySelector('.to').value=d.to||''; tr.querySelector('.break').value=d.brk||''; tr.querySelector('.proj').value=d.proj||'';
-      const pill=tr.querySelector('.note-pill'); pill.dataset.note=d.note||''; pill.textContent=d.note||''; tr.querySelector('.sum').textContent=d.sum||'0:00';
+
+/* ------------------ Build month ------------------ */
+function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+function buildMonth(){
+  const y = S.year, m=S.month;
+  const key = ymKey(y,m);
+  S.data[key] = S.data[key] || {};
+  $('#monthTitle').textContent = new Date(y,m,1).toLocaleDateString('sv-SE',{month:'long', year:'numeric'});
+
+  const sheet = $('#sheet'); sheet.innerHTML = '';
+  const dmax = daysInMonth(y,m);
+  for(let d=1; d<=dmax; d++){
+    const row = document.createElement('div'); row.className='row';
+    if (today.getFullYear()===y && today.getMonth()===m && today.getDate()===d) row.classList.add('today');
+
+    row.innerHTML = `
+      <div class="row-inner">
+        <div class="col-day">${d}</div>
+        <div class="select-wrap">
+          <input class="input" inputmode="numeric" placeholder="Från" data-k="from" data-d="${d}" />
+        </div>
+        <div class="select-wrap">
+          <input class="input" inputmode="numeric" placeholder="Till" data-k="to" data-d="${d}" />
+        </div>
+        <div class="select-wrap">
+          <input class="input" inputmode="numeric" placeholder="Paus" data-k="break" data-d="${d}" value="0" />
+        </div>
+        <div style="display:flex; gap:6px; justify-content:flex-end">
+          <button class="btn-ghost small" data-note="${d}" title="Anteckning">📝</button>
+          <button class="btn-photo small" data-photo="${d}" title="Foto">📷</button>
+        </div>
+      </div>
+      <div class="dayline"></div>
+    `;
+    sheet.appendChild(row);
+
+    // Attach existing data
+    const rec = S.data[key][d] || {};
+    row.querySelector('[data-k="from"]').value = rec.from || '';
+    row.querySelector('[data-k="to"]').value = rec.to || '';
+    row.querySelector('[data-k="break"]').value = rec.break ?? 0;
+
+    // Handlers
+    row.querySelectorAll('[data-k]').forEach(inp=>{
+      inp.addEventListener('change', ()=>saveField(d, inp.dataset.k, inp.value));
     });
+
+    row.querySelector(`[data-note="${d}"]`).addEventListener('click', ()=> openNote(d));
+    row.querySelector(`[data-photo="${d}"]`).addEventListener('click', e=> openPhotoMenu(e.currentTarget, d));
   }
-  // foton
-  photoMap.clear();
-  if(data.photos){ Object.keys(data.photos).forEach(k=>{ const day=+k; photoMap.set(day,data.photos[k]); const badge=tbody.querySelector(`tr[data-day="${day}"] .photo-count`); if(badge) badge.textContent=data.photos[k].length; }); }
-  recalc();
+  computeTotal();
+  refreshWatermark();
 }
-$('#saveBtn').addEventListener('click',saveAuto);
-$('#loadBtn').addEventListener('click',loadAuto);
-$('#clearBtn').addEventListener('click',()=>{ if(!confirm('Rensa alla fält för vald månad?')) return; localStorage.removeItem(key()); regen(); });
 
-/* ========== Delning ========== */
-$('#printBtn').addEventListener('click',()=>window.print());
-function pad2(n){return (n<10?'0':'')+n;}
-$('#waBtn').addEventListener('click',()=>{
-  const y=monthVal.getFullYear(), m=monthVal.getMonth()+1;
-  let txt=`Tannenhof ${y}-${pad2(m)}\n`;
-  tbody.querySelectorAll('tr').forEach(tr=>{ const d=tr.dataset.day, sum=tr.querySelector('.sum').textContent, proj=tr.querySelector('.proj').value||''; txt+=`${d}: ${sum}${proj?` (${proj})`:''}\n`; });
-  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
-});
-$('#mailBtn').addEventListener('click',()=>{
-  const y=monthVal.getFullYear(), m=monthVal.getMonth()+1;
-  let body=`Timesheet ${y}-${pad2(m)}%0D%0A`;
-  tbody.querySelectorAll('tr').forEach(tr=>{ const d=tr.dataset.day, sum=tr.querySelector('.sum').textContent, proj=tr.querySelector('.proj').value||''; body+=`${d}: ${sum}${proj?` (${proj})`:''}%0D%0A`; });
-  location.href=`mailto:?subject=Tannenhof ${y}-${pad2(m)}&body=${body}`;
-});
+/* ------------------ Save field ------------------ */
+function ensureRec(d){
+  const key=ymKey(S.year,S.month);
+  S.data[key] = S.data[key]||{};
+  S.data[key][d] = S.data[key][d]||{photos:[]};
+  return S.data[key][d];
+}
+function saveField(d,k,v){
+  const rec = ensureRec(d);
+  if(k==='break') v = Number(v)||0;
+  rec[k]=v;
+  persist();
+  computeTotal();
+}
 
-/* ========== Språk / Månad / Genväg ========== */
-$('#langSel').addEventListener('change',e=>{ LANG=e.target.value; applyLang(); saveAuto(); });
-const mp=$('#monthPick');
-function initMonth(){ const now=new Date(); mp.value=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`; monthVal=new Date(now.getFullYear(),now.getMonth(),1); regen(); }
-mp.addEventListener('change',e=>{ const [yy,mm]=e.target.value.split('-').map(Number); monthVal=new Date(yy,mm-1,1); regen(); });
+/* ------------------ Notes ------------------ */
+function openNote(d){
+  const text = prompt(`Anteckning för ${d}/${pad(S.month+1)}:`, ensureRec(d).note||'');
+  if(text!==null){ saveField(d,'note',text); }
+}
 
-/* ========== Hoppa till idag ========== */
-$('#scrollToday').addEventListener('click',()=>{ const tr=tbody.querySelector('.today'); tr&&tr.scrollIntoView({behavior:'smooth',block:'center'}); });
+/* ------------------ Photo menu ------------------ */
+let openMenu;
+function openPhotoMenu(btn, d){
+  if(openMenu) openMenu.remove();
+  const m = document.createElement('div'); m.className='menu';
+  const rect = btn.getBoundingClientRect();
+  m.style.left = (rect.left-60)+'px';
+  m.style.top = (rect.bottom + 6 + window.scrollY)+'px';
+  m.innerHTML = `
+    <button data-a="view">👀 Titta</button>
+    <button data-a="pick">🖼️ Välj från galleri</button>
+    <button data-a="take">📷 Ta foto</button>
+  `;
+  document.body.appendChild(m);
+  openMenu = m;
 
-/* ========== Gear (info) ========== */
-$('#gearBtn').addEventListener('click',()=>alert(t('Settings')));
+  m.querySelectorAll('button').forEach(x=>x.onclick = ()=>{
+    const act = x.dataset.a;
+    if(act==='view'){
+      const photos = ensureRec(d).photos||[];
+      if(!photos.length){ alert('Inga foton sparade.'); return; }
+      const w = window.open();
+      w.document.write('<title>Foton</title>');
+      photos.forEach(src=> w.document.write(`<img src="${src}" style="max-width:100%;display:block;margin:8px auto">`));
+      w.document.close();
+    }else if(act==='pick'){
+      const inp = $('#pickGallery'); inp.onchange = e=>{
+        const file = e.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{ ensureRec(d).photos.push(reader.result); persist(); e.target.value=''; };
+        reader.readAsDataURL(file);
+      }; inp.click();
+    }else if(act==='take'){
+      const inp = $('#takePhoto'); inp.onchange = e=>{
+        const file = e.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{ ensureRec(d).photos.push(reader.result); persist(); e.target.value=''; };
+        reader.readAsDataURL(file);
+      }; inp.click();
+    }
+    m.remove(); openMenu=null;
+  });
 
-/* ========== Init ========== */
-function applyTNGreen(){ document.querySelector('header').style.background='#175D36'; }
-function boot(){ applyLang(); setTheme('brand'); applyTNGreen(); initMonth(); dbg('Klar'); }
-boot();
+  document.addEventListener('click', function once(ev){
+    if(!m.contains(ev.target) && ev.target!==btn){ m.remove(); openMenu=null; document.removeEventListener('click', once); }
+  });
+}
+
+/* ------------------ Total ------------------ */
+function parseTime(s){
+  const m = /^(\d{1,2}):?(\d{2})$/.exec((s||'').trim());
+  if(!m){ return null; }
+  let h = parseInt(m[1],10); let mm=parseInt(m[2],10);
+  if(h>23||mm>59) return null;
+  return h*60+mm;
+}
+function computeTotal(){
+  const key = ymKey(S.year,S.month);
+  let mins=0;
+  const recs = S.data[key]||{};
+  for(const d in recs){
+    const r = recs[d]; const a=parseTime(r.from), b=parseTime(r.to);
+    if(a!=null && b!=null && b>a){
+      mins += (b-a) - (Number(r.break)||0);
+    }
+  }
+  const hours = (mins/60)||0;
+  $('#totaltH').textContent = hours.toFixed(2);
+}
+
+/* ------------------ Persist ------------------ */
+function persist(){
+  localStorage.setItem('tt_timesheet_v3', JSON.stringify({
+    year:S.year, month:S.month, data:S.data, brand:S.brand,
+    logoDataUrl:S.logoDataUrl,
+    watermark:S.watermark
+  }));
+  if(S.debug){ showDebug('Sparat'); }
+}
+
+/* ------------------ Watermark ------------------ */
+function refreshWatermark(){
+  const wrap = $('#wmWrap');
+  wrap.style.display = S.watermark.visible ? 'block' : 'none';
+  wrap.style.opacity = S.watermark.opacity;
+}
+
+/* ------------------ Debug ------------------ */
+function showDebug(msg){
+  const b = $('#debugBox'); b.style.display='block';
+  b.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+}
+
+/* ------------------ Signature (canvas) ------------------ */
+function setupSig(modalId, canvasId, saveKey){
+  const modal = $(modalId), cvs=$(canvasId);
+  let drawing=false, ctx, scale=1;
+  function fit(){
+    const dpr = window.devicePixelRatio||1;
+    const w = cvs.parentElement.clientWidth;
+    const h = cvs.parentElement.clientHeight;
+    cvs.width = w * dpr; cvs.height = h * dpr; cvs.style.width=w+'px'; cvs.style.height=h+'px';
+    ctx = cvs.getContext('2d'); ctx.scale(dpr,dpr);
+    ctx.lineWidth=3; ctx.lineCap='round'; ctx.strokeStyle = '#111';
+    // existing
+    const img = new Image(); img.onload=()=>{ ctx.drawImage(img,0,0,w,h); }; img.src = S[saveKey]||'';
+  }
+  new ResizeObserver(fit).observe(cvs.parentElement);
+
+  function pos(e){
+    const r = cvs.getBoundingClientRect();
+    const x = (e.touches? e.touches[0].clientX : e.clientX) - r.left;
+    const y = (e.touches? e.touches[0].clientY : e.clientY) - r.top;
+    return {x,y};
+  }
+  cvs.addEventListener('mousedown', e=>{drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);});
+  cvs.addEventListener('mousemove', e=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke();});
+  window.addEventListener('mouseup', ()=> drawing=false);
+
+  cvs.addEventListener('touchstart', e=>{drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);});
+  cvs.addEventListener('touchmove', e=>{ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke();});
+  window.addEventListener('touchend', ()=> drawing=false);
+
+  return {
+    open:()=>{ modal.classList.add('open'); fit(); },
+    close:()=> modal.classList.remove('open'),
+    clear:()=>{ ctx.clearRect(0,0,cvs.width,cvs.height); },
+    save:()=>{
+      S[saveKey] = cvs.toDataURL('image/png');
+      persist(); 
+      alert('Signatur sparad.');
+    }
+  };
+}
+
+const sigEmp = setupSig('#sigModalEmp','#sigCanvasEmp','sigEmpData');
+const sigBoss= setupSig('#sigModalBoss','#sigCanvasBoss','sigBossData');
+$('#signEmp').onclick = ()=> sigEmp.open();
+$('#signBoss').onclick = ()=> sigBoss.open();
+$('#sigEmpClose').onclick = ()=> sigEmp.close();
+$('#sigBossClose').onclick = ()=> sigBoss.close();
+$('#sigEmpClear').onclick = ()=> sigEmp.clear();
+$('#sigBossClear').onclick = ()=> sigBoss.clear();
+$('#sigEmpSave').onclick = ()=> sigEmp.save();
+$('#sigBossSave').onclick = ()=> sigBoss.save();
+
+/* ------------------ Settings UI ------------------ */
+$('#fab').onclick = ()=> $('#drawer').classList.add('open');
+$('#closeDrawer').onclick = ()=> $('#drawer').classList.remove('open');
+
+$('#brandHex').onchange = e=>{ applyBrand(e.target.value.trim()); persist(); };
+
+$('#logoFile').onchange = e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload = ()=>{
+    S.logoDataUrl = rd.result;
+    // default watermark = same
+    if(!S.watermark.dataUrl) S.watermark.dataUrl = rd.result;
+    refreshLogo(); refreshWatermark(); persist();
+  };
+  rd.readAsDataURL(f);
+};
+
+$('#wmToggle').onchange = e=>{ S.watermark.visible = e.target.checked; refreshWatermark(); persist(); };
+$('#wmRange').oninput = e=>{ const v=Number(e.target.value)/100; S.watermark.opacity=v; $('#wmVal').textContent=Math.round(v*100)+'%'; refreshWatermark(); persist(); };
+
+$('#debugToggle').onclick = ()=>{ S.debug=!S.debug; $('#debugBox').style.display = S.debug?'block':'none'; };
+$('#exportJson').onclick = ()=>{
+  const blob = new Blob([localStorage.getItem('tt_timesheet_v3')||'{}'], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tt_timesheet_backup.json'; a.click();
+};
+$('#importJson').onclick = ()=>{
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.onchange = e=>{
+    const f = e.target.files[0]; if(!f) return;
+    const rd = new FileReader();
+    rd.onload = ()=>{
+      localStorage.setItem('tt_timesheet_v3', rd.result);
+      location.reload();
+    };
+    rd.readAsText(f);
+  };
+  inp.click();
+};
+$('#clearAll').onclick = ()=>{ if(confirm('Rensa ALLT (alla månader)?')){ localStorage.removeItem('tt_timesheet_v3'); location.reload(); } };
+
+/* Month nav + clear */
+$('#prevM').onclick = ()=>{ if(S.month===0){S.month=11; S.year--;} else S.month--; persist(); buildMonth(); };
+$('#nextM').onclick = ()=>{ if(S.month===11){S.month=0; S.year++;} else S.month++; persist(); buildMonth(); };
+$('#clearMonth').onclick = ()=>{
+  const key = ymKey(S.year,S.month);
+  if(confirm('Rensa denna månad?')){ delete S.data[key]; persist(); buildMonth(); }
+};
+
+/* Share/pdf placeholders */
+$('#shareBtn').onclick = ()=> alert('Dela / Skicka – implementeras med Web Share / e-post enligt vad du vill ha.');
+$('#pdfBtn').onclick   = ()=> alert('PDF – kan exporteras via html2canvas/jspdf om du vill, säg till så lägger jag in.');
+
+/* ------------------ Init ------------------ */
+applyBrand(S.brand || '#1f5634');
+refreshLogo();
+$('#wmToggle').checked = S.watermark.visible!==false;
+$('#wmRange').value = Math.round((S.watermark.opacity ?? 0.4)*100);
+$('#wmVal').textContent = Math.round((S.watermark.opacity ?? 0.4)*100)+'%';
+buildMonth();
+
+/* Extra bottenluft så FAB inte täcker sista raden */
+document.body.style.paddingBottom = '110px';
+
 </script>
 </body>
 </html>
