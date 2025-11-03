@@ -13,11 +13,10 @@
   }
   html,body{height:100%}
   body{
-    margin:0; padding-bottom:130px; /* så sista dagen inte hamnar under FAB */
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    margin:0; padding-bottom:130px;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
     background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
-
   /* Header */
   .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
   .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
@@ -60,7 +59,7 @@
   .pill span{opacity:.7}
   .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
 
-  .actions{ display:flex; gap:8px; flex-wrap:nowrap } /* aldrig radbryt */
+  .actions{ display:flex; gap:8px; flex-wrap:nowrap }
   .btn-icon{ width:40px; height:40px; display:inline-grid; place-items:center; border-radius:12px;
              background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative; flex:0 0 auto }
   .btn-icon.secondary{ background:#2b7a48 }
@@ -93,10 +92,6 @@
 
   @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
-
-<!-- PDF-bibliotek (för PDF-knappen). Fallback till window.print() om de inte laddas. -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -147,7 +142,7 @@
 <!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
 
-<!-- Settings modal -->
+<!-- Settings modal (logo-upload borttagen; bara språk, månad/år, autosave, watermark) -->
 <div class="modal" id="settingsModal" aria-hidden="true">
   <div class="sheet">
     <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
@@ -160,15 +155,6 @@
         <span data-i="company">Arbeitgeber</span>
         <input id="company" class="t" placeholder="THÜRINGER TANNENHOF">
       </label>
-
-      <div class="grid">
-        <span data-i="logo">Logo (Bild oder Emoji)</span>
-        <div class="row">
-          <input id="logoFile" type="file" accept="image/*" class="t" />
-          <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
-        </div>
-        <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
-      </div>
 
       <div class="grid grid-2">
         <label class="grid">
@@ -273,27 +259,24 @@ const I = {
   sv:{ appTitle:"Tannenhofs tidtabell", share:"Dela / Skicka", print:"Skriv ut / PDF",
     total:"Totalt – {month} {year}", day:"Dag", from:"Från", to:"Till", break:"Paus", totalCol:"Totalt",
     project:"Projekt/plats", actions:"Åtgärd", settings:"Inställningar", company:"Företag",
-    logo:"Logga (bild eller emoji)", logoHint:"Din logga sparas lokalt på den här enheten.",
     language:"Språk", month:"Månad", year:"År", autosave:"Autospara", on:"På", off:"Av",
     genDays:"Skapa dagar", saveClose:"Spara & stäng", wmToggle:"Vattenstämpel", wmOpacity:"Stämpel opacitet",
-    notes:"Anteckning", edit:"Redigera", photos:"Foton (valfritt)", save:"Spara",
-    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clearLogo:"Rensa logga" },
+    notes:"Anteckning", photos:"Foton (valfritt)", save:"Spara",
+    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan." },
   de:{ appTitle:"Tannenhof Stundenliste", share:"Teilen / Senden", print:"Drucken / PDF",
     total:"Gesamt – {month} {year}", day:"Tag", from:"Von", to:"Bis", break:"Pause", totalCol:"Gesamt",
     project:"Projekt/Ort", actions:"Aktion", settings:"Einstellungen", company:"Arbeitgeber",
-    logo:"Logo (Bild oder Emoji)", logoHint:"Dein Logo wird lokal auf diesem Gerät gespeichert.",
     language:"Sprache", month:"Monat", year:"Jahr", autosave:"Autospeichern", on:"Ein", off:"Aus",
     genDays:"Tage erstellen", saveClose:"Speichern & schließen", wmToggle:"Wasserzeichen", wmOpacity:"Deckkraft",
-    notes:"Notiz", edit:"Bearbeiten", photos:"Fotos (optional)", save:"Speichern",
-    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clearLogo:"Logo löschen" },
+    notes:"Notiz", photos:"Fotos (optional)", save:"Speichern",
+    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen." },
   en:{ appTitle:"Tannenhof Timesheet", share:"Share / Send", print:"Print / PDF",
     total:"Total – {month} {year}", day:"Day", from:"From", to:"To", break:"Break", totalCol:"Total",
     project:"Project/site", actions:"Action", settings:"Settings", company:"Company",
-    logo:"Logo (image or emoji)", logoHint:"Your logo is stored locally on this device.",
     language:"Language", month:"Month", year:"Year", autosave:"Autosave", on:"On", off:"Off",
     genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Watermark opacity",
-    notes:"Note", edit:"Edit", photos:"Photos (optional)", save:"Save",
-    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clearLogo:"Clear logo" }
+    notes:"Note", photos:"Photos (optional)", save:"Save",
+    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page." }
 };
 const MONTHS = {
   sv:["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"],
@@ -325,8 +308,6 @@ const autosaveSel = $("#autosave");
 const wmToggleSel = $("#wmToggle");
 const wmOpacity = $("#wmOpacity");
 const companyInput = $("#company");
-const logoFile = $("#logoFile");
-const clearLogo = $("#clearLogo");
 
 const notesModal = $("#notesModal");
 const notesArea = $("#notesArea");
@@ -357,7 +338,6 @@ let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
-let logoData = S.logoData || "";
 let activeRow = 1;
 
 /*** Helpers ***/
@@ -412,7 +392,7 @@ function buildRows(){
     bodyRows.appendChild(tr);
   }
   restoreData();
-  recomputeAllRows();      /* viktigt: räkna om allt efter restore */
+  recomputeAllRows();
   updatePhotoBubbles();
   computeAll();
 }
@@ -452,17 +432,23 @@ function recomputeAllRows(){
 const noteKey = d => `tnh_note_${currentYear}_${currentMonth}_${d}`;
 const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
 
-/*** Watermark & logo ***/
+/*** Watermark & logo (STATIC file logo.png) ***/
+const STATIC_LOGO_URL = "logo.png"; // <- Lägg denna fil i samma mapp som index.html
 function applyLogo(){
-  if(logoData){
-    brandLogo.src = logoData; wmImg.src = logoData;
-  }else{
-    const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
-    <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
-    const url = `data:image/svg+xml;utf8,${svg}`;
-    brandLogo.src = url; wmImg.src = url;
-  }
+  // Försök ladda statisk logga
+  brandLogo.src = STATIC_LOGO_URL;
+  wmImg.src = STATIC_LOGO_URL;
+
+  // Fallback om logo.png saknas: enkel SVG
+  brandLogo.onerror = ()=>{ brandLogo.src = fallbackSVG(); };
+  wmImg.onerror = ()=>{ wmImg.src = fallbackSVG(); };
+
   wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
+}
+function fallbackSVG(){
+  const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
+  <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
+  return `data:image/svg+xml;utf8,${svg}`;
 }
 
 /*** Language & labels ***/
@@ -515,7 +501,7 @@ closeSettings.onclick = ()=>close(settingsModal);
 saveClose.onclick = ()=>{
   company = companyInput.value.trim() || company;
   S.company = company; S.lang = currentLang; S.month = currentMonth; S.year = currentYear;
-  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha; S.logoData = logoData;
+  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha;
   localStorage.setItem("tnh_settings", JSON.stringify(S));
   close(settingsModal); applyLanguage(); applyLogo(); computeAll();
 }
@@ -525,10 +511,8 @@ regenBtn.onclick = ()=>{ buildRows(); };
 let currentNoteDay = 1;
 function renderThumbs(day){
   const arr = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-  const html = arr.map((src,i)=>`<img data-idx="${i}" src="${src}" style="width:68px;height:68px;object-fit:cover;border-radius:10px;border:2px solid #e3efe6;cursor:pointer">`).join("");
-  const thumbsEl = document.getElementById("thumbs");
-  thumbsEl.innerHTML = html;
-  thumbsEl.querySelectorAll("img").forEach(img=>{
+  thumbs.innerHTML = arr.map((src,i)=>`<img data-idx="${i}" src="${src}" style="width:68px;height:68px;object-fit:cover;border-radius:10px;border:2px solid #e3efe6;cursor:pointer">`).join("");
+  thumbs.querySelectorAll("img").forEach(img=>{
     img.onclick = ()=>{ viewerImg.src = img.src; open(viewerModal); };
   });
   photoList.textContent = arr.length ? `${arr.length} Bild(er) lokal gespeichert.` : "";
@@ -549,7 +533,7 @@ viewerModal.onclick = ()=>close(viewerModal);
 async function addPhotos(day, {capture}){
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
-  if(capture){ input.setAttribute('capture','environment'); } // endast kamera
+  if(capture){ input.setAttribute('capture','environment'); }
   input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); };
   input.click();
 }
@@ -565,7 +549,7 @@ function updatePhotoBubbles(){
 }
 async function addFilesToDay(day, fileList){
   const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-  const files = [...fileList].slice(0, 10 - prev.length); // max 10/dag
+  const files = [...fileList].slice(0, 10 - prev.length);
   for(const f of files){ prev.push(await fileToDataURL(f, 1600)); }
   localStorage.setItem(photoKey(day), JSON.stringify(prev));
   updatePhotoBubbles();
@@ -574,8 +558,7 @@ async function addFilesToDay(day, fileList){
 /*** Share / QR ***/
 function openShare(){
   const url = location.href;
-  const qr = document.getElementById("qrImg");
-  if(qr) qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  document.getElementById("qrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
   waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
   open(shareModal);
@@ -583,69 +566,7 @@ function openShare(){
 shareBtn.onclick = openShare;
 closeShare.onclick = ()=>close(shareModal);
 copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
-
-/*** ✅ PDF-knapp — html2canvas + jsPDF, fallback till window.print() ***/
-async function exportPDF(){
-  try{
-    if(!(window.html2canvas && window.jspdf)) throw new Error("libs-missing");
-    const { jsPDF } = window.jspdf;
-
-    // Välj det som ska in i PDF (hela main: totals + tabell)
-    const node = document.querySelector('main');
-    const canvas = await html2canvas(node, {
-      scale: 2,
-      background: '#ffffff',
-      windowWidth: document.documentElement.scrollWidth
-    });
-
-    // Beräkna skivning till A4-sidor
-    const pdf = new jsPDF('p','mm','a4');
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-
-    const imgW = pageW;
-    const scale = imgW / canvas.width;
-    const pageCanvasPxH = Math.floor(pageH / scale); // hur många px ryms per sida
-
-    let rendered = 0;
-    let pageIndex = 0;
-
-    while(rendered < canvas.height){
-      const sliceH = Math.min(pageCanvasPxH, canvas.height - rendered);
-      const slice = document.createElement('canvas');
-      slice.width = canvas.width;
-      slice.height = sliceH;
-      const ctx = slice.getContext('2d');
-      ctx.drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-      const img = slice.toDataURL('image/jpeg', 0.95);
-      const imgH = sliceH * scale;
-
-      if(pageIndex>0) pdf.addPage();
-      pdf.addImage(img, 'JPEG', 0, 0, imgW, imgH);
-      rendered += sliceH;
-      pageIndex++;
-    }
-
-    // Filnamn: Firma_Monat_Jahr.pdf
-    const firm = (document.getElementById('company')?.value || 'TANNENHOF').replace(/\s+/g,'_');
-    const months = MONTHS[currentLang];
-    const fname = `${firm}_${months[currentMonth]}_${currentYear}.pdf`;
-    pdf.save(fname);
-  }catch(e){
-    // Fallback: öppna systemets utskrift (använd "Spara som PDF")
-    window.print();
-  }
-}
-printBtn.onclick = exportPDF;
-
-/*** Logo input — scale & save immediately ***/
-logoFile.onchange = async (e)=>{
-  const f = e.target.files?.[0]; if(!f) return;
-  logoData = await fileToDataURL(f, 512);
-  S.logoData = logoData; localStorage.setItem("tnh_settings", JSON.stringify(S));
-  applyLogo();
-}
-clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
+printBtn.onclick = ()=>window.print();
 
 /*** Bind settings controls ***/
 langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
@@ -682,14 +603,14 @@ function fileToDataURL(file, maxSide){
 function init(){
   companyInput.value = company; titleTxt.textContent = company || t('appTitle');
   langSel.value = currentLang; fillMonthYear();
-  autosaveSel.value = autosave; wmToggleSel.value = wmOn; wmOpacity.value = wmAlpha;
+  autosaveSel.value = autosave; wmToggleSel.value = wmOn; document.getElementById("wmOpacity").value = wmAlpha;
 
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
-  totalTitle.textContent = t('total').replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
+  totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
 
   applyLogo(); buildRows(); applyLanguage(); computeAll();
 
-  // drag-to-scroll för desktop
+  // drag-to-scroll (desktop)
   const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
   scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
