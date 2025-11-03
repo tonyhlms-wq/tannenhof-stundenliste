@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tannenhof – Stundenliste</title>
-<meta name="theme-color" content="#1f5634">
+<title>Tannenhof Stundenliste</title>
+<meta name="theme-color" content="#1f5634" />
 <style>
   :root{
     --green:#1f5634;
-    --green-700:#154128;
+    --green-700:#16422a;
     --green-100:#ecf6ee;
     --ink:#0b2a10;
     --muted:#6b7a6c;
@@ -18,103 +18,85 @@
   }
   html,body{height:100%}
   body{
-    margin:0; background:#f4f7f5; color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-    -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums;
+    margin:0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
 
   /* Header */
-  .appbar{position:sticky;top:0;z-index:30;
-    background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow)}
-  .appbar-inner{max-width:1100px;margin:auto;padding:14px 16px;display:flex;align-items:center;gap:12px}
-  .brand{display:flex;align-items:center;gap:12px;min-width:0}
-  .brand img{width:36px;height:36px;object-fit:cover;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
-  .brand h1{margin:0;font-size:22px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .brand small{display:block;font-size:12px;opacity:.9}
+  .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
+  .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
+  .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
+  .brand img{ width:36px; height:36px; object-fit:cover; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .brand h1{ margin:0; font-size:22px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .brand small{ display:block; font-size:12px; opacity:.9 }
   .spacer{flex:1}
-  .btn{appearance:none;border:0;border-radius:14px;padding:10px 14px;background:#fff;color:var(--ink);font-weight:700;box-shadow:var(--shadow);min-width:168px;text-align:center}
-  .btn--dark{background:#0e1a11;color:#fff}
-  .btn:active{transform:translateY(1px)}
+  .btn{ appearance:none; border:0; border-radius:12px; padding:13px 12px; background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow); min-width:136px }
+  .btn--dark{ background:#0e1a11; color:#fff }
+  .btn:active{ transform:translateY(1px) }
 
-  /* Totals */
-  .total{max-width:1100px;margin:14px auto;padding:14px 16px}
-  .total-box{background:#fff;border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);
-    display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .total-title{font-weight:800;letter-spacing:.2px}
-  .total-sum{font-size:20px;font-weight:800}
+  /* På smala skärmar: lägg knapparna på egen rad */
+  @media (max-width:640px){
+    .spacer{ flex-basis:100%; height:0 }
+    .btn{ min-width:auto }
+  }
 
-  /* Table wrapper */
-  .table-wrap{max-width:1100px;margin:0 auto 18px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior:contain}
-  table{border-collapse:separate;border-spacing:0;width:1024px;table-layout:fixed}
-  thead th{position:sticky;top:0;z-index:5;background:var(--green-100);color:var(--ink);
-    text-align:left;padding:14px;font-size:14px;border-bottom:1px solid #dfe8e1}
-  tbody td{padding:10px 12px;border-bottom:1px solid #eef2ee;background:#fff}
-  tbody tr:nth-child(2n) td{background:#fafdfb}
-  .daycol{width:70px;text-align:center;font-weight:800}
-  .timecol{width:160px}
-  .breakcol{width:160px}
-  .totalcol{width:120px;font-weight:800}
-  .projcol{width:240px}
-  .actcol{width:170px}
+  /* Total */
+  .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
+  .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);
+              display:flex; align-items:center; justify-content:space-between; gap:10px }
+  .total-title{font-weight:800; letter-spacing:.2px}
+  .total-sum{font-size:20px; font-weight:800}
+
+  /* Table */
+  .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+               overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action:auto; }
+  table{ border-collapse:separate; border-spacing:0; width:980px }
+  thead th{ position:sticky; top:0; z-index:5; background:var(--green-100); color:var(--ink);
+            text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1 }
+  tbody td{ padding:10px 12px; border-bottom:1px solid #eef2ee; background:#fff }
+  tbody tr:nth-child(2n) td{ background:#fafdfb }
+  .daycol{ width:70px; text-align:center; font-weight:800}
+  .timecol{ width:160px}
+  .breakcol{ width:160px}
+  .totalcol{ width:120px; font-weight:800}
+  .projcol{ width:240px}
+  .actcol{ width:170px}
 
   /* Inputs */
-  .t{width:100%;height:44px;border-radius:12px;border:2px solid #dfe8e1;padding:0 10px;font-size:16px;background:#fff;box-sizing:border-box}
-  .t:focus{outline:3px solid var(--ring);border-color:transparent}
-  .pill{height:44px;border-radius:12px;background:#fff;border:2px solid #dfe8e1;display:flex;align-items:center;gap:8px;padding:0 10px}
+  .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
+  .t:focus{ outline:3px solid var(--ring); border-color:transparent }
+  .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px }
   .pill span{opacity:.7}
-  .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#e8f3ea;font-weight:700}
+  .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
 
-  .btn-icon{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:12px;
-    background:var(--green);color:#fff;border:0;box-shadow:var(--shadow);position:relative}
-  .btn-icon.secondary{background:#2b7a48}
-  .btn-icon .bubble{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;
-    background:#d32f2f;color:#fff;border-radius:9px;font-size:12px;display:grid;place-items:center}
+  .btn-icon{ width:44px; height:44px; display:inline-grid; place-items:center; border-radius:12px;
+             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative }
+  .btn-icon.secondary{ background:#2b7a48 }
+  .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
+                     background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
-  .today td{background:#f0fbf3!important;box-shadow:inset 3px 0 0 0 var(--green)}
+  /* Highlight today */
+  .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
   /* Watermark */
-  .wm{position:fixed;right:16px;bottom:18px;width:260px;max-width:42vw;opacity:.7;z-index:0;pointer-events:none;filter:grayscale(.1)}
+  .wm{ position:fixed; right:16px; bottom:18px; width:260px; max-width:42vw; opacity:.7; z-index:0; pointer-events:none; filter:grayscale(.1) }
 
   /* FAB */
-  .fab{position:fixed;left:16px;bottom:18px;z-index:20;width:64px;height:64px;display:grid;place-items:center;
-    background:var(--green);color:#fff;border-radius:18px;box-shadow:var(--shadow);border:0}
+  .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
+        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0 }
 
   /* Modal */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.3);display:none;place-items:center;z-index:40}
-  .modal.open{display:grid}
-  .sheet{width:min(720px,92vw);max-height:88vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:18px}
-  .sheet h3{margin:0 0 8px 0}
-  .grid{display:grid;gap:12px}
-  .grid-2{grid-template-columns:1fr 1fr}
-  .row{display:flex;gap:10px;align-items:center}
-  .muted{color:var(--muted);font-size:13px}
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
+  .modal.open{ display:grid }
+  .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px }
+  .sheet h3{ margin:0 0 8px 0 }
+  .grid{ display:grid; gap:12px }
+  .grid-2{ grid-template-columns:1fr 1fr }
+  .row{ display:flex; gap:10px; align-items:center }
+  .muted{ color:var(--muted); font-size:13px }
 
-  /* Photo grid */
-  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px}
-  .thumb{position:relative;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
-  .thumb img{display:block;width:100%;height:84px;object-fit:cover}
-  .thumb button{position:absolute;top:6px;right:6px;border:0;border-radius:999px;background:#0008;color:#fff;width:26px;height:26px}
-
-  /* Signatures footer */
-  .sign-footer{max-width:1100px;margin:0 auto 100px;padding:0 16px}
-  .sign-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-  .sign-mini{display:flex;align-items:center;gap:10px}
-  .sign-mini img{width:120px;height:60px;object-fit:contain;background:#fff;border:2px dashed #dfe8e1;border-radius:10px}
-  .sign-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-  /* Debug panel */
-  .debug{position:fixed;right:12px;bottom:92px;z-index:15;max-width:60vw;background:#111;color:#d2f1d6;
-    border-radius:12px;box-shadow:var(--shadow);padding:10px;display:none;font-size:12px;line-height:1.35;max-height:40vh;overflow:auto}
-  .debug.show{display:block}
-
-  @media print{
-    .appbar,.fab,.modal,.wm,.debug{display:none!important}
-    body{background:#fff}
-    .table-wrap{box-shadow:none}
-    .sign-card{box-shadow:none;border:1px solid #e5ebe7}
-    .sign-mini img{border:1px solid #dfe8e1}
-  }
+  @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
 </head>
 <body>
@@ -124,8 +106,8 @@
     <div class="brand">
       <img id="brandLogo" alt="logo" src="" />
       <div style="min-width:0">
-        <h1 id="titleTxt">Tannenhof Stundenliste</h1>
-        <small class="subtitle" id="monthSub">Oktober 2025</small>
+        <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
+        <small class="subtitle" id="monthSub">November 2025</small>
       </div>
     </div>
     <div class="spacer"></div>
@@ -137,7 +119,7 @@
 <main>
   <section class="total">
     <div class="total-box">
-      <div class="total-title">⏳ <span id="totalTitle">Gesamt – Oktober 2025</span></div>
+      <div class="total-title">⏳ <span id="totalTitle">Gesamt – November 2025</span></div>
       <div class="total-sum" id="grandTotal">0.00</div>
     </div>
   </section>
@@ -150,7 +132,7 @@
           <th class="timecol" data-i="from">Von</th>
           <th class="timecol" data-i="to">Bis</th>
           <th class="breakcol" data-i="break">Pause</th>
-          <th class="totalcol" data-i="totalCol">Gesamt</th>
+          <th class="totalcol" data-i="total">Gesamt</th>
           <th class="projcol" data-i="project">Projekt/Ort</th>
           <th class="actcol" data-i="actions">Aktion</th>
         </tr>
@@ -158,50 +140,18 @@
       <tbody id="bodyRows"></tbody>
     </table>
   </section>
-
-  <!-- Signatures footer -->
-  <section class="sign-footer">
-    <div class="sign-card">
-      <div class="sign-mini">
-        <div>
-          <div style="font-weight:800" data-i="empSig">Mitarbeiter-Signatur</div>
-          <div class="muted" id="empDate"></div>
-        </div>
-        <img id="empThumb" alt="Mitarbeiter" />
-      </div>
-      <div class="sign-actions">
-        <button class="btn" id="empOpen">👤 <span data-i="empOpen">Unterschreiben</span></button>
-        <button class="btn" id="empClear">🧹 <span data-i="clear">Löschen</span></button>
-      </div>
-    </div>
-
-    <div style="height:12px"></div>
-
-    <div class="sign-card">
-      <div class="sign-mini">
-        <div>
-          <div style="font-weight:800" data-i="mgrSig">Unterschrift Vorgesetzte/r</div>
-          <div class="muted" id="mgrDate"></div>
-        </div>
-        <img id="mgrThumb" alt="Vorgesetzte/r" />
-      </div>
-      <div class="sign-actions">
-        <button class="btn" id="mgrOpen">🖊️ <span data-i="mgrOpen">Unterschreiben</span></button>
-        <button class="btn" id="mgrClear">🧹 <span data-i="clear">Löschen</span></button>
-      </div>
-    </div>
-  </section>
 </main>
 
-<img id="wm" class="wm" alt="watermark"/>
+<!-- Watermark -->
+<img id="wm" class="wm" alt="watermark" />
 
+<!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
-<div class="debug" id="debug"></div>
 
-<!-- Settings -->
+<!-- Settings modal -->
 <div class="modal" id="settingsModal" aria-hidden="true">
   <div class="sheet">
-    <div style="display:flex;align-items:center;gap:10px;justify-content:space-between">
+    <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
       <h3 data-i="settings">Einstellungen</h3>
       <button class="btn" id="closeSettings">✖</button>
     </div>
@@ -215,7 +165,7 @@
       <div class="grid">
         <span data-i="logo">Logo (Bild oder Emoji)</span>
         <div class="row">
-          <input id="logoFile" type="file" accept="image/*" class="t"/>
+          <input id="logoFile" type="file" accept="image/*" class="t" />
           <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
         </div>
         <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
@@ -229,14 +179,6 @@
             <option value="sv">Svenska</option>
             <option value="en">English</option>
           </select>
-        </label>
-
-        <label class="grid">
-          <span>Farbton (HEX)</span>
-          <div class="row">
-            <input id="brandHex" class="t" placeholder="#1f5634" style="flex:1">
-            <input id="brandPick" type="color" class="t" style="width:64px;padding:0">
-          </div>
         </label>
 
         <label class="grid">
@@ -256,14 +198,6 @@
             <option value="off" data-i="off">Aus</option>
           </select>
         </label>
-
-        <label class="grid">
-          <span>Felsökning / Debug</span>
-          <select id="debugToggle" class="t">
-            <option value="off">Aus</option>
-            <option value="on">Ein</option>
-          </select>
-        </label>
       </div>
 
       <div class="grid grid-2">
@@ -276,11 +210,11 @@
         </label>
         <label class="grid">
           <span data-i="wmOpacity">Deckkraft</span>
-          <input id="wmOpacity" type="range" min="0" max="100" value="40"/>
+          <input id="wmOpacity" type="range" min="0" max="100" value="40" />
         </label>
       </div>
 
-      <div class="row" style="justify-content:flex-end;gap:8px">
+      <div class="row" style="justify-content:flex-end; gap:8px">
         <button class="btn" id="regenBtn" data-i="genDays">Tage erstellen</button>
         <button class="btn btn--dark" id="saveClose" data-i="saveClose">Speichern & schließen</button>
       </div>
@@ -288,7 +222,7 @@
   </div>
 </div>
 
-<!-- Notes / Photos -->
+<!-- Notes/Photos modal -->
 <div class="modal" id="notesModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -296,11 +230,11 @@
       <button class="btn" id="closeNotes">✖</button>
     </div>
     <div class="grid">
-      <textarea id="notesArea" class="t" style="height:160px" placeholder="Notiz…"></textarea>
+      <textarea id="notesArea" class="t" style="height:180px" placeholder="Notiz…"></textarea>
       <div class="grid">
         <span>📷 <span data-i="photos">Fotos (optional)</span></span>
         <input id="photosInput" type="file" accept="image/*" multiple class="t">
-        <div id="photoGrid" class="thumbs"></div>
+        <div id="photoList" class="muted"></div>
       </div>
       <div class="row" style="justify-content:flex-end">
         <button class="btn btn--dark" id="saveNotes" data-i="save">Speichern</button>
@@ -309,7 +243,7 @@
   </div>
 </div>
 
-<!-- Share -->
+<!-- Share/QR modal -->
 <div class="modal" id="shareModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -317,32 +251,14 @@
       <button class="btn" id="closeShare">✖</button>
     </div>
     <div class="grid">
-      <div class="row" style="gap:12px;flex-wrap:wrap">
-        <button class="btn" id="nativeShare">📤 <span>System teilen</span></button>
+      <div class="row" style="gap:12px; flex-wrap:wrap">
         <button class="btn" id="copyLink">🔗 <span data-i="copyLink">Link kopieren</span></button>
         <a class="btn" id="mailLink" href="#">✉️ <span data-i="email">E-Mail</span></a>
         <a class="btn" id="waLink" href="#" target="_blank">🟢 WhatsApp</a>
       </div>
       <div class="grid" style="place-items:center">
-        <img id="qrImg" alt="QR" style="width:min(240px,60vw);border-radius:16px;box-shadow:var(--shadow)">
+        <img id="qrImg" alt="QR" style="width:min(240px,60vw); border-radius:16px; box-shadow:var(--shadow)">
         <div class="muted" data-i="scan">QR-Code scannen, um die Seite zu öffnen.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Signature modal (shared) -->
-<div class="modal" id="signModal">
-  <div class="sheet">
-    <div class="row" style="justify-content:space-between">
-      <h3 id="signTitle">Signieren</h3>
-      <button class="btn" id="closeSign">✖</button>
-    </div>
-    <div class="grid">
-      <canvas id="signPad" style="width:100%;height:260px;background:#fff;border:2px solid #dfe8e1;border-radius:12px"></canvas>
-      <div class="row" style="justify-content:flex-end;gap:8px">
-        <button class="btn" id="signClear">🧹 <span data-i="clear">Löschen</span></button>
-        <button class="btn btn--dark" id="signSave">💾 <span data-i="save">Speichern</span></button>
       </div>
     </div>
   </div>
@@ -358,9 +274,7 @@ const I = {
     language:"Språk", month:"Månad", year:"År", autosave:"Autospara", on:"På", off:"Av",
     genDays:"Skapa dagar", saveClose:"Spara & stäng", wmToggle:"Vattenstämpel", wmOpacity:"Stämpel opacitet",
     notes:"Anteckning", edit:"Redigera", photos:"Foton (valfritt)", save:"Spara",
-    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clear:"Rensa",
-    clearLogo:"Rensa logga",
-    empSig:"Medarbetarens signatur", mgrSig:"Chefens signatur", empOpen:"Signera (medarbetare)", mgrOpen:"Signera (chef)" },
+    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clearLogo:"Rensa logga" },
   de:{ appTitle:"Tannenhof Stundenliste", share:"Teilen / Senden", print:"Drucken / PDF",
     total:"Gesamt – {month} {year}", day:"Tag", from:"Von", to:"Bis", break:"Pause", totalCol:"Gesamt",
     project:"Projekt/Ort", actions:"Aktion", settings:"Einstellungen", company:"Arbeitgeber",
@@ -368,19 +282,15 @@ const I = {
     language:"Sprache", month:"Monat", year:"Jahr", autosave:"Autospeichern", on:"Ein", off:"Aus",
     genDays:"Tage erstellen", saveClose:"Speichern & schließen", wmToggle:"Wasserzeichen", wmOpacity:"Deckkraft",
     notes:"Notiz", edit:"Bearbeiten", photos:"Fotos (optional)", save:"Speichern",
-    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clear:"Löschen",
-    clearLogo:"Logo löschen",
-    empSig:"Mitarbeiter-Signatur", mgrSig:"Unterschrift Vorgesetzte/r", empOpen:"Unterschreiben (Mitarb.)", mgrOpen:"Unterschreiben (Vorges.)" },
+    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clearLogo:"Logo löschen" },
   en:{ appTitle:"Tannenhof Timesheet", share:"Share / Send", print:"Print / PDF",
     total:"Total – {month} {year}", day:"Day", from:"From", to:"To", break:"Break", totalCol:"Total",
     project:"Project/site", actions:"Action", settings:"Settings", company:"Company",
     logo:"Logo (image or emoji)", logoHint:"Your logo is stored locally on this device.",
     language:"Language", month:"Month", year:"Year", autosave:"Autosave", on:"On", off:"Off",
-    genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Opacity",
+    genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Watermark opacity",
     notes:"Note", edit:"Edit", photos:"Photos (optional)", save:"Save",
-    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clear:"Clear",
-    clearLogo:"Clear logo",
-    empSig:"Employee Signature", mgrSig:"Supervisor Signature", empOpen:"Sign (Employee)", mgrOpen:"Sign (Supervisor)" }
+    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clearLogo:"Clear logo" }
 };
 const MONTHS = {
   sv:["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"],
@@ -390,73 +300,95 @@ const MONTHS = {
 const S = JSON.parse(localStorage.getItem("tnh_settings")||"{}");
 
 /*** Elements ***/
-const $ = s=>document.querySelector(s);
-const bodyRows=$("#bodyRows"), titleTxt=$("#titleTxt"), monthSub=$("#monthSub"),
-      totalTitle=$("#totalTitle"), grandTotal=$("#grandTotal"),
-      wmImg=$("#wm"), brandLogo=$("#brandLogo"),
-      settingsBtn=$("#settingsBtn"), settingsModal=$("#settingsModal"),
-      closeSettings=$("#closeSettings"), saveClose=$("#saveClose"), regenBtn=$("#regenBtn"),
-      langSel=$("#lang"), monthSel=$("#month"), yearSel=$("#year"),
-      autosaveSel=$("#autosave"), wmToggleSel=$("#wmToggle"), wmOpacity=$("#wmOpacity"),
-      companyInput=$("#company"), logoFile=$("#logoFile"), clearLogo=$("#clearLogo"),
-      debugPanel=$("#debug"), debugToggle=$("#debugToggle"),
-      brandHex=$("#brandHex"), brandPick=$("#brandPick"),
-      notesModal=$("#notesModal"), notesArea=$("#notesArea"), notesTitle=$("#notesTitle"),
-      closeNotes=$("#closeNotes"), saveNotes=$("#saveNotes"),
-      photosInput=$("#photosInput"), photoGrid=$("#photoGrid"),
-      shareBtn=$("#shareBtn"), printBtn=$("#printBtn"), shareModal=$("#shareModal"),
-      closeShare=$("#closeShare"), qrImg=$("#qrImg"), copyLink=$("#copyLink"),
-      mailLink=$("#mailLink"), waLink=$("#waLink"), nativeShare=$("#nativeShare"),
-      empOpen=$("#empOpen"), empClear=$("#empClear"), empThumb=$("#empThumb"), empDate=$("#empDate"),
-      mgrOpen=$("#mgrOpen"), mgrClear=$("#mgrClear"), mgrThumb=$("#mgrThumb"), mgrDate=$("#mgrDate"),
-      signModal=$("#signModal"), signTitle=$("#signTitle"), closeSign=$("#closeSign"),
-      signPad=$("#signPad"), signClear=$("#signClear"), signSave=$("#signSave");
+const E = s=>document.querySelector(s);
+const bodyRows = E("#bodyRows");
+const titleTxt = E("#titleTxt");
+const monthSub = E("#monthSub");
+const totalTitle = E("#totalTitle");
+const grandTotal = E("#grandTotal");
+const wmImg = E("#wm");
+const brandLogo = E("#brandLogo");
+
+const settingsBtn = E("#settingsBtn");
+const settingsModal = E("#settingsModal");
+const closeSettings = E("#closeSettings");
+const saveClose = E("#saveClose");
+const regenBtn = E("#regenBtn");
+
+const langSel = E("#lang");
+const monthSel = E("#month");
+const yearSel = E("#year");
+const autosaveSel = E("#autosave");
+const wmToggleSel = E("#wmToggle");
+const wmOpacity = E("#wmOpacity");
+const companyInput = E("#company");
+const logoFile = E("#logoFile");
+const clearLogo = E("#clearLogo");
+
+const notesModal = E("#notesModal");
+const notesArea = E("#notesArea");
+const notesTitle = E("#notesTitle");
+const closeNotes = E("#closeNotes");
+const saveNotes = E("#saveNotes");
+const photosInput = E("#photosInput");
+const photoList = E("#photoList");
+
+const shareBtn = E("#shareBtn");
+const printBtn = E("#printBtn");
+const shareModal = E("#shareModal");
+const closeShare = E("#closeShare");
+const qrImg = E("#qrImg");
+const copyLink = E("#copyLink");
+const mailLink = E("#mailLink");
+const waLink = E("#waLink");
 
 /*** State ***/
 let currentLang = S.lang || "de";
 let currentYear = S.year || new Date().getFullYear();
-let currentMonth = (S.month ?? new Date().getMonth());
+let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
 let logoData = S.logoData || "";
-let themeHex = S.themeHex || "#1f5634";
 let activeRow = 1;
-let dbg = S.debug || "off";
 
 /*** Helpers ***/
-function t(k){return I[currentLang][k]}
-function fmtMonth(m){return MONTHS[currentLang][m]}
+function t(key){ return I[currentLang][key]; }
+function fmtMonth(m){ return MONTHS[currentLang][m]; }
 function pad(n){return String(n).padStart(2,"0")}
-function mins(hm){ if(!hm) return 0; const [h,m]=hm.split(":").map(Number); return h*60+m }
-function diff(fr,to,brk){ if(!fr||!to) return 0; let m=mins(to)-mins(fr)-(brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0,m)}
-function msToH(m){return (m/60).toFixed(2)}
-function log(s){ if(dbg!=="on") return; const ts=new Date().toLocaleTimeString(); const line=`[${ts}] ${s}`; debugPanel.insertAdjacentHTML("afterbegin", line+"<br>")}
+function mins(hm){ const [h,m]=hm.split(":").map(Number); return h*60+m; }
+function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=24*60; return Math.max(0,m); }
+function msToH(m){ return (m/60).toFixed(2) }
 
-/*** Month/Year selects ***/
+/*** Build selects ***/
 function fillMonthYear(){
   monthSel.innerHTML = MONTHS[currentLang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
-  const yNow = new Date().getFullYear(); let ys=[];
-  for(let y=yNow-1;y<=yNow+2;y++) ys.push(`<option value="${y}">${y}</option>`);
+  const yNow = new Date().getFullYear();
+  let ys=[]; for(let y=yNow-1; y<=yNow+2; y++) ys.push(`<option value="${y}">${y}</option>`);
   yearSel.innerHTML = ys.join("");
-  monthSel.value=String(currentMonth); yearSel.value=String(currentYear);
+  monthSel.value = String(currentMonth);
+  yearSel.value = String(currentYear);
 }
 
 /*** Rows ***/
-function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
-function val(tr,f){ return tr.querySelector(`[data-f="${f}"]`)?.value||"" }
+function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
 
 function buildRows(){
   bodyRows.innerHTML="";
   const dcount = daysInMonth(currentYear,currentMonth);
   for(let d=1; d<=dcount; d++){
-    const tr=document.createElement("tr"); tr.dataset.day=d;
-    const today=new Date();
+    const tr = document.createElement("tr");
+    tr.dataset.day = d;
+
+    const today = new Date();
     if(today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d){
-      tr.classList.add("today"); activeRow=d; setTimeout(()=>tr.scrollIntoView({behavior:"smooth",block:"center"}),250);
+      tr.classList.add("today");
+      activeRow = d;
+      setTimeout(()=>tr.scrollIntoView({behavior:"smooth", block:"center"}), 300);
     }
-    tr.innerHTML=`
+
+    tr.innerHTML = `
       <td class="daycol"><div class="badge">📅 ${d}</div></td>
       <td class="timecol"><input class="t time" type="time" step="300" data-f="from" data-d="${d}"></td>
       <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
@@ -467,318 +399,241 @@ function buildRows(){
         <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
         <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
         <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
-      </td>`;
+      </td>
+    `;
     bodyRows.appendChild(tr);
   }
-  restoreData(); updatePhotoBubbles(); computeAll();
+  restoreData();
+  updatePhotoBubbles();
+  computeAll();
 }
 
 /*** Persistence ***/
-function key(){return `tnh_data_${currentYear}_${currentMonth}`}
-function readData(){return JSON.parse(localStorage.getItem(key())||"{}")}
+function key(){ return `tnh_data_${currentYear}_${currentMonth}` }
+function readData(){ return JSON.parse(localStorage.getItem(key())||"{}") }
 function saveData(){
   if(autosave!=="on") return;
   const obj={};
   bodyRows.querySelectorAll("tr").forEach(tr=>{
     const d=tr.dataset.day;
-    obj[d]={from:val(tr,"from"),to:val(tr,"to"),break:val(tr,"break")||"00:00",project:val(tr,"project")||""};
+    obj[d]={ from:val(tr,'from'), to:val(tr,'to'), break:val(tr,'break')||"00:00", project:val(tr,'project')||"" };
   });
   localStorage.setItem(key(), JSON.stringify(obj));
 }
+function val(tr,f){ return tr.querySelector(`[data-f="${f}"]`)?.value||"" }
 function restoreData(){
-  const obj=readData();
+  const obj = readData();
   bodyRows.querySelectorAll("tr").forEach(tr=>{
-    const d=tr.dataset.day, r=obj[d]||{};
+    const d=tr.dataset.day;
+    const r=obj[d]||{};
     ["from","to","break","project"].forEach(f=>{
-      const el=tr.querySelector(`[data-f="${f}"]`); if(el && r[f]!=null) el.value=r[f];
+      const el = tr.querySelector(`[data-f="${f}"]`);
+      if(el && r[f]!=null) el.value = r[f];
     });
-    computeRow(d);
   });
 }
-function noteKey(d){return `tnh_note_${currentYear}_${currentMonth}_${d}`}
-function photoKey(d){return `tnh_photos_${currentYear}_${currentMonth}_${d}`}
-function empSigKey(){return `tnh_sig_emp_${currentYear}_${currentMonth}`}
-function mgrSigKey(){return `tnh_sig_mgr_${currentYear}_${currentMonth}`}
-function empDateKey(){return `tnh_sig_emp_date_${currentYear}_${currentMonth}`}
-function mgrDateKey(){return `tnh_sig_mgr_date_${currentYear}_${currentMonth}`}
+
+function noteKey(d){ return `tnh_note_${currentYear}_${currentMonth}_${d}` }
+function photoKey(d){ return `tnh_photos_${currentYear}_${currentMonth}_${d}` }
 
 /*** Watermark & logo ***/
-function setTheme(hex){
-  if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)) return;
-  document.documentElement.style.setProperty('--green', hex);
-  document.documentElement.style.setProperty('--green-700', hex);
-  S.themeHex=hex; localStorage.setItem("tnh_settings", JSON.stringify(S));
-  document.querySelector('meta[name="theme-color"]').setAttribute('content',hex);
-}
 function applyLogo(){
-  if(logoData){brandLogo.src=logoData; wmImg.src=logoData}
-  else{
-    const svg=encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><g fill='#2e7d32'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
-    const url=`data:image/svg+xml;utf8,${svg}`; brandLogo.src=url; wmImg.src=url;
+  if(logoData){
+    brandLogo.src = logoData;
+    wmImg.src = logoData;
+  }else{
+    const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
+    <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
+    const url = `data:image/svg+xml;utf8,${svg}`;
+    brandLogo.src = url; wmImg.src = url;
   }
-  wmImg.style.opacity=(wmOn==="on")?(wmAlpha/100):0;
+  wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
 }
 
-/*** Language ***/
+/*** Language & labels ***/
 function applyLanguage(){
-  document.querySelectorAll("[data-i]").forEach(el=>el.textContent=t(el.dataset.i));
   titleTxt.textContent = company || t("appTitle");
+  document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent = t(el.dataset.i); });
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
   totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
-  bodyRows.querySelectorAll('[data-f="project"]').forEach(i=>i.placeholder=t('project'));
+  document.querySelector('[data-i="total"]').textContent = t("totalCol");
   fillMonthYear();
 }
 
-/*** Compute ***/
+/*** Events ***/
+bodyRows.addEventListener("input", e=>{
+  const tr = e.target.closest("tr"); if(!tr) return;
+  const d = Number(tr.dataset.day);
+  computeRow(d); saveData();
+});
+bodyRows.addEventListener("click", async e=>{
+  const noteBtn = e.target.closest("[data-note]");
+  const camBtn  = e.target.closest("[data-photo-camera]");
+  const galBtn  = e.target.closest("[data-photo-gallery]");
+  if(noteBtn){ openNotes(noteBtn.dataset.note); return; }
+  if(camBtn){ await addPhotos(camBtn.dataset.photoCamera, {capture:true}); return; }
+  if(galBtn){ await addPhotos(galBtn.dataset.photoGallery, {capture:false}); return; }
+});
+
 function computeRow(d){
-  const tr=bodyRows.querySelector(`tr[data-day="${d}"]`);
-  if(!tr) return;
-  const m=diff(val(tr,'from'),val(tr,'to'),val(tr,'break')||"00:00");
-  tr.querySelector(`#tot-${d}`).textContent=msToH(m);
+  const tr = bodyRows.querySelector(`tr[data-day="${d}"]`);
+  const m = diff(val(tr,'from'), val(tr,'to'), val(tr,'break')||"00:00");
+  tr.querySelector(`#tot-${d}`).textContent = msToH(m);
+  computeAll();
 }
 function computeAll(){
   let sum=0;
   bodyRows.querySelectorAll("tr").forEach(tr=>{
-    const d=tr.dataset.day;
-    sum += parseFloat(tr.querySelector(`#tot-${d}`).textContent)||0;
+    const d = tr.dataset.day;
+    const v = parseFloat(tr.querySelector(`#tot-${d}`).textContent)||0;
+    sum+=v;
   });
-  grandTotal.textContent=sum.toFixed(2);
+  grandTotal.textContent = sum.toFixed(2);
 }
-
-/*** Events – rows ***/
-bodyRows.addEventListener("input",e=>{
-  const tr=e.target.closest("tr"); if(!tr) return; const d=Number(tr.dataset.day);
-  computeRow(d); saveData();
-});
-bodyRows.addEventListener("click", async e=>{
-  const n=e.target.closest("[data-note]"); const c=e.target.closest("[data-photo-camera]"); const g=e.target.closest("[data-photo-gallery]");
-  if(n){ openNotes(n.dataset.note); return;}
-  if(c){ await addPhotos(c.dataset.photoCamera,{capture:true}); return;}
-  if(g){ await addPhotos(g.dataset.photoGallery,{capture:false}); return;}
-});
 
 /*** Settings modal ***/
-function openSettings(){settingsModal.classList.add("open")}
-function closeSettingsModal(){settingsModal.classList.remove("open")}
-settingsBtn.onclick=openSettings; closeSettings.onclick=closeSettingsModal;
-saveClose.onclick=()=>{
-  company=companyInput.value.trim()||company; S.company=company;
-  S.lang=currentLang; S.month=currentMonth; S.year=currentYear;
-  S.autosave=autosave; S.wmOn=wmOn; S.wmAlpha=wmAlpha; S.logoData=logoData; S.debug=dbg;
+function openSettings(){ settingsModal.classList.add("open"); }
+function closeSettingsModal(){ settingsModal.classList.remove("open"); }
+settingsBtn.onclick = openSettings;
+closeSettings.onclick = closeSettingsModal;
+saveClose.onclick = ()=>{
+  company = companyInput.value.trim() || company;
+  S.company = company;
+  S.lang = currentLang;
+  S.month = currentMonth;
+  S.year = currentYear;
+  S.autosave = autosave;
+  S.wmOn = wmOn;
+  S.wmAlpha = wmAlpha;
+  S.logoData = logoData;
   localStorage.setItem("tnh_settings", JSON.stringify(S));
-  closeSettingsModal(); applyLanguage(); applyLogo(); computeAll();
+  closeSettingsModal();
+  applyLanguage(); applyLogo(); computeAll();
 }
-regenBtn.onclick=()=>{buildRows(); computeAll()}
+regenBtn.onclick = ()=>{ buildRows(); computeAll(); }
 
-/*** Notes modal + photos with delete ***/
-let currentNoteDay=1;
+/*** Notes modal ***/
+let currentNoteDay = 1;
 function openNotes(d){
-  currentNoteDay=Number(d);
+  currentNoteDay = d;
   notesTitle.textContent = `${t('notes')} – ${fmtMonth(currentMonth)} ${d}, ${currentYear}`;
   notesArea.value = localStorage.getItem(noteKey(d)) || "";
-  renderPhotoGrid(d);
+  const photos = JSON.parse(localStorage.getItem(photoKey(d))||"[]");
+  photoList.textContent = photos.length ? photos.length + " Bild(er) lokal gespeichert." : "";
   notesModal.classList.add("open");
 }
-function closeNotesModal(){notesModal.classList.remove("open")}
-closeNotes.onclick=closeNotesModal;
-saveNotes.onclick=()=>{localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); closeNotesModal()}
-photosInput.onchange=async (e)=>{await addFilesToDay(currentNoteDay, e.target.files)};
-
-function renderPhotoGrid(day){
-  const arr=JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-  photoGrid.innerHTML = arr.map((src,i)=>`
-    <div class="thumb">
-      <img src="${src}" alt="photo ${i+1}">
-      <button title="Ta bort" data-del="${i}">✖</button>
-    </div>`).join("");
-  photoGrid.onclick=(e)=>{
-    const b=e.target.closest("[data-del]"); if(!b) return;
-    const idx=Number(b.dataset.del); const arr=JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-    arr.splice(idx,1); localStorage.setItem(photoKey(day), JSON.stringify(arr));
-    renderPhotoGrid(day); updatePhotoBubbles();
-  };
-}
+function closeNotesModal(){ notesModal.classList.remove("open"); }
+closeNotes.onclick = closeNotesModal;
+saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); closeNotesModal(); }
+photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); };
 
 /*** Foto-hjälpare ***/
-async function addPhotos(day,{capture}){
-  const input=document.createElement('input');
-  input.type='file'; input.accept='image/*'; input.multiple=true;
-  if(capture){ input.setAttribute('capture','environment') }
-  input.onchange=async ev=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===currentNoteDay) renderPhotoGrid(day) };
+async function addPhotos(day, {capture}){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+  if(capture){ input.setAttribute('capture','environment'); } // endast kamera
+  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); };
   input.click();
 }
 function updatePhotoBubbles(){
-  const dcount=daysInMonth(currentYear,currentMonth);
+  const dcount = daysInMonth(currentYear,currentMonth);
   for(let d=1; d<=dcount; d++){
-    const arr=JSON.parse(localStorage.getItem(photoKey(d))||"[]");
-    const b=document.getElementById('pb-'+d); if(!b) continue;
-    if(arr.length){b.style.display='grid'; b.textContent=arr.length}else{b.style.display='none'}
+    const arr = JSON.parse(localStorage.getItem(photoKey(d))||"[]");
+    const b = document.getElementById('pb-'+d);
+    if(!b) continue;
+    if(arr.length){ b.style.display='grid'; b.textContent = arr.length; }
+    else{ b.style.display='none'; }
   }
 }
-async function addFilesToDay(day,fileList){
-  const prev=JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-  const files=[...fileList].slice(0,10-prev.length);
-  for(const f of files){ const data=await fileToDataURL(f,1600); prev.push(data) }
+async function addFilesToDay(day, fileList){
+  const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
+  const files = [...fileList].slice(0, 10 - prev.length); // cap total 10/dag
+  for(const f of files){
+    const data = await fileToDataURL(f, 1600);
+    prev.push(data);
+  }
   localStorage.setItem(photoKey(day), JSON.stringify(prev));
   updatePhotoBubbles();
+  if(Number(day)===Number(currentNoteDay)){
+    photoList.textContent = prev.length ? prev.length + " Bild(er) lokal gespeichert." : "";
+  }
 }
 
 /*** Share / QR ***/
 function openShare(){
-  const url=location.href;
-  qrImg.src=`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
-  mailLink.href=`mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
-  waLink.href=`https://wa.me/?text=${encodeURIComponent(url)}`;
+  const url = location.href;
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
+  waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
   shareModal.classList.add("open");
 }
-function closeShareModal(){shareModal.classList.remove("open")}
-shareBtn.onclick=openShare; closeShare.onclick=closeShareModal;
-nativeShare.onclick=async()=>{
-  try{
-    if(navigator.share){ await navigator.share({title:t('appTitle'), text:company, url:location.href}); }
-    else{ await navigator.clipboard.writeText(location.href) }
-  }catch(e){ log("Share abgebrochen") }
-};
-copyLink.onclick=async()=>{await navigator.clipboard.writeText(location.href); copyLink.textContent="✔️"; setTimeout(()=>copyLink.textContent="🔗 "+t('copyLink'),800)}
-printBtn.onclick=()=>window.print();
+function closeShareModal(){ shareModal.classList.remove("open"); }
+shareBtn.onclick = openShare; closeShare.onclick = closeShareModal;
+copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.textContent="🔗 "+t('copyLink'),800); }
+printBtn.onclick = ()=>window.print();
 
-/*** Logo input + tema ***/
-logoFile.onchange=async (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  logoData = await fileToDataURL(f,512); S.logoData=logoData; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo();
+/*** Logo input — scale & save immediately ***/
+logoFile.onchange = async (e)=>{
+  const f = e.target.files?.[0]; if(!f) return;
+  logoData = await fileToDataURL(f, 512);
+  S.logoData = logoData;
+  localStorage.setItem("tnh_settings", JSON.stringify(S));
+  applyLogo();
 }
-clearLogo.onclick=()=>{logoData=""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo()}
-
-brandHex.oninput=()=>{ setTheme(brandHex.value) }
-brandPick.oninput=()=>{ brandHex.value=brandPick.value; setTheme(brandPick.value) }
+clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
 
 /*** Bind settings controls ***/
-langSel.onchange=()=>{ currentLang=langSel.value; applyLanguage() }
-monthSel.onchange=()=>{ currentMonth=Number(monthSel.value); applyLanguage(); buildRows() }
-yearSel.onchange=()=>{ currentYear=Number(yearSel.value); applyLanguage(); buildRows() }
-autosaveSel.onchange=()=>{ autosave=autosaveSel.value }
-wmToggleSel.onchange=()=>{ wmOn=wmToggleSel.value; applyLogo() }
-wmOpacity.oninput=()=>{ wmAlpha=Number(wmOpacity.value); applyLogo() }
-companyInput.oninput=()=>{ company=companyInput.value; titleTxt.textContent=company?company:t('appTitle') }
-debugToggle.onchange=()=>{ dbg=debugToggle.value; if(dbg==="on") debugPanel.classList.add("show"); else debugPanel.classList.remove("show"); }
+langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); }
+monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); }
+yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); }
+autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; }
+wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); }
+wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); }
+companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); }
 
-/*** File -> dataURL downscale ***/
-function fileToDataURL(file,maxSide){
+/*** File -> dataURL with downscale ***/
+function fileToDataURL(file, maxSide){
   return new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onerror=reject;
-    reader.onload=()=>{
-      const img=new Image();
-      img.onload=()=>{
-        const c=document.createElement('canvas');
-        let {width:w,height:h}=img; const m=Math.max(w,h);
-        if(m>maxSide){const k=maxSide/m; w=Math.round(w*k); h=Math.round(h*k)}
-        c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h);
-        resolve(c.toDataURL('image/jpeg',0.85));
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const c = document.createElement('canvas');
+        let {width:w, height:h} = img;
+        const m = Math.max(w,h);
+        if(m>maxSide){ const k = maxSide/m; w=Math.round(w*k); h=Math.round(h*k); }
+        c.width=w; c.height=h;
+        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg', 0.85));
       };
-      img.src=reader.result;
+      img.src = reader.result;
     };
     reader.readAsDataURL(file);
   });
 }
 
-/*** Signatures ***/
-function loadSignature(which){
-  const k = which==="emp" ? empSigKey() : mgrSigKey();
-  return localStorage.getItem(k)||"";
-}
-function loadSigDate(which){
-  const k = which==="emp" ? empDateKey() : mgrDateKey();
-  return localStorage.getItem(k)||"";
-}
-function saveSignature(which, dataUrl){
-  localStorage.setItem(which==="emp"?empSigKey():mgrSigKey(), dataUrl);
-  const dateStr = new Date().toLocaleString();
-  localStorage.setItem(which==="emp"?empDateKey():mgrDateKey(), dateStr);
-  if(which==="emp"){ empThumb.src=dataUrl; empDate.textContent=dateStr; }
-  else{ mgrThumb.src=dataUrl; mgrDate.textContent=dateStr; }
-}
-
-let signCtx, drawing=false, sigWho="emp", scale=1, rect=null;
-function openSignModal(which){
-  sigWho=which;
-  signTitle.textContent = which==="emp" ? t('empSig') : t('mgrSig');
-  signModal.classList.add("open");
-  setupCanvas();
-  // If existing signature, load into pad as background (optional). We keep pad empty to avoid overwriting; thumb shows current.
-}
-function closeSignModal(){ signModal.classList.remove("open") }
-
-function setupCanvas(){
-  const dpr = window.devicePixelRatio || 1;
-  const cssW = signPad.clientWidth;
-  const cssH = 260;
-  signPad.width = Math.floor(cssW * dpr);
-  signPad.height = Math.floor(cssH * dpr);
-  signPad.style.height = cssH+"px";
-  signCtx = signPad.getContext('2d');
-  signCtx.scale(dpr,dpr);
-  signCtx.fillStyle="#fff"; signCtx.fillRect(0,0,cssW,cssH);
-  signCtx.lineWidth=2; signCtx.lineCap="round"; signCtx.strokeStyle="#111";
-  rect = signPad.getBoundingClientRect();
-}
-
-function startDraw(x,y){ drawing=true; signCtx.beginPath(); signCtx.moveTo(x,y) }
-function moveDraw(x,y){ if(!drawing) return; signCtx.lineTo(x,y); signCtx.stroke() }
-function endDraw(){ drawing=false }
-
-function getPos(e){
-  const r=signPad.getBoundingClientRect();
-  if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top};
-  return {x:e.clientX-r.left, y:e.clientY-r.top};
-}
-
-signPad.addEventListener('mousedown',e=>{const p=getPos(e); startDraw(p.x,p.y)});
-signPad.addEventListener('mousemove',e=>{const p=getPos(e); moveDraw(p.x,p.y)});
-['mouseup','mouseleave'].forEach(ev=>signPad.addEventListener(ev, endDraw));
-signPad.addEventListener('touchstart',e=>{const p=getPos(e); startDraw(p.x,p.y); e.preventDefault()},{passive:false});
-signPad.addEventListener('touchmove',e=>{const p=getPos(e); moveDraw(p.x,p.y); e.preventDefault()},{passive:false});
-signPad.addEventListener('touchend',endDraw);
-
-signClear.onclick=()=>{ setupCanvas() }
-signSave.onclick=()=>{
-  const dataUrl = signPad.toDataURL('image/png');
-  saveSignature(sigWho, dataUrl);
-  closeSignModal();
-}
-
-empOpen.onclick=()=>openSignModal("emp");
-mgrOpen.onclick=()=>openSignModal("mgr");
-empClear.onclick=()=>{ localStorage.removeItem(empSigKey()); localStorage.removeItem(empDateKey()); empThumb.src=""; empDate.textContent="" }
-mgrClear.onclick=()=>{ localStorage.removeItem(mgrSigKey()); localStorage.removeItem(mgrDateKey()); mgrThumb.src=""; mgrDate.textContent="" }
-closeSign.onclick=closeSignModal;
-
-/*** Init ***/
+/*** Restore on load ***/
 function init(){
-  // Theme
-  brandHex.value=themeHex; brandPick.value=themeHex; setTheme(themeHex);
+  companyInput.value = company;
+  titleTxt.textContent = company || t('appTitle');
 
-  companyInput.value=company; titleTxt.textContent=company||t('appTitle');
-  langSel.value=currentLang; autosaveSel.value=autosave;
-  wmToggleSel.value=wmOn; wmOpacity.value=wmAlpha; debugToggle.value=dbg;
-  if(dbg==="on") debugPanel.classList.add("show");
+  langSel.value = currentLang; fillMonthYear();
+  autosaveSel.value = autosave; wmToggleSel.value = wmOn; wmOpacity.value = wmAlpha;
 
-  fillMonthYear(); applyLanguage(); applyLogo(); buildRows(); computeAll();
+  monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
+  totalTitle.textContent = t('total').replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
 
-  // drag-to-scroll (desktop)
-  const scroller=document.getElementById("hScroll");
+  applyLogo(); buildRows(); applyLanguage(); computeAll();
+
+  // drag-to-scroll for desktop (mobil scroll funkar ändå)
+  const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
-  scroller.addEventListener('mousedown',e=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
+  scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
   ['mouseleave','mouseup'].forEach(ev=>scroller.addEventListener(ev,()=>isDown=false));
-  scroller.addEventListener('mousemove',e=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1; scroller.scrollLeft=scrollLeft-walk });
-
-  // Load signatures (thumbs + dates)
-  const emp = loadSignature("emp"); if(emp) empThumb.src=emp;
-  const mgr = loadSignature("mgr"); if(mgr) mgrThumb.src=mgr;
-  const ed = loadSigDate("emp"); if(ed) empDate.textContent=ed;
-  const md = loadSigDate("mgr"); if(md) mgrDate.textContent=md;
-
-  log("Init ok");
+  scroller.addEventListener('mousemove', (e)=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1; scroller.scrollLeft=scrollLeft-walk; });
 }
 document.addEventListener("DOMContentLoaded", init);
 </script>
