@@ -44,7 +44,7 @@
   .total-sum{font-size:20px;font-weight:800}
 
   /* Table wrapper */
-  .table-wrap{max-width:1100px;margin:0 auto 140px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  .table-wrap{max-width:1100px;margin:0 auto 18px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
     overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior:contain}
   table{border-collapse:separate;border-spacing:0;width:1024px;table-layout:fixed}
   thead th{position:sticky;top:0;z-index:5;background:var(--green-100);color:var(--ink);
@@ -96,6 +96,13 @@
   .thumb img{display:block;width:100%;height:84px;object-fit:cover}
   .thumb button{position:absolute;top:6px;right:6px;border:0;border-radius:999px;background:#0008;color:#fff;width:26px;height:26px}
 
+  /* Signatures footer */
+  .sign-footer{max-width:1100px;margin:0 auto 100px;padding:0 16px}
+  .sign-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .sign-mini{display:flex;align-items:center;gap:10px}
+  .sign-mini img{width:120px;height:60px;object-fit:contain;background:#fff;border:2px dashed #dfe8e1;border-radius:10px}
+  .sign-actions{display:flex;gap:10px;flex-wrap:wrap}
+
   /* Debug panel */
   .debug{position:fixed;right:12px;bottom:92px;z-index:15;max-width:60vw;background:#111;color:#d2f1d6;
     border-radius:12px;box-shadow:var(--shadow);padding:10px;display:none;font-size:12px;line-height:1.35;max-height:40vh;overflow:auto}
@@ -105,6 +112,8 @@
     .appbar,.fab,.modal,.wm,.debug{display:none!important}
     body{background:#fff}
     .table-wrap{box-shadow:none}
+    .sign-card{box-shadow:none;border:1px solid #e5ebe7}
+    .sign-mini img{border:1px solid #dfe8e1}
   }
 </style>
 </head>
@@ -148,6 +157,39 @@
       </thead>
       <tbody id="bodyRows"></tbody>
     </table>
+  </section>
+
+  <!-- Signatures footer -->
+  <section class="sign-footer">
+    <div class="sign-card">
+      <div class="sign-mini">
+        <div>
+          <div style="font-weight:800" data-i="empSig">Mitarbeiter-Signatur</div>
+          <div class="muted" id="empDate"></div>
+        </div>
+        <img id="empThumb" alt="Mitarbeiter" />
+      </div>
+      <div class="sign-actions">
+        <button class="btn" id="empOpen">👤 <span data-i="empOpen">Unterschreiben</span></button>
+        <button class="btn" id="empClear">🧹 <span data-i="clear">Löschen</span></button>
+      </div>
+    </div>
+
+    <div style="height:12px"></div>
+
+    <div class="sign-card">
+      <div class="sign-mini">
+        <div>
+          <div style="font-weight:800" data-i="mgrSig">Unterschrift Vorgesetzte/r</div>
+          <div class="muted" id="mgrDate"></div>
+        </div>
+        <img id="mgrThumb" alt="Vorgesetzte/r" />
+      </div>
+      <div class="sign-actions">
+        <button class="btn" id="mgrOpen">🖊️ <span data-i="mgrOpen">Unterschreiben</span></button>
+        <button class="btn" id="mgrClear">🧹 <span data-i="clear">Löschen</span></button>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -289,6 +331,23 @@
   </div>
 </div>
 
+<!-- Signature modal (shared) -->
+<div class="modal" id="signModal">
+  <div class="sheet">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="signTitle">Signieren</h3>
+      <button class="btn" id="closeSign">✖</button>
+    </div>
+    <div class="grid">
+      <canvas id="signPad" style="width:100%;height:260px;background:#fff;border:2px solid #dfe8e1;border-radius:12px"></canvas>
+      <div class="row" style="justify-content:flex-end;gap:8px">
+        <button class="btn" id="signClear">🧹 <span data-i="clear">Löschen</span></button>
+        <button class="btn btn--dark" id="signSave">💾 <span data-i="save">Speichern</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /*** i18n ***/
 const I = {
@@ -299,7 +358,9 @@ const I = {
     language:"Språk", month:"Månad", year:"År", autosave:"Autospara", on:"På", off:"Av",
     genDays:"Skapa dagar", saveClose:"Spara & stäng", wmToggle:"Vattenstämpel", wmOpacity:"Stämpel opacitet",
     notes:"Anteckning", edit:"Redigera", photos:"Foton (valfritt)", save:"Spara",
-    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clearLogo:"Rensa logga" },
+    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clear:"Rensa",
+    clearLogo:"Rensa logga",
+    empSig:"Medarbetarens signatur", mgrSig:"Chefens signatur", empOpen:"Signera (medarbetare)", mgrOpen:"Signera (chef)" },
   de:{ appTitle:"Tannenhof Stundenliste", share:"Teilen / Senden", print:"Drucken / PDF",
     total:"Gesamt – {month} {year}", day:"Tag", from:"Von", to:"Bis", break:"Pause", totalCol:"Gesamt",
     project:"Projekt/Ort", actions:"Aktion", settings:"Einstellungen", company:"Arbeitgeber",
@@ -307,7 +368,9 @@ const I = {
     language:"Sprache", month:"Monat", year:"Jahr", autosave:"Autospeichern", on:"Ein", off:"Aus",
     genDays:"Tage erstellen", saveClose:"Speichern & schließen", wmToggle:"Wasserzeichen", wmOpacity:"Deckkraft",
     notes:"Notiz", edit:"Bearbeiten", photos:"Fotos (optional)", save:"Speichern",
-    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clearLogo:"Logo löschen" },
+    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clear:"Löschen",
+    clearLogo:"Logo löschen",
+    empSig:"Mitarbeiter-Signatur", mgrSig:"Unterschrift Vorgesetzte/r", empOpen:"Unterschreiben (Mitarb.)", mgrOpen:"Unterschreiben (Vorges.)" },
   en:{ appTitle:"Tannenhof Timesheet", share:"Share / Send", print:"Print / PDF",
     total:"Total – {month} {year}", day:"Day", from:"From", to:"To", break:"Break", totalCol:"Total",
     project:"Project/site", actions:"Action", settings:"Settings", company:"Company",
@@ -315,7 +378,9 @@ const I = {
     language:"Language", month:"Month", year:"Year", autosave:"Autosave", on:"On", off:"Off",
     genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Opacity",
     notes:"Note", edit:"Edit", photos:"Photos (optional)", save:"Save",
-    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clearLogo:"Clear logo" }
+    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clear:"Clear",
+    clearLogo:"Clear logo",
+    empSig:"Employee Signature", mgrSig:"Supervisor Signature", empOpen:"Sign (Employee)", mgrOpen:"Sign (Supervisor)" }
 };
 const MONTHS = {
   sv:["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"],
@@ -341,7 +406,11 @@ const bodyRows=$("#bodyRows"), titleTxt=$("#titleTxt"), monthSub=$("#monthSub"),
       photosInput=$("#photosInput"), photoGrid=$("#photoGrid"),
       shareBtn=$("#shareBtn"), printBtn=$("#printBtn"), shareModal=$("#shareModal"),
       closeShare=$("#closeShare"), qrImg=$("#qrImg"), copyLink=$("#copyLink"),
-      mailLink=$("#mailLink"), waLink=$("#waLink"), nativeShare=$("#nativeShare");
+      mailLink=$("#mailLink"), waLink=$("#waLink"), nativeShare=$("#nativeShare"),
+      empOpen=$("#empOpen"), empClear=$("#empClear"), empThumb=$("#empThumb"), empDate=$("#empDate"),
+      mgrOpen=$("#mgrOpen"), mgrClear=$("#mgrClear"), mgrThumb=$("#mgrThumb"), mgrDate=$("#mgrDate"),
+      signModal=$("#signModal"), signTitle=$("#signTitle"), closeSign=$("#closeSign"),
+      signPad=$("#signPad"), signClear=$("#signClear"), signSave=$("#signSave");
 
 /*** State ***/
 let currentLang = S.lang || "de";
@@ -426,15 +495,17 @@ function restoreData(){
     computeRow(d);
   });
 }
-
 function noteKey(d){return `tnh_note_${currentYear}_${currentMonth}_${d}`}
 function photoKey(d){return `tnh_photos_${currentYear}_${currentMonth}_${d}`}
+function empSigKey(){return `tnh_sig_emp_${currentYear}_${currentMonth}`}
+function mgrSigKey(){return `tnh_sig_mgr_${currentYear}_${currentMonth}`}
+function empDateKey(){return `tnh_sig_emp_date_${currentYear}_${currentMonth}`}
+function mgrDateKey(){return `tnh_sig_mgr_date_${currentYear}_${currentMonth}`}
 
 /*** Watermark & logo ***/
 function setTheme(hex){
   if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)) return;
   document.documentElement.style.setProperty('--green', hex);
-  // Darker tone:
   document.documentElement.style.setProperty('--green-700', hex);
   S.themeHex=hex; localStorage.setItem("tnh_settings", JSON.stringify(S));
   document.querySelector('meta[name="theme-color"]').setAttribute('content',hex);
@@ -454,7 +525,6 @@ function applyLanguage(){
   titleTxt.textContent = company || t("appTitle");
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
   totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
-  // Header cells already use data-i; also fix placeholder for project inputs
   bodyRows.querySelectorAll('[data-f="project"]').forEach(i=>i.placeholder=t('project'));
   fillMonthYear();
 }
@@ -475,7 +545,7 @@ function computeAll(){
   grandTotal.textContent=sum.toFixed(2);
 }
 
-/*** Events ***/
+/*** Events – rows ***/
 bodyRows.addEventListener("input",e=>{
   const tr=e.target.closest("tr"); if(!tr) return; const d=Number(tr.dataset.day);
   computeRow(d); saveData();
@@ -612,6 +682,77 @@ function fileToDataURL(file,maxSide){
   });
 }
 
+/*** Signatures ***/
+function loadSignature(which){
+  const k = which==="emp" ? empSigKey() : mgrSigKey();
+  return localStorage.getItem(k)||"";
+}
+function loadSigDate(which){
+  const k = which==="emp" ? empDateKey() : mgrDateKey();
+  return localStorage.getItem(k)||"";
+}
+function saveSignature(which, dataUrl){
+  localStorage.setItem(which==="emp"?empSigKey():mgrSigKey(), dataUrl);
+  const dateStr = new Date().toLocaleString();
+  localStorage.setItem(which==="emp"?empDateKey():mgrDateKey(), dateStr);
+  if(which==="emp"){ empThumb.src=dataUrl; empDate.textContent=dateStr; }
+  else{ mgrThumb.src=dataUrl; mgrDate.textContent=dateStr; }
+}
+
+let signCtx, drawing=false, sigWho="emp", scale=1, rect=null;
+function openSignModal(which){
+  sigWho=which;
+  signTitle.textContent = which==="emp" ? t('empSig') : t('mgrSig');
+  signModal.classList.add("open");
+  setupCanvas();
+  // If existing signature, load into pad as background (optional). We keep pad empty to avoid overwriting; thumb shows current.
+}
+function closeSignModal(){ signModal.classList.remove("open") }
+
+function setupCanvas(){
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = signPad.clientWidth;
+  const cssH = 260;
+  signPad.width = Math.floor(cssW * dpr);
+  signPad.height = Math.floor(cssH * dpr);
+  signPad.style.height = cssH+"px";
+  signCtx = signPad.getContext('2d');
+  signCtx.scale(dpr,dpr);
+  signCtx.fillStyle="#fff"; signCtx.fillRect(0,0,cssW,cssH);
+  signCtx.lineWidth=2; signCtx.lineCap="round"; signCtx.strokeStyle="#111";
+  rect = signPad.getBoundingClientRect();
+}
+
+function startDraw(x,y){ drawing=true; signCtx.beginPath(); signCtx.moveTo(x,y) }
+function moveDraw(x,y){ if(!drawing) return; signCtx.lineTo(x,y); signCtx.stroke() }
+function endDraw(){ drawing=false }
+
+function getPos(e){
+  const r=signPad.getBoundingClientRect();
+  if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top};
+  return {x:e.clientX-r.left, y:e.clientY-r.top};
+}
+
+signPad.addEventListener('mousedown',e=>{const p=getPos(e); startDraw(p.x,p.y)});
+signPad.addEventListener('mousemove',e=>{const p=getPos(e); moveDraw(p.x,p.y)});
+['mouseup','mouseleave'].forEach(ev=>signPad.addEventListener(ev, endDraw));
+signPad.addEventListener('touchstart',e=>{const p=getPos(e); startDraw(p.x,p.y); e.preventDefault()},{passive:false});
+signPad.addEventListener('touchmove',e=>{const p=getPos(e); moveDraw(p.x,p.y); e.preventDefault()},{passive:false});
+signPad.addEventListener('touchend',endDraw);
+
+signClear.onclick=()=>{ setupCanvas() }
+signSave.onclick=()=>{
+  const dataUrl = signPad.toDataURL('image/png');
+  saveSignature(sigWho, dataUrl);
+  closeSignModal();
+}
+
+empOpen.onclick=()=>openSignModal("emp");
+mgrOpen.onclick=()=>openSignModal("mgr");
+empClear.onclick=()=>{ localStorage.removeItem(empSigKey()); localStorage.removeItem(empDateKey()); empThumb.src=""; empDate.textContent="" }
+mgrClear.onclick=()=>{ localStorage.removeItem(mgrSigKey()); localStorage.removeItem(mgrDateKey()); mgrThumb.src=""; mgrDate.textContent="" }
+closeSign.onclick=closeSignModal;
+
 /*** Init ***/
 function init(){
   // Theme
@@ -630,6 +771,12 @@ function init(){
   scroller.addEventListener('mousedown',e=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
   ['mouseleave','mouseup'].forEach(ev=>scroller.addEventListener(ev,()=>isDown=false));
   scroller.addEventListener('mousemove',e=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1; scroller.scrollLeft=scrollLeft-walk });
+
+  // Load signatures (thumbs + dates)
+  const emp = loadSignature("emp"); if(emp) empThumb.src=emp;
+  const mgr = loadSignature("mgr"); if(mgr) mgrThumb.src=mgr;
+  const ed = loadSigDate("emp"); if(ed) empDate.textContent=ed;
+  const md = loadSigDate("mgr"); if(md) mgrDate.textContent=md;
 
   log("Init ok");
 }
