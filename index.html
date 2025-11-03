@@ -7,18 +7,13 @@
 <meta name="theme-color" content="#1f5634" />
 <style>
   :root{
-    --green:#1f5634;
-    --green-700:#16422a;
-    --green-100:#ecf6ee;
-    --ink:#0b2a10;
-    --muted:#6b7a6c;
-    --ring:#a5d6a7;
-    --shadow:0 10px 30px rgba(0,0,0,.12);
-    --radius:16px;
+    --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
+    --ink:#0b2a10; --muted:#6b7a6c; --ring:#a5d6a7;
+    --shadow:0 10px 30px rgba(0,0,0,.12); --radius:16px;
   }
   html,body{height:100%}
   body{
-    margin:0;
+    margin:0; padding-bottom:130px; /* så sista dagen inte hamnar under FAB */
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
@@ -31,15 +26,10 @@
   .brand h1{ margin:0; font-size:22px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .brand small{ display:block; font-size:12px; opacity:.9 }
   .spacer{flex:1}
-  .btn{ appearance:none; border:0; border-radius:12px; padding:13px 12px; background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow); min-width:136px }
+  .btn{ appearance:none; border:0; border-radius:12px; padding:12px 12px; background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow); min-width:128px }
   .btn--dark{ background:#0e1a11; color:#fff }
   .btn:active{ transform:translateY(1px) }
-
-  /* På smala skärmar: lägg knapparna på egen rad */
-  @media (max-width:640px){
-    .spacer{ flex-basis:100%; height:0 }
-    .btn{ min-width:auto }
-  }
+  @media (max-width:640px){ .spacer{ flex-basis:100%; height:0 } .btn{ min-width:auto } }
 
   /* Total */
   .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
@@ -61,7 +51,7 @@
   .breakcol{ width:160px}
   .totalcol{ width:120px; font-weight:800}
   .projcol{ width:240px}
-  .actcol{ width:170px}
+  .actcol{ width:160px}
 
   /* Inputs */
   .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
@@ -70,8 +60,9 @@
   .pill span{opacity:.7}
   .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
 
-  .btn-icon{ width:44px; height:44px; display:inline-grid; place-items:center; border-radius:12px;
-             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative }
+  .actions{ display:flex; gap:8px; flex-wrap:nowrap } /* aldrig radbryt */
+  .btn-icon{ width:40px; height:40px; display:inline-grid; place-items:center; border-radius:12px;
+             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative; flex:0 0 auto }
   .btn-icon.secondary{ background:#2b7a48 }
   .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
                      background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
@@ -80,11 +71,12 @@
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
   /* Watermark */
-  .wm{ position:fixed; right:16px; bottom:18px; width:260px; max-width:42vw; opacity:.7; z-index:0; pointer-events:none; filter:grayscale(.1) }
+  .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.5; z-index:0; pointer-events:none; filter:grayscale(.15) }
 
   /* FAB */
   .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
-        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0 }
+        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
+  .fab:active{ transform:translateY(1px) }
 
   /* Modal */
   .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
@@ -95,6 +87,9 @@
   .grid-2{ grid-template-columns:1fr 1fr }
   .row{ display:flex; gap:10px; align-items:center }
   .muted{ color:var(--muted); font-size:13px }
+
+  /* Lightbox */
+  #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
 
   @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
@@ -234,6 +229,7 @@
       <div class="grid">
         <span>📷 <span data-i="photos">Fotos (optional)</span></span>
         <input id="photosInput" type="file" accept="image/*" multiple class="t">
+        <div id="thumbs" class="row" style="flex-wrap:wrap"></div>
         <div id="photoList" class="muted"></div>
       </div>
       <div class="row" style="justify-content:flex-end">
@@ -242,6 +238,9 @@
     </div>
   </div>
 </div>
+
+<!-- Image viewer (lightbox) -->
+<div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
 
 <!-- Share/QR modal -->
 <div class="modal" id="shareModal">
@@ -300,47 +299,51 @@ const MONTHS = {
 const S = JSON.parse(localStorage.getItem("tnh_settings")||"{}");
 
 /*** Elements ***/
-const E = s=>document.querySelector(s);
-const bodyRows = E("#bodyRows");
-const titleTxt = E("#titleTxt");
-const monthSub = E("#monthSub");
-const totalTitle = E("#totalTitle");
-const grandTotal = E("#grandTotal");
-const wmImg = E("#wm");
-const brandLogo = E("#brandLogo");
+const $ = s=>document.querySelector(s);
+const bodyRows = $("#bodyRows");
+const titleTxt = $("#titleTxt");
+const monthSub = $("#monthSub");
+const totalTitle = $("#totalTitle");
+const grandTotal = $("#grandTotal");
+const wmImg = $("#wm");
+const brandLogo = $("#brandLogo");
 
-const settingsBtn = E("#settingsBtn");
-const settingsModal = E("#settingsModal");
-const closeSettings = E("#closeSettings");
-const saveClose = E("#saveClose");
-const regenBtn = E("#regenBtn");
+const settingsBtn = $("#settingsBtn");
+const settingsModal = $("#settingsModal");
+const closeSettings = $("#closeSettings");
+const saveClose = $("#saveClose");
+const regenBtn = $("#regenBtn");
 
-const langSel = E("#lang");
-const monthSel = E("#month");
-const yearSel = E("#year");
-const autosaveSel = E("#autosave");
-const wmToggleSel = E("#wmToggle");
-const wmOpacity = E("#wmOpacity");
-const companyInput = E("#company");
-const logoFile = E("#logoFile");
-const clearLogo = E("#clearLogo");
+const langSel = $("#lang");
+const monthSel = $("#month");
+const yearSel = $("#year");
+const autosaveSel = $("#autosave");
+const wmToggleSel = $("#wmToggle");
+const wmOpacity = $("#wmOpacity");
+const companyInput = $("#company");
+const logoFile = $("#logoFile");
+const clearLogo = $("#clearLogo");
 
-const notesModal = E("#notesModal");
-const notesArea = E("#notesArea");
-const notesTitle = E("#notesTitle");
-const closeNotes = E("#closeNotes");
-const saveNotes = E("#saveNotes");
-const photosInput = E("#photosInput");
-const photoList = E("#photoList");
+const notesModal = $("#notesModal");
+const notesArea = $("#notesArea");
+const notesTitle = $("#notesTitle");
+const closeNotes = $("#closeNotes");
+const saveNotes = $("#saveNotes");
+const photosInput = $("#photosInput");
+const photoList = $("#photoList");
+const thumbs = $("#thumbs");
 
-const shareBtn = E("#shareBtn");
-const printBtn = E("#printBtn");
-const shareModal = E("#shareModal");
-const closeShare = E("#closeShare");
-const qrImg = E("#qrImg");
-const copyLink = E("#copyLink");
-const mailLink = E("#mailLink");
-const waLink = E("#waLink");
+const viewerModal = $("#viewerModal");
+const viewerImg = $("#viewerImg");
+
+const shareBtn = $("#shareBtn");
+const printBtn = $("#printBtn");
+const shareModal = $("#shareModal");
+const closeShare = $("#closeShare");
+const qrImg = $("#qrImg");
+const copyLink = $("#copyLink");
+const mailLink = $("#mailLink");
+const waLink = $("#waLink");
 
 /*** State ***/
 let currentLang = S.lang || "de";
@@ -354,12 +357,11 @@ let logoData = S.logoData || "";
 let activeRow = 1;
 
 /*** Helpers ***/
-function t(key){ return I[currentLang][key]; }
-function fmtMonth(m){ return MONTHS[currentLang][m]; }
-function pad(n){return String(n).padStart(2,"0")}
-function mins(hm){ const [h,m]=hm.split(":").map(Number); return h*60+m; }
-function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=24*60; return Math.max(0,m); }
-function msToH(m){ return (m/60).toFixed(2) }
+const t = k => I[currentLang][k];
+const fmtMonth = m => MONTHS[currentLang][m];
+const mins = hm => { if(!hm) return 0; const [h,m]=hm.split(":").map(Number); return h*60+m; };
+function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0,m); }
+const msToH = m => (m/60).toFixed(2);
 
 /*** Build selects ***/
 function fillMonthYear(){
@@ -372,7 +374,7 @@ function fillMonthYear(){
 }
 
 /*** Rows ***/
-function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+const daysInMonth = (y,m)=> new Date(y, m+1, 0).getDate();
 
 function buildRows(){
   bodyRows.innerHTML="";
@@ -396,21 +398,24 @@ function buildRows(){
       <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
       <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
       <td class="actcol">
-        <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
-        <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
-        <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+        <div class="actions">
+          <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
+          <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
+          <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+        </div>
       </td>
     `;
     bodyRows.appendChild(tr);
   }
   restoreData();
+  recomputeAllRows();      /* viktigt: räkna om allt efter restore */
   updatePhotoBubbles();
   computeAll();
 }
 
 /*** Persistence ***/
-function key(){ return `tnh_data_${currentYear}_${currentMonth}` }
-function readData(){ return JSON.parse(localStorage.getItem(key())||"{}") }
+const key = ()=> `tnh_data_${currentYear}_${currentMonth}`;
+const readData = ()=> JSON.parse(localStorage.getItem(key())||"{}");
 function saveData(){
   if(autosave!=="on") return;
   const obj={};
@@ -420,7 +425,7 @@ function saveData(){
   });
   localStorage.setItem(key(), JSON.stringify(obj));
 }
-function val(tr,f){ return tr.querySelector(`[data-f="${f}"]`)?.value||"" }
+const val = (tr,f)=> tr.querySelector(`[data-f="${f}"]`)?.value||"";
 function restoreData(){
   const obj = readData();
   bodyRows.querySelectorAll("tr").forEach(tr=>{
@@ -432,15 +437,21 @@ function restoreData(){
     });
   });
 }
+function recomputeAllRows(){
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const d = Number(tr.dataset.day);
+    const m = diff(val(tr,'from'), val(tr,'to'), val(tr,'break')||"00:00");
+    tr.querySelector(`#tot-${d}`).textContent = msToH(m);
+  });
+}
 
-function noteKey(d){ return `tnh_note_${currentYear}_${currentMonth}_${d}` }
-function photoKey(d){ return `tnh_photos_${currentYear}_${currentMonth}_${d}` }
+const noteKey = d => `tnh_note_${currentYear}_${currentMonth}_${d}`;
+const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
 
 /*** Watermark & logo ***/
 function applyLogo(){
   if(logoData){
-    brandLogo.src = logoData;
-    wmImg.src = logoData;
+    brandLogo.src = logoData; wmImg.src = logoData;
   }else{
     const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
     <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
@@ -492,49 +503,48 @@ function computeAll(){
 }
 
 /*** Settings modal ***/
-function openSettings(){ settingsModal.classList.add("open"); }
-function closeSettingsModal(){ settingsModal.classList.remove("open"); }
+const open = el=> el.classList.add("open");
+const close = el=> el.classList.remove("open");
+function openSettings(){ open(settingsModal); }
 settingsBtn.onclick = openSettings;
-closeSettings.onclick = closeSettingsModal;
+closeSettings.onclick = ()=>close(settingsModal);
 saveClose.onclick = ()=>{
   company = companyInput.value.trim() || company;
-  S.company = company;
-  S.lang = currentLang;
-  S.month = currentMonth;
-  S.year = currentYear;
-  S.autosave = autosave;
-  S.wmOn = wmOn;
-  S.wmAlpha = wmAlpha;
-  S.logoData = logoData;
+  S.company = company; S.lang = currentLang; S.month = currentMonth; S.year = currentYear;
+  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha; S.logoData = logoData;
   localStorage.setItem("tnh_settings", JSON.stringify(S));
-  closeSettingsModal();
-  applyLanguage(); applyLogo(); computeAll();
+  close(settingsModal); applyLanguage(); applyLogo(); computeAll();
 }
-regenBtn.onclick = ()=>{ buildRows(); computeAll(); }
+regenBtn.onclick = ()=>{ buildRows(); };
 
 /*** Notes modal ***/
 let currentNoteDay = 1;
+function renderThumbs(day){
+  const arr = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
+  thumbs.innerHTML = arr.map((src,i)=>`<img data-idx="${i}" src="${src}" style="width:68px;height:68px;object-fit:cover;border-radius:10px;border:2px solid #e3efe6;cursor:pointer">`).join("");
+  thumbs.querySelectorAll("img").forEach(img=>{
+    img.onclick = ()=>{ viewerImg.src = img.src; open(viewerModal); };
+  });
+  photoList.textContent = arr.length ? `${arr.length} Bild(er) lokal gespeichert.` : "";
+}
 function openNotes(d){
   currentNoteDay = d;
   notesTitle.textContent = `${t('notes')} – ${fmtMonth(currentMonth)} ${d}, ${currentYear}`;
   notesArea.value = localStorage.getItem(noteKey(d)) || "";
-  const photos = JSON.parse(localStorage.getItem(photoKey(d))||"[]");
-  photoList.textContent = photos.length ? photos.length + " Bild(er) lokal gespeichert." : "";
-  notesModal.classList.add("open");
+  renderThumbs(d);
+  open(notesModal);
 }
-function closeNotesModal(){ notesModal.classList.remove("open"); }
-closeNotes.onclick = closeNotesModal;
-saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); closeNotesModal(); }
-photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); };
+closeNotes.onclick = ()=>close(notesModal);
+saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); close(notesModal); };
+photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); };
+viewerModal.onclick = ()=>close(viewerModal);
 
 /*** Foto-hjälpare ***/
 async function addPhotos(day, {capture}){
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.multiple = true;
+  input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
   if(capture){ input.setAttribute('capture','environment'); } // endast kamera
-  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); };
+  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); };
   input.click();
 }
 function updatePhotoBubbles(){
@@ -549,16 +559,10 @@ function updatePhotoBubbles(){
 }
 async function addFilesToDay(day, fileList){
   const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
-  const files = [...fileList].slice(0, 10 - prev.length); // cap total 10/dag
-  for(const f of files){
-    const data = await fileToDataURL(f, 1600);
-    prev.push(data);
-  }
+  const files = [...fileList].slice(0, 10 - prev.length); // max 10/dag
+  for(const f of files){ prev.push(await fileToDataURL(f, 1600)); }
   localStorage.setItem(photoKey(day), JSON.stringify(prev));
   updatePhotoBubbles();
-  if(Number(day)===Number(currentNoteDay)){
-    photoList.textContent = prev.length ? prev.length + " Bild(er) lokal gespeichert." : "";
-  }
 }
 
 /*** Share / QR ***/
@@ -567,31 +571,30 @@ function openShare(){
   qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
   waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
-  shareModal.classList.add("open");
+  open(shareModal);
 }
-function closeShareModal(){ shareModal.classList.remove("open"); }
-shareBtn.onclick = openShare; closeShare.onclick = closeShareModal;
-copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.textContent="🔗 "+t('copyLink'),800); }
+shareBtn.onclick = openShare;
+closeShare.onclick = ()=>close(shareModal);
+copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
 printBtn.onclick = ()=>window.print();
 
 /*** Logo input — scale & save immediately ***/
 logoFile.onchange = async (e)=>{
   const f = e.target.files?.[0]; if(!f) return;
   logoData = await fileToDataURL(f, 512);
-  S.logoData = logoData;
-  localStorage.setItem("tnh_settings", JSON.stringify(S));
+  S.logoData = logoData; localStorage.setItem("tnh_settings", JSON.stringify(S));
   applyLogo();
 }
 clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
 
 /*** Bind settings controls ***/
-langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); }
-monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); }
-yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); }
-autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; }
-wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); }
-wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); }
-companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); }
+langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
+monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); };
+yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); };
+autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; };
+wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); };
+wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); };
+companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); };
 
 /*** File -> dataURL with downscale ***/
 function fileToDataURL(file, maxSide){
@@ -606,7 +609,7 @@ function fileToDataURL(file, maxSide){
         const m = Math.max(w,h);
         if(m>maxSide){ const k = maxSide/m; w=Math.round(w*k); h=Math.round(h*k); }
         c.width=w; c.height=h;
-        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+        c.getContext('2d').drawImage(img,0,0,w,h);
         resolve(c.toDataURL('image/jpeg', 0.85));
       };
       img.src = reader.result;
@@ -617,9 +620,7 @@ function fileToDataURL(file, maxSide){
 
 /*** Restore on load ***/
 function init(){
-  companyInput.value = company;
-  titleTxt.textContent = company || t('appTitle');
-
+  companyInput.value = company; titleTxt.textContent = company || t('appTitle');
   langSel.value = currentLang; fillMonthYear();
   autosaveSel.value = autosave; wmToggleSel.value = wmOn; wmOpacity.value = wmAlpha;
 
@@ -628,7 +629,7 @@ function init(){
 
   applyLogo(); buildRows(); applyLanguage(); computeAll();
 
-  // drag-to-scroll for desktop (mobil scroll funkar ändå)
+  // drag-to-scroll för desktop
   const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
   scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
