@@ -1,335 +1,702 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tannenhof – Tidrapport</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tannenhof Stundenliste</title>
+<meta name="theme-color" content="#1f5634" />
 <style>
-:root{
-  --green:#225b30;
-  --green-dark:#163e21;
-  --ink:#082410;
-  --bg:#f4f7f5;
-  --card:#ffffff;
-  --shadow:0 6px 18px rgba(0,0,0,.12);
-  --radius:16px;
-}
+  :root{
+    --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
+    --ink:#0b2a10; --muted:#6b7a6c; --ring:#a5d6a7;
+    --shadow:0 10px 30px rgba(0,0,0,.12); --radius:16px;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; padding-bottom:130px; /* så sista dagen inte hamnar under FAB */
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
 
-/* layout */
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui}
-.appbar{
-  position:sticky;top:0;z-index:20;
-  background:var(--green);
-  color:#fff;
-  padding:12px 16px;
-  box-shadow:var(--shadow);
-}
-.appbar h1{margin:0;font-size:20px;font-weight:800}
-.appbar small{font-size:13px;opacity:.85}
+  /* Header */
+  .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
+  .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
+  .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
+  .brand img{ width:36px; height:36px; object-fit:cover; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .brand h1{ margin:0; font-size:22px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .brand small{ display:block; font-size:12px; opacity:.9 }
+  .spacer{flex:1}
+  .btn{ appearance:none; border:0; border-radius:12px; padding:12px 12px; background:#fff; color:var(--ink); font-weight:700; box-shadow:var(--shadow); min-width:128px }
+  .btn--dark{ background:#0e1a11; color:#fff }
+  .btn:active{ transform:translateY(1px) }
+  @media (max-width:640px){ .spacer{ flex-basis:100%; height:0 } .btn{ min-width:auto } }
 
-/* top buttons */
-.top-buttons{display:flex;gap:8px;margin-top:12px}
-.btn{
-  padding:10px 14px;
-  background:#fff;
-  border:0;
-  border-radius:12px;
-  font-weight:700;
-  box-shadow:var(--shadow);
-}
-.btn-dark{
-  background:var(--green-dark);
-  color:#fff;
-}
+  /* Total */
+  .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
+  .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);
+              display:flex; align-items:center; justify-content:space-between; gap:10px }
+  .total-title{font-weight:800; letter-spacing:.2px}
+  .total-sum{font-size:20px; font-weight:800}
 
-/* total box */
-.total-box{
-  background:var(--card);
-  margin:14px;
-  padding:14px;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  display:flex;justify-content:space-between;
-  font-weight:700;
-  font-size:18px;
-}
+  /* Table */
+  .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+               overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action:auto; }
+  table{ border-collapse:separate; border-spacing:0; width:980px }
+  thead th{ position:sticky; top:0; z-index:5; background:var(--green-100); color:var(--ink);
+            text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1 }
+  tbody td{ padding:10px 12px; border-bottom:1px solid #eef2ee; background:#fff }
+  tbody tr:nth-child(2n) td{ background:#fafdfb }
+  .daycol{ width:70px; text-align:center; font-weight:800}
+  .timecol{ width:160px}
+  .breakcol{ width:160px}
+  .totalcol{ width:120px; font-weight:800}
+  .projcol{ width:240px}
+  .actcol{ width:160px}
 
-/* table */
-.table-wrap{overflow-x:auto;margin:0 0 120px}
-table{width:900px;border-collapse:separate;border-spacing:0}
-thead th{
-  background:#eaf4ec;
-  padding:10px;
-  font-size:14px;
-  text-align:left;
-  position:sticky;top:60px;z-index:5;
-}
-tbody td{padding:8px;border-bottom:1px solid #d9e6db}
-input[type=time],input[type=text]{
-  width:100%;padding:8px;border-radius:10px;border:2px solid #dce7dd;
-  font-size:15px;
-}
-.today{background:#e8f9ee!important}
+  /* Inputs */
+  .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
+  .t:focus{ outline:3px solid var(--ring); border-color:transparent }
+  .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px }
+  .pill span{opacity:.7}
+  .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
 
-/* fab */
-.fab{
-  position:fixed;left:16px;bottom:16px;z-index:30;
-  width:60px;height:60px;display:grid;place-items:center;
-  border-radius:18px;border:0;
-  background:rgba(34,91,48,.85);
-  backdrop-filter:blur(6px);
-  color:#fff;font-size:26px;box-shadow:var(--shadow);
-}
+  .actions{ display:flex; gap:8px; flex-wrap:nowrap } /* aldrig radbryt */
+  .btn-icon{ width:40px; height:40px; display:inline-grid; place-items:center; border-radius:12px;
+             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative; flex:0 0 auto }
+  .btn-icon.secondary{ background:#2b7a48 }
+  .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
+                     background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
-/* flyout action menu */
-.action-wrap{position:relative}
-.action-btn{
-  width:46px;height:46px;
-  background:var(--green-dark);
-  border-radius:12px;
-  color:#fff;border:0;
-  display:grid;place-items:center;
-}
-.action-menu{
-  position:absolute;right:0;top:-150%;
-  background:#fff;padding:8px;border-radius:14px;
-  box-shadow:var(--shadow);display:none;flex-direction:column;gap:6px;
-}
-.action-wrap.open .action-menu{display:flex}
-.action-menu button{
-  width:42px;height:42px;border-radius:10px;border:0;
-  background:var(--green);color:#fff;display:grid;place-items:center
-}
-.bubble{position:absolute;top:-6px;right:-6px;background:#c51313;color:#fff;width:18px;height:18px;border-radius:50%;font-size:11px;display:grid;place-items:center}
+  /* Highlight today */
+  .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
-/* modal */
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);
-  display:none;place-items:center;z-index:50;
-}
-.modal.open{display:grid}
-.sheet{
-  background:#fff;width:92vw;max-width:480px;max-height:90vh;
-  overflow:auto;border-radius:20px;padding:18px;box-shadow:var(--shadow)
-}
-.sheet h3{margin:0 0 10px}
-textarea{width:100%;height:160px;border-radius:12px;border:2px solid #dce7dd;padding:10px;font-size:15px}
+  /* Watermark */
+  .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.5; z-index:0; pointer-events:none; filter:grayscale(.15) }
 
-/* watermark */
-.wm{
-  position:fixed;bottom:0;right:0;width:260px;opacity:.3;pointer-events:none
-}
+  /* FAB */
+  .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
+        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
+  .fab:active{ transform:translateY(1px) }
 
-@media print{
- .appbar,.fab,.modal,.top-buttons,.wm{display:none!important}
- body{background:#fff}
- .table-wrap{margin:0}
-}
+  /* Modal */
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
+  .modal.open{ display:grid }
+  .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px }
+  .sheet h3{ margin:0 0 8px 0 }
+  .grid{ display:grid; gap:12px }
+  .grid-2{ grid-template-columns:1fr 1fr }
+  .row{ display:flex; gap:10px; align-items:center }
+  .muted{ color:var(--muted); font-size:13px }
+
+  /* Lightbox */
+  #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
+
+  @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
+
+<!-- PDF-bibliotek (för PDF-knappen). Fallback till window.print() om de inte laddas. -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-<div class="appbar">
-  <h1 id="title">THÜRINGER TANNENHOF</h1>
-  <small id="subtitle">november 2025</small>
-  <div class="top-buttons">
-    <button id="shareBtn" class="btn">📤 Dela / Skicka</button>
-    <button id="printBtn" class="btn-dark">🖨️ Skriv ut / PDF</button>
+<header class="appbar">
+  <div class="appbar-inner">
+    <div class="brand">
+      <img id="brandLogo" alt="logo" src="" />
+      <div style="min-width:0">
+        <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
+        <small class="subtitle" id="monthSub">November 2025</small>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="shareBtn">📤 <span data-i="share">Teilen / Senden</span></button>
+    <button class="btn btn--dark" id="printBtn">🖨️ <span data-i="print">Drucken / PDF</span></button>
+  </div>
+</header>
+
+<main>
+  <section class="total">
+    <div class="total-box">
+      <div class="total-title">⏳ <span id="totalTitle">Gesamt – November 2025</span></div>
+      <div class="total-sum" id="grandTotal">0.00</div>
+    </div>
+  </section>
+
+  <section class="table-wrap" id="hScroll">
+    <table id="sheet">
+      <thead>
+        <tr>
+          <th class="daycol" data-i="day">Tag</th>
+          <th class="timecol" data-i="from">Von</th>
+          <th class="timecol" data-i="to">Bis</th>
+          <th class="breakcol" data-i="break">Pause</th>
+          <th class="totalcol" data-i="total">Gesamt</th>
+          <th class="projcol" data-i="project">Projekt/Ort</th>
+          <th class="actcol" data-i="actions">Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="bodyRows"></tbody>
+    </table>
+  </section>
+</main>
+
+<!-- Watermark -->
+<img id="wm" class="wm" alt="watermark" />
+
+<!-- Settings FAB -->
+<button class="fab" id="settingsBtn">⚙️</button>
+
+<!-- Settings modal -->
+<div class="modal" id="settingsModal" aria-hidden="true">
+  <div class="sheet">
+    <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
+      <h3 data-i="settings">Einstellungen</h3>
+      <button class="btn" id="closeSettings">✖</button>
+    </div>
+
+    <div class="grid">
+      <label class="grid">
+        <span data-i="company">Arbeitgeber</span>
+        <input id="company" class="t" placeholder="THÜRINGER TANNENHOF">
+      </label>
+
+      <div class="grid">
+        <span data-i="logo">Logo (Bild oder Emoji)</span>
+        <div class="row">
+          <input id="logoFile" type="file" accept="image/*" class="t" />
+          <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
+        </div>
+        <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
+      </div>
+
+      <div class="grid grid-2">
+        <label class="grid">
+          <span data-i="language">Sprache</span>
+          <select id="lang" class="t">
+            <option value="de">Deutsch</option>
+            <option value="sv">Svenska</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+
+        <label class="grid">
+          <span data-i="month">Monat</span>
+          <select id="month" class="t"></select>
+        </label>
+
+        <label class="grid">
+          <span data-i="year">Jahr</span>
+          <select id="year" class="t"></select>
+        </label>
+
+        <label class="grid">
+          <span data-i="autosave">Autospeichern</span>
+          <select id="autosave" class="t">
+            <option value="on" selected data-i="on">Ein</option>
+            <option value="off" data-i="off">Aus</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid grid-2">
+        <label class="grid">
+          <span data-i="wmToggle">Wasserzeichen</span>
+          <select id="wmToggle" class="t">
+            <option value="on" selected data-i="on">Ein</option>
+            <option value="off" data-i="off">Aus</option>
+          </select>
+        </label>
+        <label class="grid">
+          <span data-i="wmOpacity">Deckkraft</span>
+          <input id="wmOpacity" type="range" min="0" max="100" value="40" />
+        </label>
+      </div>
+
+      <div class="row" style="justify-content:flex-end; gap:8px">
+        <button class="btn" id="regenBtn" data-i="genDays">Tage erstellen</button>
+        <button class="btn btn--dark" id="saveClose" data-i="saveClose">Speichern & schließen</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="total-box">
-  <span>⏳ Totalt</span>
-  <span id="grandTotal">0.00</span>
-</div>
-
-<div class="table-wrap">
-<table id="tbl">
-<thead>
-<tr><th>Dag</th><th>Från</th><th>Till</th><th>Paus</th><th>Totalt</th><th>Projekt</th><th></th></tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
-</div>
-
-<button class="fab" id="settingsBtn">⚙️</button>
-
-<!-- Notes -->
-<div class="modal" id="noteModal">
- <div class="sheet">
-   <h3 id="noteTitle"></h3>
-   <textarea id="noteArea" placeholder="Anteckning…"></textarea>
-   <div style="margin-top:10px;display:flex;justify-content:flex-end">
-     <button class="btn-dark" id="saveNote">Spara</button>
-   </div>
- </div>
-</div>
-
-<!-- Settings -->
-<div class="modal" id="settingsModal">
- <div class="sheet">
-  <h3>Inställningar</h3>
-  <label>Företag<br><input id="company" class="t" value="THÜRINGER TANNENHOF"></label><br><br>
-  <label>Språk<br><select id="lang"><option value="sv">Svenska</option><option value="de">Deutsch</option><option value="en">English</option></select></label><br><br>
-  <label>Månad<br><select id="month"></select></label><br><br>
-  <label>År<br><select id="year"></select></label><br><br>
-  <button class="btn-dark" id="applySet">Spara & stäng</button>
- </div>
-</div>
-
-<img src="" id="wm" class="wm">
-
-<script>
-/* ==== SETTINGS ==== */
-const M = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
-const S = JSON.parse(localStorage.getItem("tnh_settings")||"{}");
-let y=S.year||new Date().getFullYear();
-let m=S.month||new Date().getMonth();
-let comp=S.comp||"THÜRINGER TANNENHOF";
-
-document.getElementById("company").value=comp;
-const yearSel=document.getElementById("year");
-for(let i=y-1;i<=y+2;i++){
-  yearSel.innerHTML+=`<option value="${i}"${i===y?"selected":""}>${i}</option>`;
-}
-const monthSel=document.getElementById("month");
-M.forEach((v,i)=>monthSel.innerHTML+=`<option value="${i}"${i===m?"selected":""}>${v}</option>`);
-
-function saveSettings(){
-  comp=document.getElementById("company").value;
-  y=Number(yearSel.value); m=Number(monthSel.value);
-  localStorage.setItem("tnh_settings",JSON.stringify({comp,year:y,month:m}));
-  location.reload();
-}
-document.getElementById("applySet").onclick=saveSettings;
-
-/* ==== UI SET ==== */
-document.getElementById("title").textContent=comp;
-document.getElementById("subtitle").textContent=`${M[m]} ${y}`;
-
-/* ==== BUILD DAYS ==== */
-const rows=document.getElementById("rows");
-const days=new Date(y,m+1,0).getDate();
-
-for(let d=1;d<=days;d++){
- const tr=document.createElement("tr");
- tr.dataset.d=d;
- const today=new Date();
- if(today.getFullYear()===y && today.getMonth()===m && today.getDate()===d){
-   tr.classList.add("today");
- }
- tr.innerHTML=`
-  <td>${d}</td>
-  <td><input type="time" data-f="f"></td>
-  <td><input type="time" data-f="t"></td>
-  <td><input type="time" data-f="b" value="00:00"></td>
-  <td id="sum-${d}">0.00</td>
-  <td><input type="text" data-f="p"></td>
-  <td>
-    <div class="action-wrap">
-      <button class="action-btn">⋮</button>
-      <div class="action-menu">
-        <button data-note="${d}">📝</button>
+<!-- Notes/Photos modal -->
+<div class="modal" id="notesModal">
+  <div class="sheet">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="notesTitle">Tag 1</h3>
+      <button class="btn" id="closeNotes">✖</button>
+    </div>
+    <div class="grid">
+      <textarea id="notesArea" class="t" style="height:180px" placeholder="Notiz…"></textarea>
+      <div class="grid">
+        <span>📷 <span data-i="photos">Fotos (optional)</span></span>
+        <input id="photosInput" type="file" accept="image/*" multiple class="t">
+        <div id="thumbs" class="row" style="flex-wrap:wrap"></div>
+        <div id="photoList" class="muted"></div>
+      </div>
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn btn--dark" id="saveNotes" data-i="save">Speichern</button>
       </div>
     </div>
-  </td>`;
- rows.appendChild(tr);
+  </div>
+</div>
+
+<!-- Image viewer (lightbox) -->
+<div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
+
+<!-- Share/QR modal -->
+<div class="modal" id="shareModal">
+  <div class="sheet">
+    <div class="row" style="justify-content:space-between">
+      <h3 data-i="share">Teilen / Senden</h3>
+      <button class="btn" id="closeShare">✖</button>
+    </div>
+    <div class="grid">
+      <div class="row" style="gap:12px; flex-wrap:wrap">
+        <button class="btn" id="copyLink">🔗 <span data-i="copyLink">Link kopieren</span></button>
+        <a class="btn" id="mailLink" href="#">✉️ <span data-i="email">E-Mail</span></a>
+        <a class="btn" id="waLink" href="#" target="_blank">🟢 WhatsApp</a>
+      </div>
+      <div class="grid" style="place-items:center">
+        <img id="qrImg" alt="QR" style="width:min(240px,60vw); border-radius:16px; box-shadow:var(--shadow)">
+        <div class="muted" data-i="scan">QR-Code scannen, um die Seite zu öffnen.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/*** i18n ***/
+const I = {
+  sv:{ appTitle:"Tannenhofs tidtabell", share:"Dela / Skicka", print:"Skriv ut / PDF",
+    total:"Totalt – {month} {year}", day:"Dag", from:"Från", to:"Till", break:"Paus", totalCol:"Totalt",
+    project:"Projekt/plats", actions:"Åtgärd", settings:"Inställningar", company:"Företag",
+    logo:"Logga (bild eller emoji)", logoHint:"Din logga sparas lokalt på den här enheten.",
+    language:"Språk", month:"Månad", year:"År", autosave:"Autospara", on:"På", off:"Av",
+    genDays:"Skapa dagar", saveClose:"Spara & stäng", wmToggle:"Vattenstämpel", wmOpacity:"Stämpel opacitet",
+    notes:"Anteckning", edit:"Redigera", photos:"Foton (valfritt)", save:"Spara",
+    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clearLogo:"Rensa logga" },
+  de:{ appTitle:"Tannenhof Stundenliste", share:"Teilen / Senden", print:"Drucken / PDF",
+    total:"Gesamt – {month} {year}", day:"Tag", from:"Von", to:"Bis", break:"Pause", totalCol:"Gesamt",
+    project:"Projekt/Ort", actions:"Aktion", settings:"Einstellungen", company:"Arbeitgeber",
+    logo:"Logo (Bild oder Emoji)", logoHint:"Dein Logo wird lokal auf diesem Gerät gespeichert.",
+    language:"Sprache", month:"Monat", year:"Jahr", autosave:"Autospeichern", on:"Ein", off:"Aus",
+    genDays:"Tage erstellen", saveClose:"Speichern & schließen", wmToggle:"Wasserzeichen", wmOpacity:"Deckkraft",
+    notes:"Notiz", edit:"Bearbeiten", photos:"Fotos (optional)", save:"Speichern",
+    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clearLogo:"Logo löschen" },
+  en:{ appTitle:"Tannenhof Timesheet", share:"Share / Send", print:"Print / PDF",
+    total:"Total – {month} {year}", day:"Day", from:"From", to:"To", break:"Break", totalCol:"Total",
+    project:"Project/site", actions:"Action", settings:"Settings", company:"Company",
+    logo:"Logo (image or emoji)", logoHint:"Your logo is stored locally on this device.",
+    language:"Language", month:"Month", year:"Year", autosave:"Autosave", on:"On", off:"Off",
+    genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Watermark opacity",
+    notes:"Note", edit:"Edit", photos:"Photos (optional)", save:"Save",
+    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clearLogo:"Clear logo" }
+};
+const MONTHS = {
+  sv:["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"],
+  de:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+  en:["January","February","March","April","May","June","July","August","September","October","November","December"]
+};
+const S = JSON.parse(localStorage.getItem("tnh_settings")||"{}");
+
+/*** Elements ***/
+const $ = s=>document.querySelector(s);
+const bodyRows = $("#bodyRows");
+const titleTxt = $("#titleTxt");
+const monthSub = $("#monthSub");
+const totalTitle = $("#totalTitle");
+const grandTotal = $("#grandTotal");
+const wmImg = $("#wm");
+const brandLogo = $("#brandLogo");
+
+const settingsBtn = $("#settingsBtn");
+const settingsModal = $("#settingsModal");
+const closeSettings = $("#closeSettings");
+const saveClose = $("#saveClose");
+const regenBtn = $("#regenBtn");
+
+const langSel = $("#lang");
+const monthSel = $("#month");
+const yearSel = $("#year");
+const autosaveSel = $("#autosave");
+const wmToggleSel = $("#wmToggle");
+const wmOpacity = $("#wmOpacity");
+const companyInput = $("#company");
+const logoFile = $("#logoFile");
+const clearLogo = $("#clearLogo");
+
+const notesModal = $("#notesModal");
+const notesArea = $("#notesArea");
+const notesTitle = $("#notesTitle");
+const closeNotes = $("#closeNotes");
+const saveNotes = $("#saveNotes");
+const photosInput = $("#photosInput");
+const photoList = $("#photoList");
+const thumbs = $("#thumbs");
+
+const viewerModal = $("#viewerModal");
+const viewerImg = $("#viewerImg");
+
+const shareBtn = $("#shareBtn");
+const printBtn = $("#printBtn");
+const shareModal = $("#shareModal");
+const closeShare = $("#closeShare");
+const qrImg = $("#qrImg");
+const copyLink = $("#copyLink");
+const mailLink = $("#mailLink");
+const waLink = $("#waLink");
+
+/*** State ***/
+let currentLang = S.lang || "de";
+let currentYear = S.year || new Date().getFullYear();
+let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
+let autosave = S.autosave ?? "on";
+let wmOn = S.wmOn ?? "on";
+let wmAlpha = S.wmAlpha ?? 40;
+let company = S.company || "THÜRINGER TANNENHOF";
+let logoData = S.logoData || "";
+let activeRow = 1;
+
+/*** Helpers ***/
+const t = k => I[currentLang][k];
+const fmtMonth = m => MONTHS[currentLang][m];
+const mins = hm => { if(!hm) return 0; const [h,m]=hm.split(":").map(Number); return h*60+m; };
+function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0,m); }
+const msToH = m => (m/60).toFixed(2);
+
+/*** Build selects ***/
+function fillMonthYear(){
+  monthSel.innerHTML = MONTHS[currentLang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
+  const yNow = new Date().getFullYear();
+  let ys=[]; for(let y=yNow-1; y<=yNow+2; y++) ys.push(`<option value="${y}">${y}</option>`);
+  yearSel.innerHTML = ys.join("");
+  monthSel.value = String(currentMonth);
+  yearSel.value = String(currentYear);
 }
 
-/* ==== NOTES ==== */
-let curDay=null;
-const nm=document.getElementById("noteModal");
-document.getElementById("saveNote").onclick=()=>{
- localStorage.setItem(`tnh_note_${y}_${m}_${curDay}`,document.getElementById("noteArea").value);
- nm.classList.remove("open");
-};
+/*** Rows ***/
+const daysInMonth = (y,m)=> new Date(y, m+1, 0).getDate();
 
-rows.addEventListener("click",e=>{
- const n=e.target.closest("[data-note]");
- if(n){
-  curDay=n.dataset.note;
-  document.getElementById("noteTitle").textContent=`Dag ${curDay}`;
-  document.getElementById("noteArea").value=localStorage.getItem(`tnh_note_${y}_${m}_${curDay}`)||"";
-  nm.classList.add("open");
- }
- if(e.target.classList.contains("action-btn")){
-   const wrap=e.target.closest(".action-wrap");
-   wrap.classList.toggle("open");
- }
+function buildRows(){
+  bodyRows.innerHTML="";
+  const dcount = daysInMonth(currentYear,currentMonth);
+  for(let d=1; d<=dcount; d++){
+    const tr = document.createElement("tr");
+    tr.dataset.day = d;
+
+    const today = new Date();
+    if(today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d){
+      tr.classList.add("today");
+      activeRow = d;
+      setTimeout(()=>tr.scrollIntoView({behavior:"smooth", block:"center"}), 300);
+    }
+
+    tr.innerHTML = `
+      <td class="daycol"><div class="badge">📅 ${d}</div></td>
+      <td class="timecol"><input class="t time" type="time" step="300" data-f="from" data-d="${d}"></td>
+      <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
+      <td class="breakcol"><div class="pill"><span>☕</span><input class="t" style="border:0;flex:1" type="time" step="300" value="00:00" data-f="break" data-d="${d}"></div></td>
+      <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
+      <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
+      <td class="actcol">
+        <div class="actions">
+          <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
+          <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
+          <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+        </div>
+      </td>
+    `;
+    bodyRows.appendChild(tr);
+  }
+  restoreData();
+  recomputeAllRows();      /* viktigt: räkna om allt efter restore */
+  updatePhotoBubbles();
+  computeAll();
+}
+
+/*** Persistence ***/
+const key = ()=> `tnh_data_${currentYear}_${currentMonth}`;
+const readData = ()=> JSON.parse(localStorage.getItem(key())||"{}");
+function saveData(){
+  if(autosave!=="on") return;
+  const obj={};
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const d=tr.dataset.day;
+    obj[d]={ from:val(tr,'from'), to:val(tr,'to'), break:val(tr,'break')||"00:00", project:val(tr,'project')||"" };
+  });
+  localStorage.setItem(key(), JSON.stringify(obj));
+}
+const val = (tr,f)=> tr.querySelector(`[data-f="${f}"]`)?.value||"";
+function restoreData(){
+  const obj = readData();
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const d=tr.dataset.day;
+    const r=obj[d]||{};
+    ["from","to","break","project"].forEach(f=>{
+      const el = tr.querySelector(`[data-f="${f}"]`);
+      if(el && r[f]!=null) el.value = r[f];
+    });
+  });
+}
+function recomputeAllRows(){
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const d = Number(tr.dataset.day);
+    const m = diff(val(tr,'from'), val(tr,'to'), val(tr,'break')||"00:00");
+    tr.querySelector(`#tot-${d}`).textContent = msToH(m);
+  });
+}
+
+const noteKey = d => `tnh_note_${currentYear}_${currentMonth}_${d}`;
+const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
+
+/*** Watermark & logo ***/
+function applyLogo(){
+  if(logoData){
+    brandLogo.src = logoData; wmImg.src = logoData;
+  }else{
+    const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
+    <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
+    const url = `data:image/svg+xml;utf8,${svg}`;
+    brandLogo.src = url; wmImg.src = url;
+  }
+  wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
+}
+
+/*** Language & labels ***/
+function applyLanguage(){
+  titleTxt.textContent = company || t("appTitle");
+  document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent = t(el.dataset.i); });
+  monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
+  totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
+  document.querySelector('[data-i="total"]').textContent = t("totalCol");
+  fillMonthYear();
+}
+
+/*** Events ***/
+bodyRows.addEventListener("input", e=>{
+  const tr = e.target.closest("tr"); if(!tr) return;
+  const d = Number(tr.dataset.day);
+  computeRow(d); saveData();
+});
+bodyRows.addEventListener("click", async e=>{
+  const noteBtn = e.target.closest("[data-note]");
+  const camBtn  = e.target.closest("[data-photo-camera]");
+  const galBtn  = e.target.closest("[data-photo-gallery]");
+  if(noteBtn){ openNotes(noteBtn.dataset.note); return; }
+  if(camBtn){ await addPhotos(camBtn.dataset.photoCamera, {capture:true}); return; }
+  if(galBtn){ await addPhotos(galBtn.dataset.photoGallery, {capture:false}); return; }
 });
 
-/* ==== SAVE & RESTORE ==== */
-function k(){return`tnh_data_${y}_${m}`;}
-function save(){
- const obj={};
- rows.querySelectorAll("tr").forEach(tr=>{
-  const d=tr.dataset.d;
-  obj[d]={};
-  tr.querySelectorAll("[data-f]").forEach(i=>{
-    obj[d][i.dataset.f]=i.value;
+function computeRow(d){
+  const tr = bodyRows.querySelector(`tr[data-day="${d}"]`);
+  const m = diff(val(tr,'from'), val(tr,'to'), val(tr,'break')||"00:00");
+  tr.querySelector(`#tot-${d}`).textContent = msToH(m);
+  computeAll();
+}
+function computeAll(){
+  let sum=0;
+  bodyRows.querySelectorAll("tr").forEach(tr=>{
+    const d = tr.dataset.day;
+    const v = parseFloat(tr.querySelector(`#tot-${d}`).textContent)||0;
+    sum+=v;
   });
- });
- localStorage.setItem(k(),JSON.stringify(obj));
+  grandTotal.textContent = sum.toFixed(2);
 }
-function restore(){
- const obj=JSON.parse(localStorage.getItem(k())||"{}");
- rows.querySelectorAll("tr").forEach(tr=>{
-  const d=tr.dataset.d;
-  if(obj[d]){
-    tr.querySelectorAll("[data-f]").forEach(i=>{i.value=obj[d][i.dataset.f]||i.value});
+
+/*** Settings modal ***/
+const open = el=> el.classList.add("open");
+const close = el=> el.classList.remove("open");
+function openSettings(){ open(settingsModal); }
+settingsBtn.onclick = openSettings;
+closeSettings.onclick = ()=>close(settingsModal);
+saveClose.onclick = ()=>{
+  company = companyInput.value.trim() || company;
+  S.company = company; S.lang = currentLang; S.month = currentMonth; S.year = currentYear;
+  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha; S.logoData = logoData;
+  localStorage.setItem("tnh_settings", JSON.stringify(S));
+  close(settingsModal); applyLanguage(); applyLogo(); computeAll();
+}
+regenBtn.onclick = ()=>{ buildRows(); };
+
+/*** Notes modal ***/
+let currentNoteDay = 1;
+function renderThumbs(day){
+  const arr = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
+  const html = arr.map((src,i)=>`<img data-idx="${i}" src="${src}" style="width:68px;height:68px;object-fit:cover;border-radius:10px;border:2px solid #e3efe6;cursor:pointer">`).join("");
+  const thumbsEl = document.getElementById("thumbs");
+  thumbsEl.innerHTML = html;
+  thumbsEl.querySelectorAll("img").forEach(img=>{
+    img.onclick = ()=>{ viewerImg.src = img.src; open(viewerModal); };
+  });
+  photoList.textContent = arr.length ? `${arr.length} Bild(er) lokal gespeichert.` : "";
+}
+function openNotes(d){
+  currentNoteDay = d;
+  notesTitle.textContent = `${t('notes')} – ${fmtMonth(currentMonth)} ${d}, ${currentYear}`;
+  notesArea.value = localStorage.getItem(noteKey(d)) || "";
+  renderThumbs(d);
+  open(notesModal);
+}
+closeNotes.onclick = ()=>close(notesModal);
+saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); close(notesModal); };
+photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); };
+viewerModal.onclick = ()=>close(viewerModal);
+
+/*** Foto-hjälpare ***/
+async function addPhotos(day, {capture}){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
+  if(capture){ input.setAttribute('capture','environment'); } // endast kamera
+  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); };
+  input.click();
+}
+function updatePhotoBubbles(){
+  const dcount = daysInMonth(currentYear,currentMonth);
+  for(let d=1; d<=dcount; d++){
+    const arr = JSON.parse(localStorage.getItem(photoKey(d))||"[]");
+    const b = document.getElementById('pb-'+d);
+    if(!b) continue;
+    if(arr.length){ b.style.display='grid'; b.textContent = arr.length; }
+    else{ b.style.display='none'; }
   }
- });
 }
-restore();
-
-/* ==== CALC ==== */
-function mins(v){if(!v) return 0;let[a,b]=v.split(":").map(Number);return a*60+b}
-function calc(){
- let total=0;
- rows.querySelectorAll("tr").forEach(tr=>{
-  const d=tr.dataset.d;
-  const f=tr.querySelector('[data-f="f"]').value;
-  const t=tr.querySelector('[data-f="t"]').value;
-  const b=tr.querySelector('[data-f="b"]').value||"00:00";
-  let m=mins(t)-mins(f)-mins(b);
-  if(m<0)m+=1440;
-  const h=(m/60).toFixed(2);
-  document.getElementById(`sum-${d}`).textContent=h;
-  total+=Number(h);
- });
- document.getElementById("grandTotal").textContent=total.toFixed(2);
+async function addFilesToDay(day, fileList){
+  const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
+  const files = [...fileList].slice(0, 10 - prev.length); // max 10/dag
+  for(const f of files){ prev.push(await fileToDataURL(f, 1600)); }
+  localStorage.setItem(photoKey(day), JSON.stringify(prev));
+  updatePhotoBubbles();
 }
-rows.addEventListener("input",()=>{save();calc()});
-calc();
 
-/* ==== SETTINGS BTN ==== */
-document.getElementById("settingsBtn").onclick=()=>document.getElementById("settingsModal").classList.add("open");
-
-/* ==== SHARE ==== */
-document.getElementById("shareBtn").onclick=()=>navigator.share?.({title:"Tidrapport",url:location.href});
-
-/* ==== PRINT ==== */
-function fallbackPrint(){
- const w=window.open("","_blank");
- const html=document.documentElement.cloneNode(true);
- html.querySelector(".appbar")?.remove();
- html.querySelector(".fab")?.remove();
- html.querySelectorAll(".modal")?.forEach(m=>m.remove());
- w.document.write("<html>"+html.innerHTML+"</html>");
- w.document.close();
- w.onload=()=>{w.focus();w.print()};
+/*** Share / QR ***/
+function openShare(){
+  const url = location.href;
+  const qr = document.getElementById("qrImg");
+  if(qr) qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
+  waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
+  open(shareModal);
 }
-function tryPrint(){
- try{window.print();}catch(e){fallbackPrint()}
- setTimeout(()=>fallbackPrint(),400);
-}
-document.getElementById("printBtn").onclick=tryPrint;
+shareBtn.onclick = openShare;
+closeShare.onclick = ()=>close(shareModal);
+copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
 
-/* ==== CLOSE MODALS ==== */
-window.onclick=e=>{
- if(e.target.classList.contains("modal")) e.target.classList.remove("open")
-};
+/*** ✅ PDF-knapp — html2canvas + jsPDF, fallback till window.print() ***/
+async function exportPDF(){
+  try{
+    if(!(window.html2canvas && window.jspdf)) throw new Error("libs-missing");
+    const { jsPDF } = window.jspdf;
+
+    // Välj det som ska in i PDF (hela main: totals + tabell)
+    const node = document.querySelector('main');
+    const canvas = await html2canvas(node, {
+      scale: 2,
+      background: '#ffffff',
+      windowWidth: document.documentElement.scrollWidth
+    });
+
+    // Beräkna skivning till A4-sidor
+    const pdf = new jsPDF('p','mm','a4');
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+
+    const imgW = pageW;
+    const scale = imgW / canvas.width;
+    const pageCanvasPxH = Math.floor(pageH / scale); // hur många px ryms per sida
+
+    let rendered = 0;
+    let pageIndex = 0;
+
+    while(rendered < canvas.height){
+      const sliceH = Math.min(pageCanvasPxH, canvas.height - rendered);
+      const slice = document.createElement('canvas');
+      slice.width = canvas.width;
+      slice.height = sliceH;
+      const ctx = slice.getContext('2d');
+      ctx.drawImage(canvas, 0, rendered, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+      const img = slice.toDataURL('image/jpeg', 0.95);
+      const imgH = sliceH * scale;
+
+      if(pageIndex>0) pdf.addPage();
+      pdf.addImage(img, 'JPEG', 0, 0, imgW, imgH);
+      rendered += sliceH;
+      pageIndex++;
+    }
+
+    // Filnamn: Firma_Monat_Jahr.pdf
+    const firm = (document.getElementById('company')?.value || 'TANNENHOF').replace(/\s+/g,'_');
+    const months = MONTHS[currentLang];
+    const fname = `${firm}_${months[currentMonth]}_${currentYear}.pdf`;
+    pdf.save(fname);
+  }catch(e){
+    // Fallback: öppna systemets utskrift (använd "Spara som PDF")
+    window.print();
+  }
+}
+printBtn.onclick = exportPDF;
+
+/*** Logo input — scale & save immediately ***/
+logoFile.onchange = async (e)=>{
+  const f = e.target.files?.[0]; if(!f) return;
+  logoData = await fileToDataURL(f, 512);
+  S.logoData = logoData; localStorage.setItem("tnh_settings", JSON.stringify(S));
+  applyLogo();
+}
+clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
+
+/*** Bind settings controls ***/
+langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
+monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); };
+yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); };
+autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; };
+wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); };
+wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); };
+companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); };
+
+/*** File -> dataURL with downscale ***/
+function fileToDataURL(file, maxSide){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const c = document.createElement('canvas');
+        let {width:w, height:h} = img;
+        const m = Math.max(w,h);
+        if(m>maxSide){ const k = maxSide/m; w=Math.round(w*k); h=Math.round(h*k); }
+        c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/*** Restore on load ***/
+function init(){
+  companyInput.value = company; titleTxt.textContent = company || t('appTitle');
+  langSel.value = currentLang; fillMonthYear();
+  autosaveSel.value = autosave; wmToggleSel.value = wmOn; wmOpacity.value = wmAlpha;
+
+  monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
+  totalTitle.textContent = t('total').replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
+
+  applyLogo(); buildRows(); applyLanguage(); computeAll();
+
+  // drag-to-scroll för desktop
+  const scroller = document.getElementById("hScroll");
+  let startX,scrollLeft,isDown=false;
+  scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
+  ['mouseleave','mouseup'].forEach(ev=>scroller.addEventListener(ev,()=>isDown=false));
+  scroller.addEventListener('mousemove', (e)=>{ if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1; scroller.scrollLeft=scrollLeft-walk; });
+}
+document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
