@@ -72,7 +72,7 @@
   /* Today highlight */
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
-  /* Watermark (uses logo.png by default) */
+  /* Watermark */
   .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.4; z-index:0; pointer-events:none; filter:grayscale(.15) }
 
   /* Settings FAB */
@@ -92,6 +92,17 @@
 
   /* Lightbox */
   #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
+
+  /* === Easter egg overlay (triple click on logo) === */
+  .easter{
+    position:fixed; inset:0; display:none;
+    align-items:center; justify-content:center;
+    background:rgba(0,0,0,.75); color:#fff;
+    font-size:min(14vw, 120px); font-weight:900;
+    z-index:9999; text-shadow:0 0 20px rgba(46,125,50,.8);
+    animation:blink .5s steps(1,end) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:.3 } }
 
   @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
@@ -264,6 +275,9 @@
     </div>
   </div>
 </div>
+
+<!-- Hidden overlay for the easter egg -->
+<div id="easter" class="easter">KAKALAMAKKA</div>
 
 <script>
 /*** i18n ***/
@@ -563,12 +577,17 @@ async function addFilesToDay(day, fileList){
   updatePhotoBubbles();
 }
 
-/*** Share / QR ***/
+/*** Share / QR (with fallback) ***/
 function openShare(){
   const url = location.href;
-  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  const primary  = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  const fallback = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(url)}`;
+  qrImg.onerror = ()=>{ qrImg.onerror = null; qrImg.src = fallback; };
+  qrImg.src = primary;
+
   mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
-  waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
+  waLink.href   = `https://wa.me/?text=${encodeURIComponent(url)}`;
+
   open(shareModal);
 }
 shareBtn.onclick = openShare;
@@ -615,6 +634,20 @@ function fileToDataURL(file, maxSide){
     reader.readAsDataURL(file);
   });
 }
+
+/*** Easter egg: triple click on logo ***/
+let _tapCnt = 0, _tapTimer = 0;
+brandLogo.addEventListener('click', ()=>{
+  _tapCnt++;
+  clearTimeout(_tapTimer);
+  _tapTimer = setTimeout(()=>{ _tapCnt = 0; }, 500);
+  if(_tapCnt >= 3){
+    const ee = document.getElementById('easter');
+    ee.style.display = 'flex';
+    setTimeout(()=>{ ee.style.display = 'none'; }, 1500);
+    _tapCnt = 0;
+  }
+});
 
 /*** Init ***/
 function init(){
