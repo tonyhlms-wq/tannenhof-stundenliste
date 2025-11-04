@@ -6,7 +6,7 @@
 <title>Tannenhof Stundenliste</title>
 <meta name="theme-color" content="#1f5634" />
 <link rel="icon" href="logo.png" />
-<link rel="apple-touch-icon" href="logo.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <style>
   :root{
     --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
@@ -19,7 +19,6 @@
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
-
   .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
   .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
   .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
@@ -84,29 +83,14 @@
 
   #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
 
-  .easter{
-    position:fixed; inset:0; display:none;
-    align-items:center; justify-content:center;
-    background:rgba(0,0,0,.75); color:#fff;
-    font-size:min(14vw, 120px); font-weight:900;
-    z-index:9999; text-shadow:0 0 20px rgba(46,125,50,.8);
-    animation:blink .5s steps(1,end) infinite;
-  }
-  @keyframes blink{ 50%{ opacity:.3 } }
-
-  .toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
-          background:#0e1a11; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--shadow); display:none; z-index:60 }
-  .toast.show{ display:block; animation:fade .2s ease-out }
-  @keyframes fade{ from{opacity:0; transform:translate(-50%,10px)} to{opacity:1; transform:translate(-50%,0)} }
-
-  @media print{ .appbar, .fab, .modal, .wm, .toast{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
+  @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
 </head>
 <body>
 
 <header class="appbar">
   <div class="appbar-inner">
-    <div class="brand">
+    <div class="brand" id="brandTap">
       <img id="brandLogo" alt="logo" src="logo.png" />
       <div style="min-width:0">
         <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
@@ -146,6 +130,7 @@
 </main>
 
 <img id="wm" class="wm" alt="watermark" src="logo.png" />
+
 <button class="fab" id="settingsBtn">⚙️</button>
 
 <!-- Settings -->
@@ -168,7 +153,7 @@
           <input id="logoFile" type="file" accept="image/*" class="t" />
           <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
         </div>
-        <div class="muted" data-i="logoHint">Dein Logo wird lokal på diesem Gerät gespeichert.</div>
+        <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
       </div>
 
       <div class="grid grid-2">
@@ -222,7 +207,7 @@
   </div>
 </div>
 
-<!-- Notes/Photos -->
+<!-- Notes / Photos -->
 <div class="modal" id="notesModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -244,9 +229,14 @@
   </div>
 </div>
 
-<div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
+<!-- Viewer -->
+<div class="modal" id="viewerModal">
+  <div class="sheet" style="display:grid; place-items:center">
+    <img id="viewerImg" alt="">
+  </div>
+</div>
 
-<!-- Share/QR -->
+<!-- Share / QR -->
 <div class="modal" id="shareModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -267,8 +257,12 @@
   </div>
 </div>
 
-<div id="easter" class="easter">KAKALAMAKKA</div>
-<div id="toast" class="toast">OK</div>
+<!-- Kakalamaka overlay -->
+<div id="kkm" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); color:#fff; z-index:1000; 
+  font-weight:900; font-size:12vw; display:grid; place-items:center; text-align:center; animation:blink 0.6s infinite;">
+  KAKALAMAKA
+</div>
+<style>@keyframes blink{0%{opacity:1}50%{opacity:.2}100%{opacity:1}}</style>
 
 <script>
 /*** i18n ***/
@@ -314,6 +308,7 @@ const totalTitle = $("#totalTitle");
 const grandTotal = $("#grandTotal");
 const wmImg = $("#wm");
 const brandLogo = $("#brandLogo");
+const brandTap = $("#brandTap");
 
 const settingsBtn = $("#settingsBtn");
 const settingsModal = $("#settingsModal");
@@ -352,17 +347,15 @@ const copyLink = $("#copyLink");
 const mailLink = $("#mailLink");
 const waLink = $("#waLink");
 
-const toast = $("#toast");
-
 /*** State ***/
 let currentLang = S.lang || "de";
 let currentYear = S.year || new Date().getFullYear();
-let currentMonth = (S.month ?? (new Date().getMonth()));
+let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
-let logoData = S.logoData || "";
+let logoData = S.logoData || ""; // empty => shared logo.png
 let activeRow = 1;
 
 /*** Helpers ***/
@@ -371,7 +364,6 @@ const fmtMonth = m => MONTHS[currentLang][m];
 const mins = hm => { if(!hm) return 0; const [h,m]=hm.split(":").map(Number); return h*60+m; };
 function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0, m); }
 const msToH = m => (m/60).toFixed(2);
-function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 1600); }
 
 /*** Build selects ***/
 function fillMonthYear(){
@@ -406,12 +398,12 @@ function buildRows(){
       <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
       <td class="breakcol"><div class="pill"><span>☕</span><input class="t" style="border:0;flex:1" type="time" step="300" value="00:00" data-f="break" data-d="${d}"></div></td>
       <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
-      <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
+      <td class="projcol"><div class="pill"><span>🧱</span><input class="t projInput" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
       <td class="actcol">
         <div class="actions">
-          <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
-          <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
-          <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+          <button class="btn-icon noteBtn" data-note="${d}" title="${t('notes')}">📝</button>
+          <button class="btn-icon camBtn"  data-photo-camera="${d}" title="Kamera">📷</button>
+          <button class="btn-icon secondary galBtn" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
         </div>
       </td>
     `;
@@ -474,11 +466,15 @@ function applyLanguage(){
   totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
   document.querySelector('[data-i="total"]').textContent = t("totalCol");
   fillMonthYear();
+  // NEW: update placeholders and button titles for all existing rows
+  updateRowTexts();
+}
 
-  /* --- FIX: uppdatera alla placeholders för projektfält när språket ändras --- */
-  document.querySelectorAll('input[data-f="project"]').forEach(el=>{
-    el.placeholder = t('project');
-  });
+function updateRowTexts(){
+  bodyRows.querySelectorAll(".projInput").forEach(inp=>{ inp.placeholder = t('project'); });
+  bodyRows.querySelectorAll(".noteBtn").forEach(b=> b.title = t('notes'));
+  bodyRows.querySelectorAll(".galBtn").forEach(b=> b.title = currentLang==='de'?'Galerie': currentLang==='sv'?'Galleri':'Gallery');
+  bodyRows.querySelectorAll(".camBtn").forEach(b=> b.title = currentLang==='de'?'Kamera': currentLang==='sv'?'Kamera':'Camera');
 }
 
 /*** Events ***/
@@ -493,12 +489,7 @@ bodyRows.addEventListener("click", async e=>{
   const galBtn  = e.target.closest("[data-photo-gallery]");
   if(noteBtn){ openNotes(noteBtn.dataset.note); return; }
   if(camBtn){ await addPhotos(camBtn.dataset.photoCamera, {capture:true}); return; }
-  if(galBtn){
-    const day = galBtn.dataset.photoGallery;
-    await addPhotos(day, {capture:false});
-    openNotes(day);
-    return;
-  }
+  if(galBtn){ await addPhotos(galBtn.dataset.photoGallery, {capture:false}); return; }
 });
 
 function computeRow(d){
@@ -520,8 +511,7 @@ function computeAll(){
 /*** Settings modal ***/
 const open = el=> el.classList.add("open");
 const close = el=> el.classList.remove("open");
-function openSettings(){ open(settingsModal); }
-settingsBtn.onclick = openSettings;
+settingsBtn.onclick = ()=>open(settingsModal);
 closeSettings.onclick = ()=>close(settingsModal);
 saveClose.onclick = ()=>{
   company = companyInput.value.trim() || company;
@@ -530,7 +520,7 @@ saveClose.onclick = ()=>{
   localStorage.setItem("tnh_settings", JSON.stringify(S));
   close(settingsModal); applyLanguage(); applyLogo(); computeAll();
 }
-regenBtn.onclick = ()=>{ buildRows(); };
+regenBtn.onclick = ()=>{ buildRows(); updateRowTexts(); };
 
 /*** Notes modal ***/
 let currentNoteDay = 1;
@@ -552,17 +542,14 @@ function openNotes(d){
 closeNotes.onclick = ()=>close(notesModal);
 saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); close(notesModal); };
 photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); };
+viewerModal.onclick = ()=>close(viewerModal);
 
 /*** Foto helpers ***/
 async function addPhotos(day, {capture}){
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
   if(capture){ input.setAttribute('capture','environment'); }
-  input.onchange = async (ev)=>{ 
-    const added = await addFilesToDay(day, ev.target.files);
-    if(added>0){ showToast(`✔️ ${added} Bild(er) gespeichert`); }
-    if(Number(day)===Number(currentNoteDay)) renderThumbs(day);
-  };
+  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); };
   input.click();
 }
 function updatePhotoBubbles(){
@@ -578,33 +565,17 @@ function updatePhotoBubbles(){
 async function addFilesToDay(day, fileList){
   const prev = JSON.parse(localStorage.getItem(photoKey(day))||"[]");
   const files = [...fileList].slice(0, 10 - prev.length);
-  let added = 0;
-  for(const f of files){ 
-    prev.push(await fileToDataURL(f, 1200, 0.75));
-    added++;
-  }
-  try{
-    localStorage.setItem(photoKey(day), JSON.stringify(prev));
-  }catch(err){
-    while(added-- > 0) prev.pop();
-    showToast("⚠️ Lagringsutrymme fullt – ta bort några foton.");
-    return 0;
-  }
+  for(const f of files){ prev.push(await fileToDataURL(f, 1600)); }
+  localStorage.setItem(photoKey(day), JSON.stringify(prev));
   updatePhotoBubbles();
-  return files.length;
 }
 
 /*** Share / QR ***/
 function openShare(){
   const url = location.href;
-  const primary  = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
-  const fallback = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(url)}`;
-  qrImg.onerror = ()=>{ qrImg.onerror = null; qrImg.src = fallback; };
-  qrImg.src = primary;
-
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
-  waLink.href   = `https://wa.me/?text=${encodeURIComponent(url)}`;
-
+  waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
   open(shareModal);
 }
 shareBtn.onclick = openShare;
@@ -612,10 +583,10 @@ closeShare.onclick = ()=>close(shareModal);
 copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
 printBtn.onclick = ()=>window.print();
 
-/*** Logo input ***/
+/*** Logo input — scale & save immediately ***/
 logoFile.onchange = async (e)=>{
   const f = e.target.files?.[0]; if(!f) return;
-  logoData = await fileToDataURL(f, 512, 0.85);
+  logoData = await fileToDataURL(f, 512);
   S.logoData = logoData; localStorage.setItem("tnh_settings", JSON.stringify(S));
   applyLogo();
 }
@@ -630,8 +601,8 @@ wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); };
 wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); };
 companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); };
 
-/*** File -> dataURL ***/
-function fileToDataURL(file, maxSide=1600, quality=0.85){
+/*** File -> dataURL with downscale ***/
+function fileToDataURL(file, maxSide){
   return new Promise((resolve,reject)=>{
     const reader = new FileReader();
     reader.onerror = reject;
@@ -644,7 +615,7 @@ function fileToDataURL(file, maxSide=1600, quality=0.85){
         if(m>maxSide){ const k = maxSide/m; w=Math.round(w*k); h=Math.round(h*k); }
         c.width=w; c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(c.toDataURL('image/jpeg', quality));
+        resolve(c.toDataURL('image/jpeg', 0.85));
       };
       img.src = reader.result;
     };
@@ -652,19 +623,21 @@ function fileToDataURL(file, maxSide=1600, quality=0.85){
   });
 }
 
-/*** Easter egg ***/
-let _tapCnt = 0, _tapTimer = 0;
-brandLogo.addEventListener('click', ()=>{
-  _tapCnt++;
-  clearTimeout(_tapTimer);
-  _tapTimer = setTimeout(()=>{ _tapCnt = 0; }, 500);
-  if(_tapCnt >= 3){
-    const ee = document.getElementById('easter');
-    ee.style.display = 'flex';
-    setTimeout(()=>{ ee.style.display = 'none'; }, 1500);
-    _tapCnt = 0;
-  }
-});
+/*** Kakalamaka (triple tap on brand) ***/
+(function(){
+  let taps = 0, timer = null;
+  brandTap.addEventListener('click', ()=>{
+    taps++;
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(()=>{ taps=0; }, 700);
+    if(taps>=3){
+      taps=0;
+      const el = document.getElementById('kkm');
+      el.style.display = 'grid';
+      setTimeout(()=> el.style.display='none', 1800);
+    }
+  });
+})();
 
 /*** Init ***/
 function init(){
