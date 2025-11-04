@@ -4,7 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tannenhof Stundenliste</title>
+
+<!-- Färger för statusfält m.m. -->
 <meta name="theme-color" content="#1f5634" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<!-- Ikoner (iOS och fallback) -->
+<link rel="icon" href="tnh-tree-192.png" />
+<link rel="apple-touch-icon" href="tnh-tree-192.png" />
+
 <style>
   :root{
     --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
@@ -14,9 +23,10 @@
   html,body{height:100%}
   body{
     margin:0; padding-bottom:130px;
-    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
+
   /* Header */
   .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
   .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
@@ -66,7 +76,6 @@
   .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
                      background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
-  /* Highlight today */
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
   /* Watermark */
@@ -98,7 +107,7 @@
 <header class="appbar">
   <div class="appbar-inner">
     <div class="brand">
-      <img id="brandLogo" alt="logo" src="" />
+      <img id="brandLogo" alt="logo" src="tnh-tree-512.png" />
       <div style="min-width:0">
         <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
         <small class="subtitle" id="monthSub">November 2025</small>
@@ -137,12 +146,12 @@
 </main>
 
 <!-- Watermark -->
-<img id="wm" class="wm" alt="watermark" />
+<img id="wm" class="wm" alt="watermark" src="tnh-tree-512.png" />
 
 <!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
 
-<!-- Settings modal (logo-upload borttagen; bara språk, månad/år, autosave, watermark) -->
+<!-- Settings modal -->
 <div class="modal" id="settingsModal" aria-hidden="true">
   <div class="sheet">
     <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
@@ -155,6 +164,8 @@
         <span data-i="company">Arbeitgeber</span>
         <input id="company" class="t" placeholder="THÜRINGER TANNENHOF">
       </label>
+
+      <!-- LOGO-UPPLADDNING BORTTAGEN: fast ikon används för alla -->
 
       <div class="grid grid-2">
         <label class="grid">
@@ -229,7 +240,7 @@
   </div>
 </div>
 
-<!-- Image viewer (lightbox) -->
+<!-- Image viewer -->
 <div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
 
 <!-- Share/QR modal -->
@@ -254,6 +265,26 @@
 </div>
 
 <script>
+/* ==== PWA: manifest skapas dynamiskt (en fil räcker) ==== */
+(function(){
+  const manifest = {
+    name: "Tannenhof",
+    short_name: "Tannenhof",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#1f5634",
+    theme_color: "#1f5634",
+    icons: [
+      { src: "tnh-tree-192.png", sizes: "192x192", type: "image/png" },
+      { src: "tnh-tree-512.png", sizes: "512x512", type: "image/png" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:"application/manifest+json"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("link");
+  link.rel = "manifest"; link.href = url; document.head.appendChild(link);
+})();
+
 /*** i18n ***/
 const I = {
   sv:{ appTitle:"Tannenhofs tidtabell", share:"Dela / Skicka", print:"Skriv ut / PDF",
@@ -293,7 +324,6 @@ const monthSub = $("#monthSub");
 const totalTitle = $("#totalTitle");
 const grandTotal = $("#grandTotal");
 const wmImg = $("#wm");
-const brandLogo = $("#brandLogo");
 
 const settingsBtn = $("#settingsBtn");
 const settingsModal = $("#settingsModal");
@@ -333,7 +363,7 @@ const waLink = $("#waLink");
 /*** State ***/
 let currentLang = S.lang || "de";
 let currentYear = S.year || new Date().getFullYear();
-let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
+let currentMonth = (S.month ?? (new Date().getMonth()));
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
@@ -432,23 +462,10 @@ function recomputeAllRows(){
 const noteKey = d => `tnh_note_${currentYear}_${currentMonth}_${d}`;
 const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
 
-/*** Watermark & logo (STATIC file logo.png) ***/
-const STATIC_LOGO_URL = "logo.png"; // <- Lägg denna fil i samma mapp som index.html
+/*** Logo & watermark (fast ikon för alla) ***/
 function applyLogo(){
-  // Försök ladda statisk logga
-  brandLogo.src = STATIC_LOGO_URL;
-  wmImg.src = STATIC_LOGO_URL;
-
-  // Fallback om logo.png saknas: enkel SVG
-  brandLogo.onerror = ()=>{ brandLogo.src = fallbackSVG(); };
-  wmImg.onerror = ()=>{ wmImg.src = fallbackSVG(); };
-
+  wmImg.src = "tnh-tree-512.png";
   wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
-}
-function fallbackSVG(){
-  const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
-  <g fill='#1f5634'><path d='M64 210h128v20H64z'/><path d='M128 30l40 60h-20l30 45h-20l25 38h-50v-30h-10v30H83l25-38H88l30-45H98z'/></g></svg>`);
-  return `data:image/svg+xml;utf8,${svg}`;
 }
 
 /*** Language & labels ***/
@@ -558,7 +575,7 @@ async function addFilesToDay(day, fileList){
 /*** Share / QR ***/
 function openShare(){
   const url = location.href;
-  document.getElementById("qrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(t('appTitle'))}&body=${encodeURIComponent(url)}`;
   waLink.href = `https://wa.me/?text=${encodeURIComponent(url)}`;
   open(shareModal);
@@ -566,16 +583,9 @@ function openShare(){
 shareBtn.onclick = openShare;
 closeShare.onclick = ()=>close(shareModal);
 copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
-printBtn.onclick = ()=>window.print();
 
-/*** Bind settings controls ***/
-langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
-monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); };
-yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); };
-autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; };
-wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); };
-wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); };
-companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); };
+/*** Print / PDF ***/
+printBtn.onclick = ()=>window.print();
 
 /*** File -> dataURL with downscale ***/
 function fileToDataURL(file, maxSide){
@@ -603,14 +613,14 @@ function fileToDataURL(file, maxSide){
 function init(){
   companyInput.value = company; titleTxt.textContent = company || t('appTitle');
   langSel.value = currentLang; fillMonthYear();
-  autosaveSel.value = autosave; wmToggleSel.value = wmOn; document.getElementById("wmOpacity").value = wmAlpha;
+  autosaveSel.value = autosave; wmToggleSel.value = wmOn; wmOpacity.value = wmAlpha;
 
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
-  totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
+  totalTitle.textContent = t('total').replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
 
   applyLogo(); buildRows(); applyLanguage(); computeAll();
 
-  // drag-to-scroll (desktop)
+  // drag-to-scroll för desktop
   const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
   scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
