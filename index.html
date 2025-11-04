@@ -6,7 +6,7 @@
 <title>Tannenhof Stundenliste</title>
 <meta name="theme-color" content="#1f5634" />
 <link rel="icon" href="logo.png" />
-<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="apple-touch-icon" href="logo.png" />
 <style>
   :root{
     --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
@@ -19,6 +19,8 @@
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
   }
+
+  /* Header */
   .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
   .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
   .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
@@ -31,12 +33,14 @@
   .btn:active{ transform:translateY(1px) }
   @media (max-width:640px){ .spacer{ flex-basis:100%; height:0 } .btn{ min-width:auto } }
 
+  /* Total */
   .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
   .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);
               display:flex; align-items:center; justify-content:space-between; gap:10px }
   .total-title{font-weight:800; letter-spacing:.2px}
   .total-sum{font-size:20px; font-weight:800}
 
+  /* Table */
   .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
                overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action:auto; }
   table{ border-collapse:separate; border-spacing:0; width:980px }
@@ -51,6 +55,7 @@
   .projcol{ width:240px}
   .actcol{ width:160px}
 
+  /* Inputs */
   .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
   .t:focus{ outline:3px solid var(--ring); border-color:transparent }
   .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px }
@@ -64,14 +69,18 @@
   .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
                      background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
+  /* Today highlight */
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
+  /* Watermark */
   .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.4; z-index:0; pointer-events:none; filter:grayscale(.15) }
 
+  /* Settings FAB */
   .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
         background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
   .fab:active{ transform:translateY(1px) }
 
+  /* Modal */
   .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
   .modal.open{ display:grid }
   .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px }
@@ -81,16 +90,34 @@
   .row{ display:flex; gap:10px; align-items:center }
   .muted{ color:var(--muted); font-size:13px }
 
+  /* Lightbox */
   #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
 
-  @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
+  /* ===== Secret overlay (KAKALAMAKKA) ===== */
+  #egg {
+    position:fixed; inset:0; display:none; place-items:center;
+    background:rgba(0,0,0,.75); z-index:1000; pointer-events:auto;
+  }
+  #egg.open{ display:grid; animation:fadeIn .15s ease-out }
+  #eggText {
+    font: 900 11vw/1.05 system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    color:#fff; text-shadow:0 4px 30px rgba(0,0,0,.6);
+    animation: blink 300ms linear infinite alternate;
+  }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+  @keyframes blink{
+    0%{ transform:scale(0.98) rotate(-1deg); }
+    100%{ transform:scale(1) rotate(1deg); }
+  }
+
+  @media print{ .appbar, .fab, .modal, .wm, #egg{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
 </head>
 <body>
 
 <header class="appbar">
   <div class="appbar-inner">
-    <div class="brand" id="brandTap">
+    <div class="brand">
       <img id="brandLogo" alt="logo" src="logo.png" />
       <div style="min-width:0">
         <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
@@ -129,11 +156,13 @@
   </section>
 </main>
 
+<!-- Watermark -->
 <img id="wm" class="wm" alt="watermark" src="logo.png" />
 
+<!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
 
-<!-- Settings -->
+<!-- Settings modal -->
 <div class="modal" id="settingsModal" aria-hidden="true">
   <div class="sheet">
     <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
@@ -153,7 +182,7 @@
           <input id="logoFile" type="file" accept="image/*" class="t" />
           <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
         </div>
-        <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
+        <div class="muted" data-i="logoHint">Dein Logo wird lokal på diesem Gerät gespeichert.</div>
       </div>
 
       <div class="grid grid-2">
@@ -207,7 +236,7 @@
   </div>
 </div>
 
-<!-- Notes / Photos -->
+<!-- Notes/Photos modal -->
 <div class="modal" id="notesModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -229,14 +258,10 @@
   </div>
 </div>
 
-<!-- Viewer -->
-<div class="modal" id="viewerModal">
-  <div class="sheet" style="display:grid; place-items:center">
-    <img id="viewerImg" alt="">
-  </div>
-</div>
+<!-- Image viewer -->
+<div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
 
-<!-- Share / QR -->
+<!-- Share/QR modal -->
 <div class="modal" id="shareModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -257,12 +282,8 @@
   </div>
 </div>
 
-<!-- Kakalamaka overlay -->
-<div id="kkm" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); color:#fff; z-index:1000; 
-  font-weight:900; font-size:12vw; display:grid; place-items:center; text-align:center; animation:blink 0.6s infinite;">
-  KAKALAMAKA
-</div>
-<style>@keyframes blink{0%{opacity:1}50%{opacity:.2}100%{opacity:1}}</style>
+<!-- Secret overlay -->
+<div id="egg" aria-hidden="true"><div id="eggText">KAKALAMAKKA</div></div>
 
 <script>
 /*** i18n ***/
@@ -308,7 +329,6 @@ const totalTitle = $("#totalTitle");
 const grandTotal = $("#grandTotal");
 const wmImg = $("#wm");
 const brandLogo = $("#brandLogo");
-const brandTap = $("#brandTap");
 
 const settingsBtn = $("#settingsBtn");
 const settingsModal = $("#settingsModal");
@@ -348,14 +368,15 @@ const mailLink = $("#mailLink");
 const waLink = $("#waLink");
 
 /*** State ***/
-let currentLang = S.lang || "de";
+let currentLang = S.lang || (navigator.language?.slice(0,2) ?? "de"); // föreslå DE men inte tvinga
+if(!["de","sv","en"].includes(currentLang)) currentLang="de";
 let currentYear = S.year || new Date().getFullYear();
 let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
-let logoData = S.logoData || ""; // empty => shared logo.png
+let logoData = S.logoData || ""; // empty => default logo.png
 let activeRow = 1;
 
 /*** Helpers ***/
@@ -378,6 +399,24 @@ function fillMonthYear(){
 /*** Rows ***/
 const daysInMonth = (y,m)=> new Date(y, m+1, 0).getDate();
 
+function rowHTML(d){
+  return `
+    <td class="daycol"><div class="badge">📅 ${d}</div></td>
+    <td class="timecol"><input class="t time" type="time" step="300" data-f="from" data-d="${d}"></td>
+    <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
+    <td class="breakcol"><div class="pill"><span>☕</span><input class="t" style="border:0;flex:1" type="time" step="300" value="00:00" data-f="break" data-d="${d}"></div></td>
+    <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
+    <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
+    <td class="actcol">
+      <div class="actions">
+        <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
+        <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
+        <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
+      </div>
+    </td>
+  `;
+}
+
 function buildRows(){
   bodyRows.innerHTML="";
   const dcount = daysInMonth(currentYear,currentMonth);
@@ -391,22 +430,7 @@ function buildRows(){
       activeRow = d;
       setTimeout(()=>tr.scrollIntoView({behavior:"smooth", block:"center"}), 300);
     }
-
-    tr.innerHTML = `
-      <td class="daycol"><div class="badge">📅 ${d}</div></td>
-      <td class="timecol"><input class="t time" type="time" step="300" data-f="from" data-d="${d}"></td>
-      <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
-      <td class="breakcol"><div class="pill"><span>☕</span><input class="t" style="border:0;flex:1" type="time" step="300" value="00:00" data-f="break" data-d="${d}"></div></td>
-      <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
-      <td class="projcol"><div class="pill"><span>🧱</span><input class="t projInput" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
-      <td class="actcol">
-        <div class="actions">
-          <button class="btn-icon noteBtn" data-note="${d}" title="${t('notes')}">📝</button>
-          <button class="btn-icon camBtn"  data-photo-camera="${d}" title="Kamera">📷</button>
-          <button class="btn-icon secondary galBtn" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
-        </div>
-      </td>
-    `;
+    tr.innerHTML = rowHTML(d);
     bodyRows.appendChild(tr);
   }
   restoreData();
@@ -453,7 +477,7 @@ const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
 /*** Watermark & logo ***/
 function applyLogo(){
   const src = logoData ? logoData : "logo.png";
-  brandLogo.src = src;
+  $("#brandLogo").src = src;
   wmImg.src = src;
   wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
 }
@@ -465,16 +489,9 @@ function applyLanguage(){
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
   totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
   document.querySelector('[data-i="total"]').textContent = t("totalCol");
+  // Uppdatera projekt-placeholder för redan byggda rader
+  bodyRows.querySelectorAll('input[data-f="project"]').forEach(el=> el.placeholder = t('project'));
   fillMonthYear();
-  // NEW: update placeholders and button titles for all existing rows
-  updateRowTexts();
-}
-
-function updateRowTexts(){
-  bodyRows.querySelectorAll(".projInput").forEach(inp=>{ inp.placeholder = t('project'); });
-  bodyRows.querySelectorAll(".noteBtn").forEach(b=> b.title = t('notes'));
-  bodyRows.querySelectorAll(".galBtn").forEach(b=> b.title = currentLang==='de'?'Galerie': currentLang==='sv'?'Galleri':'Gallery');
-  bodyRows.querySelectorAll(".camBtn").forEach(b=> b.title = currentLang==='de'?'Kamera': currentLang==='sv'?'Kamera':'Camera');
 }
 
 /*** Events ***/
@@ -511,7 +528,8 @@ function computeAll(){
 /*** Settings modal ***/
 const open = el=> el.classList.add("open");
 const close = el=> el.classList.remove("open");
-settingsBtn.onclick = ()=>open(settingsModal);
+function openSettings(){ open(settingsModal); }
+settingsBtn.onclick = openSettings;
 closeSettings.onclick = ()=>close(settingsModal);
 saveClose.onclick = ()=>{
   company = companyInput.value.trim() || company;
@@ -520,7 +538,7 @@ saveClose.onclick = ()=>{
   localStorage.setItem("tnh_settings", JSON.stringify(S));
   close(settingsModal); applyLanguage(); applyLogo(); computeAll();
 }
-regenBtn.onclick = ()=>{ buildRows(); updateRowTexts(); };
+regenBtn.onclick = ()=>{ buildRows(); };
 
 /*** Notes modal ***/
 let currentNoteDay = 1;
@@ -541,7 +559,7 @@ function openNotes(d){
 }
 closeNotes.onclick = ()=>close(notesModal);
 saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesArea.value); saveData(); close(notesModal); };
-photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); };
+photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); updatePhotoBubbles(); };
 viewerModal.onclick = ()=>close(viewerModal);
 
 /*** Foto helpers ***/
@@ -549,7 +567,7 @@ async function addPhotos(day, {capture}){
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
   if(capture){ input.setAttribute('capture','environment'); }
-  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); };
+  input.onchange = async (ev)=>{ await addFilesToDay(day, ev.target.files); if(Number(day)===Number(currentNoteDay)) renderThumbs(day); updatePhotoBubbles(); };
   input.click();
 }
 function updatePhotoBubbles(){
@@ -567,7 +585,6 @@ async function addFilesToDay(day, fileList){
   const files = [...fileList].slice(0, 10 - prev.length);
   for(const f of files){ prev.push(await fileToDataURL(f, 1600)); }
   localStorage.setItem(photoKey(day), JSON.stringify(prev));
-  updatePhotoBubbles();
 }
 
 /*** Share / QR ***/
@@ -623,19 +640,33 @@ function fileToDataURL(file, maxSide){
   });
 }
 
-/*** Kakalamaka (triple tap on brand) ***/
+/*** Secret overlay logic (auto-close, no persistence) ***/
 (function(){
-  let taps = 0, timer = null;
-  brandTap.addEventListener('click', ()=>{
-    taps++;
-    if(timer) clearTimeout(timer);
-    timer = setTimeout(()=>{ taps=0; }, 700);
-    if(taps>=3){
-      taps=0;
-      const el = document.getElementById('kkm');
-      el.style.display = 'grid';
-      setTimeout(()=> el.style.display='none', 1800);
-    }
+  const egg = document.getElementById('egg');
+  const eggText = document.getElementById('eggText');
+  let taps = 0, lastTap = 0, timerId = null, autoCloseId = null;
+
+  function showEgg(){
+    clearTimeout(autoCloseId);
+    egg.classList.add('open');
+    // färgskiftning utan lagring
+    let hue = 0;
+    timerId = setInterval(()=>{ hue=(hue+25)%360; eggText.style.filter=`hue-rotate(${hue}deg)`; },120);
+    autoCloseId = setTimeout(hideEgg, 2500);
+  }
+  function hideEgg(){
+    clearInterval(timerId);
+    egg.classList.remove('open');
+    eggText.style.filter="none";
+    // sluta blockera pek – när stängd: display:none; pointer-events ingen
+  }
+  egg.addEventListener('click', hideEgg);
+
+  document.getElementById('brandLogo').addEventListener('click', ()=>{
+    const now = Date.now();
+    if(now - lastTap < 500){ taps++; } else { taps = 1; }
+    lastTap = now;
+    if(taps>=3){ taps=0; showEgg(); }
   });
 })();
 
