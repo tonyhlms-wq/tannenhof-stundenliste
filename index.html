@@ -4,16 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tannenhof Stundenliste</title>
-
-<!-- Färger för statusfält m.m. -->
 <meta name="theme-color" content="#1f5634" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-
-<!-- Ikoner (iOS och fallback) -->
-<link rel="icon" href="tnh-tree-192.png" />
-<link rel="apple-touch-icon" href="tnh-tree-192.png" />
-
+<link rel="icon" href="logo.png" />
+<link rel="apple-touch-icon" href="logo.png" />
 <style>
   :root{
     --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
@@ -76,12 +69,13 @@
   .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
                      background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
 
+  /* Today highlight */
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
 
-  /* Watermark */
-  .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.5; z-index:0; pointer-events:none; filter:grayscale(.15) }
+  /* Watermark (uses logo.png by default) */
+  .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.4; z-index:0; pointer-events:none; filter:grayscale(.15) }
 
-  /* FAB */
+  /* Settings FAB */
   .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
         background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
   .fab:active{ transform:translateY(1px) }
@@ -107,7 +101,7 @@
 <header class="appbar">
   <div class="appbar-inner">
     <div class="brand">
-      <img id="brandLogo" alt="logo" src="tnh-tree-512.png" />
+      <img id="brandLogo" alt="logo" src="logo.png" />
       <div style="min-width:0">
         <h1 id="titleTxt">THÜRINGER TANNENHOF</h1>
         <small class="subtitle" id="monthSub">November 2025</small>
@@ -146,7 +140,7 @@
 </main>
 
 <!-- Watermark -->
-<img id="wm" class="wm" alt="watermark" src="tnh-tree-512.png" />
+<img id="wm" class="wm" alt="watermark" src="logo.png" />
 
 <!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
@@ -165,7 +159,14 @@
         <input id="company" class="t" placeholder="THÜRINGER TANNENHOF">
       </label>
 
-      <!-- LOGO-UPPLADDNING BORTTAGEN: fast ikon används för alla -->
+      <div class="grid">
+        <span data-i="logo">Logo (Bild oder Emoji)</span>
+        <div class="row">
+          <input id="logoFile" type="file" accept="image/*" class="t" />
+          <button class="btn" id="clearLogo" data-i="clearLogo">Logo löschen</button>
+        </div>
+        <div class="muted" data-i="logoHint">Dein Logo wird lokal auf diesem Gerät gespeichert.</div>
+      </div>
 
       <div class="grid grid-2">
         <label class="grid">
@@ -240,7 +241,7 @@
   </div>
 </div>
 
-<!-- Image viewer -->
+<!-- Image viewer (lightbox) -->
 <div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
 
 <!-- Share/QR modal -->
@@ -265,49 +266,32 @@
 </div>
 
 <script>
-/* ==== PWA: manifest skapas dynamiskt (en fil räcker) ==== */
-(function(){
-  const manifest = {
-    name: "Tannenhof",
-    short_name: "Tannenhof",
-    start_url: "./",
-    display: "standalone",
-    background_color: "#1f5634",
-    theme_color: "#1f5634",
-    icons: [
-      { src: "tnh-tree-192.png", sizes: "192x192", type: "image/png" },
-      { src: "tnh-tree-512.png", sizes: "512x512", type: "image/png" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type:"application/manifest+json"});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("link");
-  link.rel = "manifest"; link.href = url; document.head.appendChild(link);
-})();
-
 /*** i18n ***/
 const I = {
   sv:{ appTitle:"Tannenhofs tidtabell", share:"Dela / Skicka", print:"Skriv ut / PDF",
     total:"Totalt – {month} {year}", day:"Dag", from:"Från", to:"Till", break:"Paus", totalCol:"Totalt",
     project:"Projekt/plats", actions:"Åtgärd", settings:"Inställningar", company:"Företag",
+    logo:"Logga (bild eller emoji)", logoHint:"Din logga sparas lokalt på den här enheten.",
     language:"Språk", month:"Månad", year:"År", autosave:"Autospara", on:"På", off:"Av",
     genDays:"Skapa dagar", saveClose:"Spara & stäng", wmToggle:"Vattenstämpel", wmOpacity:"Stämpel opacitet",
-    notes:"Anteckning", photos:"Foton (valfritt)", save:"Spara",
-    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan." },
+    notes:"Anteckning", edit:"Redigera", photos:"Foton (valfritt)", save:"Spara",
+    copyLink:"Kopiera länk", email:"E-post", scan:"Skanna QR-koden för att öppna sidan.", clearLogo:"Rensa logga" },
   de:{ appTitle:"Tannenhof Stundenliste", share:"Teilen / Senden", print:"Drucken / PDF",
     total:"Gesamt – {month} {year}", day:"Tag", from:"Von", to:"Bis", break:"Pause", totalCol:"Gesamt",
     project:"Projekt/Ort", actions:"Aktion", settings:"Einstellungen", company:"Arbeitgeber",
+    logo:"Logo (Bild oder Emoji)", logoHint:"Dein Logo wird lokal auf diesem Gerät gespeichert.",
     language:"Sprache", month:"Monat", year:"Jahr", autosave:"Autospeichern", on:"Ein", off:"Aus",
     genDays:"Tage erstellen", saveClose:"Speichern & schließen", wmToggle:"Wasserzeichen", wmOpacity:"Deckkraft",
-    notes:"Notiz", photos:"Fotos (optional)", save:"Speichern",
-    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen." },
+    notes:"Notiz", edit:"Bearbeiten", photos:"Fotos (optional)", save:"Speichern",
+    copyLink:"Link kopieren", email:"E-Mail", scan:"QR-Code scannen, um die Seite zu öffnen.", clearLogo:"Logo löschen" },
   en:{ appTitle:"Tannenhof Timesheet", share:"Share / Send", print:"Print / PDF",
     total:"Total – {month} {year}", day:"Day", from:"From", to:"To", break:"Break", totalCol:"Total",
     project:"Project/site", actions:"Action", settings:"Settings", company:"Company",
+    logo:"Logo (image or emoji)", logoHint:"Your logo is stored locally on this device.",
     language:"Language", month:"Month", year:"Year", autosave:"Autosave", on:"On", off:"Off",
     genDays:"Generate days", saveClose:"Save & close", wmToggle:"Watermark", wmOpacity:"Watermark opacity",
-    notes:"Note", photos:"Photos (optional)", save:"Save",
-    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page." }
+    notes:"Note", edit:"Edit", photos:"Photos (optional)", save:"Save",
+    copyLink:"Copy link", email:"Email", scan:"Scan the QR to open this page.", clearLogo:"Clear logo" }
 };
 const MONTHS = {
   sv:["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"],
@@ -324,6 +308,7 @@ const monthSub = $("#monthSub");
 const totalTitle = $("#totalTitle");
 const grandTotal = $("#grandTotal");
 const wmImg = $("#wm");
+const brandLogo = $("#brandLogo");
 
 const settingsBtn = $("#settingsBtn");
 const settingsModal = $("#settingsModal");
@@ -338,6 +323,8 @@ const autosaveSel = $("#autosave");
 const wmToggleSel = $("#wmToggle");
 const wmOpacity = $("#wmOpacity");
 const companyInput = $("#company");
+const logoFile = $("#logoFile");
+const clearLogo = $("#clearLogo");
 
 const notesModal = $("#notesModal");
 const notesArea = $("#notesArea");
@@ -363,18 +350,19 @@ const waLink = $("#waLink");
 /*** State ***/
 let currentLang = S.lang || "de";
 let currentYear = S.year || new Date().getFullYear();
-let currentMonth = (S.month ?? (new Date().getMonth()));
+let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
+let logoData = S.logoData || ""; // if empty => we use default "logo.png"
 let activeRow = 1;
 
 /*** Helpers ***/
 const t = k => I[currentLang][k];
 const fmtMonth = m => MONTHS[currentLang][m];
 const mins = hm => { if(!hm) return 0; const [h,m]=hm.split(":").map(Number); return h*60+m; };
-function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0,m); }
+function diff(from,to,brk){ if(!from||!to) return 0; let m = mins(to)-mins(from) - (brk?mins(brk):0); if(m<0) m+=1440; return Math.max(0, m); }
 const msToH = m => (m/60).toFixed(2);
 
 /*** Build selects ***/
@@ -462,9 +450,12 @@ function recomputeAllRows(){
 const noteKey = d => `tnh_note_${currentYear}_${currentMonth}_${d}`;
 const photoKey = d => `tnh_photos_${currentYear}_${currentMonth}_${d}`;
 
-/*** Logo & watermark (fast ikon för alla) ***/
+/*** Watermark & logo ***/
 function applyLogo(){
-  wmImg.src = "tnh-tree-512.png";
+  // Default to shared logo.png for everyone.
+  const src = logoData ? logoData : "logo.png";
+  brandLogo.src = src;
+  wmImg.src = src;
   wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
 }
 
@@ -518,7 +509,7 @@ closeSettings.onclick = ()=>close(settingsModal);
 saveClose.onclick = ()=>{
   company = companyInput.value.trim() || company;
   S.company = company; S.lang = currentLang; S.month = currentMonth; S.year = currentYear;
-  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha;
+  S.autosave = autosave; S.wmOn = wmOn; S.wmAlpha = wmAlpha; S.logoData = logoData;
   localStorage.setItem("tnh_settings", JSON.stringify(S));
   close(settingsModal); applyLanguage(); applyLogo(); computeAll();
 }
@@ -546,7 +537,7 @@ saveNotes.onclick = ()=>{ localStorage.setItem(noteKey(currentNoteDay), notesAre
 photosInput.onchange = async (e)=>{ await addFilesToDay(currentNoteDay, e.target.files); renderThumbs(currentNoteDay); };
 viewerModal.onclick = ()=>close(viewerModal);
 
-/*** Foto-hjälpare ***/
+/*** Foto helpers ***/
 async function addPhotos(day, {capture}){
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
@@ -583,9 +574,25 @@ function openShare(){
 shareBtn.onclick = openShare;
 closeShare.onclick = ()=>close(shareModal);
 copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
-
-/*** Print / PDF ***/
 printBtn.onclick = ()=>window.print();
+
+/*** Logo input — scale & save immediately ***/
+logoFile.onchange = async (e)=>{
+  const f = e.target.files?.[0]; if(!f) return;
+  logoData = await fileToDataURL(f, 512);
+  S.logoData = logoData; localStorage.setItem("tnh_settings", JSON.stringify(S));
+  applyLogo();
+}
+clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
+
+/*** Bind settings controls ***/
+langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
+monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); };
+yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); };
+autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; };
+wmToggleSel.onchange = ()=>{ wmOn = wmToggleSel.value; applyLogo(); };
+wmOpacity.oninput = ()=>{ wmAlpha = Number(wmOpacity.value); applyLogo(); };
+companyInput.oninput = ()=>{ company = companyInput.value; titleTxt.textContent = company ? company : t('appTitle'); };
 
 /*** File -> dataURL with downscale ***/
 function fileToDataURL(file, maxSide){
@@ -609,7 +616,7 @@ function fileToDataURL(file, maxSide){
   });
 }
 
-/*** Restore on load ***/
+/*** Init ***/
 function init(){
   companyInput.value = company; titleTxt.textContent = company || t('appTitle');
   langSel.value = currentLang; fillMonthYear();
@@ -620,7 +627,6 @@ function init(){
 
   applyLogo(); buildRows(); applyLanguage(); computeAll();
 
-  // drag-to-scroll för desktop
   const scroller = document.getElementById("hScroll");
   let startX,scrollLeft,isDown=false;
   scroller.addEventListener('mousedown', (e)=>{isDown=true; startX=e.pageX-scroller.offsetLeft; scrollLeft=scroller.scrollLeft});
