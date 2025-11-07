@@ -8,9 +8,19 @@
 <link rel="icon" href="logo.png" />
 <link rel="apple-touch-icon" href="logo.png" />
 <style>
-  :root{ --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee; --ink:#0b2a10; --muted:#6b7a6c; --ring:#a5d6a7; --shadow:0 10px 30px rgba(0,0,0,.12); --radius:16px; }
+  :root{
+    --green:#1f5634; --green-700:#16422a; --green-100:#ecf6ee;
+    --ink:#0b2a10; --muted:#6b7a6c; --ring:#a5d6a7;
+    --shadow:0 10px 30px rgba(0,0,0,.12); --radius:16px;
+  }
   html,body{height:100%}
-  body{ margin:0; padding-bottom:130px; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"; background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased; }
+  body{
+    margin:0; padding-bottom:130px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background:#f4f7f5; color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+
+  /* Header */
   .appbar{ position:sticky; top:0; z-index:30; background:linear-gradient(0deg,var(--green) 0%,var(--green-700) 100%); color:#fff; box-shadow:var(--shadow) }
   .appbar-inner{ max-width:1100px; margin:auto; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
   .brand{ display:flex; align-items:center; gap:12px; min-width:0 }
@@ -22,13 +32,20 @@
   .btn--dark{ background:#0e1a11; color:#fff }
   .btn:active{ transform:translateY(1px) }
   @media (max-width:640px){ .spacer{ flex-basis:100%; height:0 } .btn{ min-width:auto } }
+
+  /* Total */
   .total{ max-width:1100px; margin:14px auto; padding:14px 16px }
-  .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:space-between; gap:10px }
+  .total-box{ background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);
+              display:flex; align-items:center; justify-content:space-between; gap:10px }
   .total-title{font-weight:800; letter-spacing:.2px}
   .total-sum{font-size:20px; font-weight:800}
-  .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action:auto; }
+
+  /* Table */
+  .table-wrap{ max-width:1100px; margin:0 auto 90px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+               overflow-x:auto; -webkit-overflow-scrolling:touch; touch-action:auto; }
   table{ border-collapse:separate; border-spacing:0; width:980px }
-  thead th{ position:sticky; top:0; z-index:5; background:var(--green-100); color:var(--ink); text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1 }
+  thead th{ position:sticky; top:0; z-index:5; background:var(--green-100); color:var(--ink);
+            text-align:left; padding:14px; font-size:14px; border-bottom:1px solid #dfe8e1 }
   tbody td{ padding:10px 12px; border-bottom:1px solid #eef2ee; background:#fff }
   tbody tr:nth-child(2n) td{ background:#fafdfb }
   .daycol{ width:70px; text-align:center; font-weight:800}
@@ -37,19 +54,33 @@
   .totalcol{ width:120px; font-weight:800}
   .projcol{ width:240px}
   .actcol{ width:160px}
+
+  /* Inputs */
   .t{ width:100%; height:44px; border-radius:12px; border:2px solid #dfe8e1; padding:0 10px; font-size:16px; background:#fff}
   .t:focus{ outline:3px solid var(--ring); border-color:transparent }
   .pill{ height:44px; border-radius:12px; background:#fff; border:2px solid #dfe8e1; display:flex; align-items:center; gap:8px; padding:0 10px }
   .pill span{opacity:.7}
   .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#e8f3ea; font-weight:700}
+
   .actions{ display:flex; gap:8px; flex-wrap:nowrap }
-  .btn-icon{ width:40px; height:40px; display:inline-grid; place-items:center; border-radius:12px; background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative; flex:0 0 auto }
+  .btn-icon{ width:40px; height:40px; display:inline-grid; place-items:center; border-radius:12px;
+             background:var(--green); color:#fff; border:0; box-shadow:var(--shadow); position:relative; flex:0 0 auto }
   .btn-icon.secondary{ background:#2b7a48 }
-  .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px; background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
+  .btn-icon .bubble{ position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 4px;
+                     background:#d32f2f; color:#fff; border-radius:9px; font-size:12px; display:grid; place-items:center }
+
+  /* Today highlight */
   .today td{ background:#f0fbf3 !important; box-shadow: inset 3px 0 0 0 var(--green) }
+
+  /* Watermark (uses logo.png by default) */
   .wm{ position:fixed; right:16px; bottom:18px; width:240px; max-width:42vw; opacity:.4; z-index:0; pointer-events:none; filter:grayscale(.15) }
-  .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center; background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
+
+  /* Settings FAB */
+  .fab{ position:fixed; left:16px; bottom:18px; z-index:20; width:64px; height:64px; display:grid; place-items:center;
+        background:var(--green); color:#fff; border-radius:18px; box-shadow:var(--shadow); border:0; opacity:.85 }
   .fab:active{ transform:translateY(1px) }
+
+  /* Modal */
   .modal{ position:fixed; inset:0; background:rgba(0,0,0,.3); display:none; place-items:center; z-index:40 }
   .modal.open{ display:grid }
   .sheet{ width:min(720px, 92vw); max-height:88vh; overflow:auto; background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:18px }
@@ -58,11 +89,26 @@
   .grid-2{ grid-template-columns:1fr 1fr }
   .row{ display:flex; gap:10px; align-items:center }
   .muted{ color:var(--muted); font-size:13px }
+
+  /* Lightbox */
   #viewerModal img{ max-width:min(92vw, 900px); max-height:80vh; border-radius:14px; box-shadow:var(--shadow) }
-  @media print{ .appbar, .fab, .modal, .wm{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
+
+  /* KAKALAMAKKA overlay */
+  .egg{ position:fixed; inset:0; display:none; place-items:center; z-index:60; pointer-events:none }
+  .egg.open{ display:grid }
+  .egg h2{
+    font-size: min(16vw, 120px);
+    font-weight: 900;
+    color:#fff; text-shadow:0 4px 30px rgba(0,0,0,.5);
+    animation: blink 600ms steps(1,end) 5;
+  }
+  @keyframes blink{ 0%{opacity:1} 50%{opacity:.1} 100%{opacity:1} }
+
+  @media print{ .appbar, .fab, .modal, .wm, .egg{ display:none !important } body{ background:#fff } .table-wrap{ box-shadow:none } }
 </style>
 </head>
 <body>
+
 <header class="appbar">
   <div class="appbar-inner">
     <div class="brand">
@@ -90,13 +136,13 @@
     <table id="sheet">
       <thead>
         <tr>
-          <th class="daycol"  data-i="day">Tag</th>
+          <th class="daycol" data-i="day">Tag</th>
           <th class="timecol" data-i="from">Von</th>
           <th class="timecol" data-i="to">Bis</th>
           <th class="breakcol" data-i="break">Pause</th>
           <th class="totalcol" data-i="total">Gesamt</th>
-          <th class="projcol"  data-i="project">Projekt/Ort</th>
-          <th class="actcol"   data-i="actions">Aktion</th>
+          <th class="projcol" data-i="project">Projekt/Ort</th>
+          <th class="actcol" data-i="actions">Aktion</th>
         </tr>
       </thead>
       <tbody id="bodyRows"></tbody>
@@ -104,10 +150,13 @@
   </section>
 </main>
 
+<!-- Watermark -->
 <img id="wm" class="wm" alt="watermark" src="logo.png" />
+
+<!-- Settings FAB -->
 <button class="fab" id="settingsBtn">⚙️</button>
 
-<!-- Settings -->
+<!-- Settings modal -->
 <div class="modal" id="settingsModal" aria-hidden="true">
   <div class="sheet">
     <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
@@ -181,7 +230,7 @@
   </div>
 </div>
 
-<!-- Notes/Photos -->
+<!-- Notes/Photos modal -->
 <div class="modal" id="notesModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -203,8 +252,10 @@
   </div>
 </div>
 
+<!-- Image viewer (lightbox) -->
 <div class="modal" id="viewerModal"><div class="sheet" style="display:grid; place-items:center"><img id="viewerImg" alt=""></div></div>
 
+<!-- Share/QR modal -->
 <div class="modal" id="shareModal">
   <div class="sheet">
     <div class="row" style="justify-content:space-between">
@@ -224,6 +275,9 @@
     </div>
   </div>
 </div>
+
+<!-- KAKALAMAKKA -->
+<div class="egg" id="egg"><h2>KAKALAMAKKA</h2></div>
 
 <script>
 /*** i18n ***/
@@ -269,6 +323,7 @@ const totalTitle = $("#totalTitle");
 const grandTotal = $("#grandTotal");
 const wmImg = $("#wm");
 const brandLogo = $("#brandLogo");
+const egg = $("#egg");
 
 const settingsBtn = $("#settingsBtn");
 const settingsModal = $("#settingsModal");
@@ -308,14 +363,14 @@ const mailLink = $("#mailLink");
 const waLink = $("#waLink");
 
 /*** State ***/
-let currentLang = S.lang || "de";
+let currentLang = S.lang || "de";           // default de
 let currentYear = S.year || new Date().getFullYear();
-let currentMonth = (S.month ?? (new Date().getMonth()));
+let currentMonth = (S.month ?? (new Date().getMonth())); // 0-11
 let autosave = S.autosave ?? "on";
 let wmOn = S.wmOn ?? "on";
 let wmAlpha = S.wmAlpha ?? 40;
 let company = S.company || "THÜRINGER TANNENHOF";
-let logoData = S.logoData || "";
+let logoData = S.logoData || ""; // if empty => shared "logo.png"
 let activeRow = 1;
 
 /*** Helpers ***/
@@ -358,20 +413,20 @@ function buildRows(){
       <td class="timecol"><input class="t time" type="time" step="300" data-f="to" data-d="${d}"></td>
       <td class="breakcol"><div class="pill"><span>☕</span><input class="t" style="border:0;flex:1" type="time" step="300" value="00:00" data-f="break" data-d="${d}"></div></td>
       <td class="totalcol"><div class="badge">⏳ <span id="tot-${d}">0.00</span></div></td>
-      <td class="projcol"><div class="pill"><span>🧱</span><input class="t proj" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
+      <td class="projcol"><div class="pill"><span>🧱</span><input class="t" style="border:0;flex:1" type="text" placeholder="${t('project')}" data-f="project" data-d="${d}"></div></td>
       <td class="actcol">
         <div class="actions">
           <button class="btn-icon" data-note="${d}" title="${t('notes')}">📝</button>
           <button class="btn-icon" data-photo-camera="${d}" title="Kamera">📷</button>
           <button class="btn-icon secondary" data-photo-gallery="${d}" title="Galerie">🖼️<span class="bubble" id="pb-${d}" style="display:none">0</span></button>
         </div>
-      </td>`;
+      </td>
+    `;
     bodyRows.appendChild(tr);
   }
   restoreData();
   recomputeAllRows();
   updatePhotoBubbles();
-  updatePlaceholders();   /* <<< ensure placeholders match current language */
   computeAll();
 }
 
@@ -418,22 +473,18 @@ function applyLogo(){
   wmImg.style.opacity = (wmOn==="on") ? (wmAlpha/100) : 0;
 }
 
-/*** Language & placeholders ***/
-function updatePlaceholders(){
-  // Sätt placeholdern för alla TOMMA projekt-fält till aktuell språksträng.
-  document.querySelectorAll('input.proj').forEach(inp=>{
-    if(!inp.value){ inp.placeholder = t('project'); }
-  });
-}
-
+/*** Language & labels ***/
 function applyLanguage(){
   titleTxt.textContent = company || t("appTitle");
   document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent = t(el.dataset.i); });
   monthSub.textContent = `${fmtMonth(currentMonth)} ${currentYear}`;
   totalTitle.textContent = t("total").replace("{month}", fmtMonth(currentMonth)).replace("{year}", currentYear);
   document.querySelector('[data-i="total"]').textContent = t("totalCol");
+  // uppdatera placeholders för tomma projekt-fält
+  bodyRows.querySelectorAll('input[data-f="project"]').forEach(inp=>{
+    if(!inp.value) inp.placeholder = t('project');
+  });
   fillMonthYear();
-  updatePlaceholders();  // <<< viktiga raden
 }
 
 /*** Events ***/
@@ -543,7 +594,7 @@ closeShare.onclick = ()=>close(shareModal);
 copyLink.onclick = async ()=>{ await navigator.clipboard.writeText(location.href); copyLink.textContent = "✔️"; setTimeout(()=>copyLink.innerHTML="🔗 "+t('copyLink'),800); };
 printBtn.onclick = ()=>window.print();
 
-/*** Logo input ***/
+/*** Logo input — scale & save immediately ***/
 logoFile.onchange = async (e)=>{
   const f = e.target.files?.[0]; if(!f) return;
   logoData = await fileToDataURL(f, 512);
@@ -553,7 +604,7 @@ logoFile.onchange = async (e)=>{
 clearLogo.onclick = ()=>{ logoData = ""; S.logoData=""; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLogo(); }
 
 /*** Bind settings controls ***/
-langSel.onchange = ()=>{ currentLang = langSel.value; applyLanguage(); };
+langSel.onchange = ()=>{ currentLang = langSel.value; S.lang=currentLang; localStorage.setItem("tnh_settings", JSON.stringify(S)); applyLanguage(); };
 monthSel.onchange = ()=>{ currentMonth = Number(monthSel.value); applyLanguage(); buildRows(); };
 yearSel.onchange = ()=>{ currentYear = Number(yearSel.value); applyLanguage(); buildRows(); };
 autosaveSel.onchange = ()=>{ autosave = autosaveSel.value; };
@@ -583,6 +634,34 @@ function fileToDataURL(file, maxSide){
   });
 }
 
+/*** Easter egg: triple-tap on logo (no loop, auto-hide) ***/
+(() => {
+  let tapCount = 0;
+  let timer = null;
+  const win = window;
+
+  function resetCounter(){
+    tapCount = 0;
+    if(timer){ clearTimeout(timer); timer=null; }
+  }
+  function triggerEgg(){
+    // one-time blink overlay, auto hide after 3s
+    egg.classList.add('open');
+    egg.style.background = 'rgba(31,86,52,0.85)';
+    setTimeout(()=> egg.classList.remove('open'), 3000);
+  }
+  brandLogo.addEventListener('click', () => {
+    tapCount++;
+    if(!timer){
+      timer = setTimeout(()=>{ resetCounter(); }, 600);
+    }
+    if(tapCount>=3){
+      resetCounter();
+      triggerEgg();
+    }
+  });
+})();
+
 /*** Init ***/
 function init(){
   companyInput.value = company; titleTxt.textContent = company || t('appTitle');
@@ -603,4 +682,4 @@ function init(){
 document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
-</html>
+  </html>
